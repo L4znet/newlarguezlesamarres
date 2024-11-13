@@ -11,6 +11,7 @@ export default function Layout() {
                     headerShown: false,
                }}
           >
+               {}
                <Tabs.Screen
                     name="index"
                     options={{
