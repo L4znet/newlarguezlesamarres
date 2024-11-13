@@ -11,10 +11,6 @@ const TabBar = ({ state, descriptors, navigation, insets }: { state: any; descri
           params: any
      }
 
-     interface routeToGo {
-          routeToGo: string
-     }
-
      const primaryColor = "#0891b2"
      const greyColor = "#737373"
      return (
@@ -23,12 +19,12 @@ const TabBar = ({ state, descriptors, navigation, insets }: { state: any; descri
                safeAreaInsets={insets}
                onTabPress={({ route, preventDefault }) => {
                     const routeName = route.key.split("-")[0]
-                    let routeToGo: string = "/(tabs)/" + routeName
+                    let routeToGo = "/(tabs)" + "/" + routeName
                     if (routeName === "index") {
-                         routeToGo = "/(tabs)/"
+                         routeToGo = "/(tabs)"
                     }
 
-                    router.push(routeToGo)
+                    router.push(routeToGo as Href)
                }}
                renderIcon={({ route, focused, color }) => {
                     const { options } = descriptors[route.key]

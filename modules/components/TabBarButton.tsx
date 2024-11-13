@@ -1,14 +1,14 @@
-import { View, Text, Pressable, StyleSheet } from "react-native"
+import { View, Text, Pressable, StyleSheet, PressableProps } from "react-native"
 import React, { useEffect } from "react"
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
 
-const TabBarButton = (props) => {
+const TabBarButton = (props: React.JSX.IntrinsicAttributes & PressableProps & React.RefAttributes<View> & { isFocused: boolean; label: string; routeName: string; color: string }) => {
      const { isFocused, label, routeName, color } = props
 
      const scale = useSharedValue(0)
 
      useEffect(() => {
-          scale.value = withSpring(typeof isFocused === "boolean" ? (isFocused ? 1 : 0) : isFocused, { duration: 350 })
+          scale.value = withSpring(isFocused ? 1 : 0, { duration: 350 })
      }, [scale, isFocused])
 
      const animatedIconStyle = useAnimatedStyle(() => {
