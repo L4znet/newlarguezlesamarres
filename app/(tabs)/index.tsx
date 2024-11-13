@@ -5,7 +5,7 @@ import { Text } from "react-native-paper"
 export default function Index() {
      return (
           <View style={styles.container}>
-               <Text variant="titleLarge">Home</Text>
+               <Text variant="titleLarge">Hoffme</Text>
                <Text variant="titleMedium">Title Medium</Text>
           </View>
      )

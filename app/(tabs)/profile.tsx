@@ -1,12 +1,17 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
-import { Text } from "react-native-paper"
+import { Button, Text } from "react-native-paper"
+import { useAuth } from "@/modules/context/AuthProvider"
 
 export default function Profile() {
+     const { signOut, loading } = useAuth()
      return (
           <View style={styles.container}>
                <Text variant="titleLarge">Profile</Text>
                <Text variant="titleMedium">Title Medium</Text>
+               <Button icon="login" mode="contained" onPress={signOut} loading={loading} disabled={loading}>
+                    Déconnexion
+               </Button>
           </View>
      )
 }
