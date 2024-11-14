@@ -1,12 +1,11 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
 import { Text } from "react-native-paper"
+import React from "react"
+import { StyleSheet, View } from "react-native"
 
 export default function Index() {
      return (
           <View style={styles.container}>
-               <Text variant="titleLarge">Hoffme</Text>
-               <Text variant="titleMedium">Title Medium</Text>
+               <Text variant="titleLarge">Bonjour et bienvenue sur Larguez les amarres !</Text>
           </View>
      )
 }

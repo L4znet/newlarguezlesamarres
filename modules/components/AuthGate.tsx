@@ -13,7 +13,7 @@ export const AuthGate = ({ children }: AuthGateProps) => {
      useEffect(() => {
           if (!loading) {
                if (!user) {
-                    router.replace("/(tabs)")
+                    router.replace("/(auth)")
                } else {
                     router.replace("/(tabs)")
                }

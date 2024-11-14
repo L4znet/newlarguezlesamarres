@@ -22,14 +22,15 @@ interface TabBarProps {
      isUserLoggedIn: boolean
 }
 
-const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets, isUserLoggedIn }) => {
+const AuthTabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets, isUserLoggedIn }) => {
      const primaryColor = "#0891b2"
      const greyColor = "#737373"
 
      const handleTabPress = ({ route }: { route: Route }) => {
           console.log("Tab pressed:", route)
           const routeName = route.key.split("-")[0]
-          const routeToGo = routeName === "index" ? "/(tabs)" : `/(tabs)/${routeName}`
+          console.log(routeName)
+          const routeToGo = routeName === "index" ? "/(auth)" : `/(auth)/${routeName}`
           router.push(routeToGo as Href)
      }
 
@@ -61,4 +62,4 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
      return <BottomNavigation.Bar navigationState={filteredState} safeAreaInsets={insets} onTabPress={handleTabPress} renderIcon={renderTabIcon} getLabelText={getTabLabel} />
 }
 
-export default TabBar
+export default AuthTabBar
