@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
      buttons: {
           width: "80%",
           justifyContent: "space-between",
-          height: 100,
+          height: 80,
      },
      button: {
           marginTop: 30,

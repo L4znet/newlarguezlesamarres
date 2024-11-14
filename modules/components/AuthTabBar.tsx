@@ -49,7 +49,7 @@ const AuthTabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, ins
 
      const filteredRoutes = state.routes.filter((route) => {
           if (!isUserLoggedIn) {
-               return !["profile", "settings"].includes(route.name)
+               return !["profile", "settings", "forgot-password"].includes(route.name)
           }
           return true
      })

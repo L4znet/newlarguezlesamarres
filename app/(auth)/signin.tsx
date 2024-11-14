@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
           marginVertical: 10,
      },
      buttons: {
-          width: "70%",
+          width: "80%",
           justifyContent: "space-between",
           height: 100,
      },

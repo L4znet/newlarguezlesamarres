@@ -4,7 +4,7 @@ import { Button, Text, TextInput } from "react-native-paper"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { router } from "expo-router"
 
-export default function Signup() {
+export default function Signin() {
      const [loginInfo, setLoginInfo] = useState({
           email: "charly.escalona1@gmail.com",
           password: "testtesttesttest",
@@ -13,20 +13,24 @@ export default function Signup() {
      return (
           <View style={styles.container}>
                <View style={styles.form}>
-                    <Text variant="titleLarge">C'est votre première fois ici ?</Text>
-                    <Text variant="titleMedium">Créez votre compte !</Text>
+                    <Text style={styles.title} variant="titleLarge">
+                         Impossible de vous souvenir de votre mot de passe ?
+                    </Text>
+                    <Text style={styles.subtitle} variant="titleMedium">
+                         Cela arrive ! Nous allons vous aider à le récupérer
+                    </Text>
                     <TextInput style={styles.input} label="Email" value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
                     <TextInput style={styles.input} label="Password" value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
                     <Button icon="login" mode="contained" style={styles.login}>
-                         Inscription
+                         Connexion
                     </Button>
                </View>
                <View style={styles.buttons}>
                     <Text variant="titleLarge" style={styles.noAccount}>
-                         Vous avez déjà un compte ? Connectez-vous
+                         Finalement je m'en souviens !
                     </Text>
                     <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(auth)/signin")}>
-                         J'ai un compte !
+                         Je me connecte !
                     </Button>
                </View>
           </View>
@@ -46,8 +50,11 @@ const styles = StyleSheet.create({
           width: "90%",
      },
      title: {
-          fontSize: 24,
-          fontWeight: "bold",
+          textAlign: "center",
+     },
+     subtitle: {
+          textAlign: "center",
+          marginVertical: 10,
      },
      text: {
           fontSize: 16,
