@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { Button, Text, TextInput } from "react-native-paper"
-import { useAuth } from "@/modules/context/AuthProvider"
 import { router } from "expo-router"
 
 export default function Signup() {

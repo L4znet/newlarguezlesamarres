@@ -1,9 +1,15 @@
-import React from "react"
+import React, { useEffect } from "react"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { router, Tabs } from "expo-router"
+import { Redirect, router, Tabs } from "expo-router"
 import TabBar from "@/modules/components/TabBar"
+import { useAuth } from "@/modules/context/AuthProvider"
 
 export default function Layout() {
+     const { session } = useAuth()
+     useEffect(() => {
+          if (!session) router.replace("/(auth)")
+     }, [session])
+
      return (
           <Tabs
                tabBar={(props) => <TabBar {...props} />}

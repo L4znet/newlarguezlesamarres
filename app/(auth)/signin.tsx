@@ -1,14 +1,18 @@
 import React, { useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { Button, Text, TextInput } from "react-native-paper"
-import { useAuth } from "@/modules/context/AuthProvider"
 import { router } from "expo-router"
+import { useAuth } from "@/modules/context/AuthProvider"
 
 export default function Signin() {
      const [loginInfo, setLoginInfo] = useState({
           email: "charly.escalona1@gmail.com",
           password: "testtesttesttest",
      })
+
+     const [error, setError] = useState<string | null>(null)
+
+     const { signIn } = useAuth()
 
      return (
           <View style={styles.container}>
@@ -17,7 +21,7 @@ export default function Signin() {
                     <Text variant="titleMedium">Connectez-vous !</Text>
                     <TextInput style={styles.input} label="Email" value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
                     <TextInput style={styles.input} label="Password" value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
-                    <Button icon="login" mode="contained" style={styles.login}>
+                    <Button icon="login" mode="contained" style={styles.login} onPress={() => signIn(loginInfo.email, loginInfo.password)}>
                          Connexion
                     </Button>
                </View>

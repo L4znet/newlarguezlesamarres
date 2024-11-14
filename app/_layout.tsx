@@ -1,10 +1,11 @@
 import React from "react"
-import { Stack } from "expo-router"
+import { Redirect, Stack } from "expo-router"
 import { useColorScheme } from "react-native"
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper"
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from "@react-navigation/native"
 import merge from "deepmerge"
 import { Colors } from "@/constants/Colors"
+import { AuthProvider } from "@/modules/context/AuthProvider"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -45,21 +46,22 @@ export default function RootLayout() {
      return (
           <PaperProvider theme={paperTheme}>
                <ThemeProvider value={paperTheme}>
-                    &
-                    <Stack>
-                         <Stack.Screen
-                              name="(auth)"
-                              options={{
-                                   headerShown: false,
-                              }}
-                         />
-                         <Stack.Screen
-                              name="(tabs)"
-                              options={{
-                                   headerShown: false,
-                              }}
-                         />
-                    </Stack>
+                    <AuthProvider>
+                         <Stack>
+                              <Stack.Screen
+                                   name="(auth)"
+                                   options={{
+                                        headerShown: false,
+                                   }}
+                              />
+                              <Stack.Screen
+                                   name="(tabs)"
+                                   options={{
+                                        headerShown: false,
+                                   }}
+                              />
+                         </Stack>
+                    </AuthProvider>
                </ThemeProvider>
           </PaperProvider>
      )
