@@ -7,7 +7,7 @@ import { useAuth } from "@/modules/context/AuthProvider"
 export default function Layout() {
      const { session } = useAuth()
      useEffect(() => {
-          if (!session) router.replace("/(auth)")
+          if (!session) router.replace("/(app)/(auth)")
      }, [session])
 
      return (
@@ -17,6 +17,13 @@ export default function Layout() {
                     headerShown: false,
                }}
           >
+               <Tabs.Screen
+                    name="index"
+                    options={{
+                         title: "Feed",
+                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="user" color={color} />,
+                    }}
+               />
                <Tabs.Screen
                     name="profile"
                     options={{

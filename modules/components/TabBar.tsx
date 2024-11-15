@@ -48,7 +48,7 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
 
      const filteredRoutes = state.routes.filter((route) => {
           if (!isUserLoggedIn) {
-               return !["profile", "settings"].includes(route.name)
+               return !["settings"].includes(route.name)
           }
           return true
      })
