@@ -7,7 +7,7 @@ import { useAuth } from "@/modules/context/AuthProvider"
 export default function Layout() {
      const { session } = useAuth()
      useEffect(() => {
-          if (session) router.replace("/(tabs)")
+          if (session) router.replace("/(app)/(tabs)")
      }, [session])
      return (
           <Tabs

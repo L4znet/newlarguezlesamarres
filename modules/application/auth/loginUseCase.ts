@@ -1,10 +1,16 @@
-import { supabase } from "@/modules/utils/api"
+import authRepository from "../../infrastructure/auth/AuthRepositorySupabase"
+import AuthEntity from "../../domain/auth/AuthEntity"
 
 export const loginUseCase = async (email: string, password: string) => {
-     const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-     })
-     if (error) throw error
-     return data.user
+     interface Error {
+          message: string
+          code: string
+     }
+
+     try {
+          const user = await authRepository.signIn(email, password)
+          return AuthEntity.fromSupabaseUser(user)
+     } catch (error: any) {
+          throw new Error((error as Error).message)
+     }
 }

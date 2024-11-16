@@ -1,9 +1,8 @@
-// domain/auth/AuthRepository.ts
-import { AuthEntity } from "./AuthEntity"
-
-export interface AuthRepository {
-     signUp(email: string, password: string): Promise<AuthEntity>
-     signIn(email: string, password: string): Promise<AuthEntity>
+interface AuthRepository {
+     signUp(email: string, password: string, lastname: string, firstname: string, username: string): Promise<any>
+     signIn(email: string, password: string): Promise<any>
      signOut(): Promise<void>
-     getCurrentUser(): Promise<AuthEntity | null>
+     getCurrentUser(): Promise<any>
 }
+
+export default AuthRepository

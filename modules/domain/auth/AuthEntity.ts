@@ -1,9 +1,12 @@
-export class AuthEntity {
-     id: string
-     email: string
+export default class AuthEntity {
+     constructor(
+          public id: string,
+          public email: string,
+          public firstname: string,
+          public lastname: string
+     ) {}
 
-     constructor(id: string, email: string) {
-          this.id = id
-          this.email = email
+     static fromSupabaseUser(user: any): AuthEntity {
+          return new AuthEntity(user.id, user.email, user.firstname, user.lastname)
      }
 }

@@ -1,6 +1,9 @@
-import { supabase } from "@/modules/utils/api"
+import authRepository from "../../infrastructure/auth/AuthRepositorySupabase"
 
 export const logoutUseCase = async () => {
-     const { error } = await supabase.auth.signOut()
-     if (error) throw error
+     try {
+          await authRepository.signOut()
+     } catch (error: any) {
+          throw new Error((error as Error).message)
+     }
 }

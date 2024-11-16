@@ -4,9 +4,12 @@ import { Button, Text, TextInput } from "react-native-paper"
 import { router } from "expo-router"
 
 export default function Signup() {
-     const [loginInfo, setLoginInfo] = useState({
+     const [userInfo, setUserInfo] = useState({
+          lastname: "Escalona",
+          firstname: "Charly",
           email: "charly.escalona1@gmail.com",
           password: "testtesttesttest",
+          confirmPassword: "testtesttesttest",
      })
 
      return (
@@ -14,8 +17,11 @@ export default function Signup() {
                <View style={styles.form}>
                     <Text variant="titleLarge">C'est votre première fois ici ?</Text>
                     <Text variant="titleMedium">Créez votre compte !</Text>
-                    <TextInput style={styles.input} label="Email" value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
-                    <TextInput style={styles.input} label="Password" value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
+                    <TextInput style={styles.input} label="Nom" value={userInfo.lastname} onChangeText={(lastname) => setUserInfo({ ...userInfo, lastname })} />
+                    <TextInput style={styles.input} label="Prénom" value={userInfo.firstname} onChangeText={(firstname) => setUserInfo({ ...userInfo, firstname })} />
+                    <TextInput style={styles.input} label="E-mail" value={userInfo.email} onChangeText={(email) => setUserInfo({ ...userInfo, email })} />
+                    <TextInput style={styles.input} label="Password" value={userInfo.password} onChangeText={(password) => setUserInfo({ ...userInfo, password })} secureTextEntry />
+                    <TextInput style={styles.input} label="Confirmez le mot de passe" value={userInfo.confirmPassword} onChangeText={(confirmPassword) => setUserInfo({ ...userInfo, confirmPassword })} secureTextEntry />
                     <Button icon="login" mode="contained" style={styles.login}>
                          Inscription
                     </Button>
@@ -24,7 +30,7 @@ export default function Signup() {
                     <Text variant="titleLarge" style={styles.noAccount}>
                          Vous avez déjà un compte ? Connectez-vous
                     </Text>
-                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(auth)/signin")}>
+                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signin")}>
                          J'ai un compte !
                     </Button>
                </View>
