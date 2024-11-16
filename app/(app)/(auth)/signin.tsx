@@ -26,13 +26,13 @@ export default function Signin() {
                     </Button>
                </View>
                <View style={styles.buttons}>
-                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(auth)/forgot-password")}>
+                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/forgot-password")}>
                          Mot de passe oublié
                     </Button>
                     <Text variant="titleLarge" style={styles.noAccount}>
                          Pas de compte ? Aucun problème
                     </Text>
-                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(auth)/signup")}>
+                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signin")}>
                          Je file me créer un compte
                     </Button>
                </View>

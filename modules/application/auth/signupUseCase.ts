@@ -1,19 +1,30 @@
 import authRepository from "../../infrastructure/auth/AuthRepositorySupabase"
 import AuthEntity from "../../domain/auth/AuthEntity"
 import { UserRegistrationSchema } from "../../domain/auth/schemas/UserRegistrationSchema"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
-export const signupUseCase = async ({ email, password, confirmPassword, firstname, lastname }: { email: string; password: string; confirmPassword: string; firstname: string; lastname: string }): Promise<AuthEntity> => {
-     const parsedData = UserRegistrationSchema.safeParse({ email, password, confirmPassword, firstname, lastname })
+export const signupUseCase = async (data: any) => {
+     const { setFlashMessage } = useFlashMessage()
+
+     console.log(data)
+
+     const parsedData = UserRegistrationSchema.safeParse(data)
+
+     console.log("fsdfdsqfdfd", parsedData)
 
      if (!parsedData.success) {
-          console.log(parsedData.error)
-          throw new Error(`Invalid registration data: ${parsedData.error.issues.map((issue) => issue.message).join(", ")}`)
+          console.error(parsedData.error)
+          setFlashMessage("error", `Invalid registration data: ${parsedData.error.issues.map((issue) => issue.message).join(", ")}`)
+          return
      }
 
+     const { email, password, firstname, lastname, username } = parsedData.data
+
      try {
-          const user = await authRepository.signUp(parsedData.data.email, parsedData.data.password, parsedData.data.lastname, parsedData.data.firstname, parsedData.data.username)
+          const user = await authRepository.signUp(email, password, firstname, lastname, username)
           return AuthEntity.fromSupabaseUser(user)
      } catch (error: any) {
+          setFlashMessage("error", error.message)
           throw new Error((error as Error).message)
      }
 }

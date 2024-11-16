@@ -6,6 +6,7 @@ import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultThem
 import merge from "deepmerge"
 import { Colors } from "@/constants/Colors"
 import { AuthProvider } from "@/modules/context/AuthProvider"
+import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -46,22 +47,18 @@ export default function RootLayout() {
      return (
           <PaperProvider theme={paperTheme}>
                <ThemeProvider value={paperTheme}>
-                    <AuthProvider>
-                         <Stack>
-                              <Stack.Screen
-                                   name="(auth)"
-                                   options={{
+                    <FlashMessageProvider>
+                         <AuthProvider>
+                              <Stack
+                                   screenOptions={{
                                         headerShown: false,
                                    }}
-                              />
-                              <Stack.Screen
-                                   name="(tabs)"
-                                   options={{
-                                        headerShown: false,
-                                   }}
-                              />
-                         </Stack>
-                    </AuthProvider>
+                              >
+                                   <Stack.Screen name="auth" />
+                                   <Stack.Screen name="tabs" />
+                              </Stack>
+                         </AuthProvider>
+                    </FlashMessageProvider>
                </ThemeProvider>
           </PaperProvider>
      )

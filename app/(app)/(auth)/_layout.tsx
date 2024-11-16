@@ -9,9 +9,27 @@ export default function Layout() {
      useEffect(() => {
           if (session) router.replace("/(app)/(tabs)")
      }, [session])
+
+     interface Route {
+          key: string
+          name: string
+          params: any
+          title?: string
+     }
+
+     interface TabBarProps {
+          state: {
+               routes: Route[]
+               index: number
+          }
+          descriptors: any
+          navigation: any
+          insets: any
+     }
+
      return (
           <Tabs
-               tabBar={(props) => <AuthTabBar {...props} />}
+               tabBar={(props: TabBarProps) => <AuthTabBar {...props} />}
                screenOptions={{
                     headerShown: false,
                }}
