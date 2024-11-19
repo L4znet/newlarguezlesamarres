@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native"
 import { Button, Text, TextInput } from "react-native-paper"
 import { router } from "expo-router"
 import { useAuth } from "@/modules/context/AuthProvider"
-import { getTranslator } from "@/modules/context/TranslationContext"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Signup() {
      const [userInfo, setUserInfo] = useState({
@@ -17,7 +17,8 @@ export default function Signup() {
 
      const { signUp } = useAuth()
 
-     const t = getTranslator()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      return (
           <View style={styles.container}>

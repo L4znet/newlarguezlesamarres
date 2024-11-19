@@ -1,10 +1,11 @@
 import { Text } from "react-native-paper"
 import React from "react"
 import { StyleSheet, View } from "react-native"
-import { getTranslator } from "@/modules/context/TranslationContext"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Index() {
-     const t = getTranslator()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      return (
           <View style={styles.container}>

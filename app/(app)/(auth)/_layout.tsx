@@ -3,12 +3,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Redirect, router, Tabs } from "expo-router"
 import AuthTabBar from "@/modules/components/AuthTabBar"
 import { useAuth } from "@/modules/context/AuthProvider"
-import { getTranslator } from "@/modules/context/TranslationContext"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Layout() {
      const { user } = useAuth()
 
-     const t = getTranslator()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      useEffect(() => {
           if (user) router.replace("/(app)/(tabs)")

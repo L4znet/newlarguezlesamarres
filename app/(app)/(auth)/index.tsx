@@ -2,10 +2,11 @@ import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { router } from "expo-router"
-import { getTranslator } from "@/modules/context/TranslationContext"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Index() {
-     const t = getTranslator()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
      return (
           <View style={styles.container}>
                <View style={styles.header}>

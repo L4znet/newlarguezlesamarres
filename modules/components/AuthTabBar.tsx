@@ -3,6 +3,7 @@ import React from "react"
 import { Text, BottomNavigation } from "react-native-paper"
 import TabBarButton from "./TabBarButton"
 import { Href, router } from "expo-router"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 interface Route {
      key: string
@@ -24,6 +25,9 @@ interface TabBarProps {
 const AuthTabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets }) => {
      const primaryColor = "#0891b2"
      const greyColor = "#737373"
+
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      const handleTabPress = ({ route }: { route: Route }) => {
           const routeName = route.key.split("-")[0]

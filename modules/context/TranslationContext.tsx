@@ -19,8 +19,8 @@ export interface TranslationContextProps {
 
 export const TranslationContext = createContext<TranslationContextProps | null>(null)
 
-export const getTranslator = (): ((key: string | number | symbol) => string) => {
-     const translations: Translations = translationFiles["fr"] // Default to French
+export const getTranslator = (locale: Locale = "fr"): ((key: string | number | symbol) => string) => {
+     const translations: Translations = translationFiles[locale]
 
      return (key: string | number | symbol): string => {
           if (typeof key !== "string") {
@@ -46,7 +46,7 @@ export const getTranslator = (): ((key: string | number | symbol) => string) => 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
      const [locale, setLocale] = useState<Locale>("fr")
 
-     const t = useMemo(() => getTranslator(), [locale])
+     const t = useMemo(() => getTranslator(locale), [locale])
 
      const translateErrors = (errors: ValidationError[]): string[] => {
           return translateValidationErrors(errors, t)
@@ -59,7 +59,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
                translateErrors,
                locale,
           }),
-          [t]
+          [t, locale]
      )
 
      return <TranslationContext.Provider value={value}>{children}</TranslationContext.Provider>
