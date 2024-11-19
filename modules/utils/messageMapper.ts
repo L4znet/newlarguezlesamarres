@@ -21,7 +21,6 @@ export const mapMessage = (supabaseMessage: string, type: MessageType, locale: L
 
      const key = Object.keys(translationFile).find((k): k is MessageKeys => {
           const entry = translationFile[k as MessageKeys]
-
           return typeof entry === "object" && entry.supabase_message === supabaseMessage
      })
 
@@ -34,6 +33,7 @@ export const mapMessage = (supabaseMessage: string, type: MessageType, locale: L
      }
 
      const entry = translationFile[key]
+
      const description = typeof entry === "object" ? entry.translation : supabaseMessage
 
      return { key, title, description }

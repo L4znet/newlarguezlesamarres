@@ -26,8 +26,22 @@ export const FlashMessageProvider: React.FC<{ children: ReactNode }> = ({ childr
                return
           }
 
-          messageOrMessages.forEach(({ description }) => {
-               const translatedMessage = mapMessage(description, type, locale)
+          messageOrMessages.forEach(({ description, title }) => {
+               let descriptionString = ""
+
+               if (typeof description === "string") {
+                    descriptionString = description
+               } else if (typeof description === "object" && description !== null) {
+                    try {
+                         descriptionString = JSON.stringify(description)
+                    } catch (error) {
+                         descriptionString = "Une erreur inattendue est survenue."
+                    }
+               } else {
+                    descriptionString = "Erreur inconnue."
+               }
+
+               const translatedMessage = mapMessage(descriptionString, type, locale)
 
                showMessage({
                     message: translatedMessage.title,

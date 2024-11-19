@@ -6,7 +6,6 @@ import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
 import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
-import { parseObj } from "sucrase/dist/types/parser/traverser/expression"
 
 type AuthContextType = {
      user: AuthEntity | null
@@ -29,18 +28,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User successfully registered" })
                }
           } catch (error: any) {
-               //showTranslatedFlashMessage("danger", [{ title: "flash_title_danger", description: error.message }])
-               //throw new Error(error.message)
+               showTranslatedFlashMessage("danger", [{ title: "flash_title_danger", description: error.message }])
+               throw new Error(error.message)
           }
      }
 
      const signIn = async (email: string, password: string) => {
           try {
-               const user = await loginUseCase(email, password)
-               setUser(user)
-               showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
+               const user = await loginUseCase({ email, password }, showTranslatedFlashMessage)
+               setUser(user ?? null)
+               if (user) {
+                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
+               }
           } catch (error: any) {
-               showTranslatedFlashMessage("success", { title: "flash_title_danger", description: error.message })
+               showTranslatedFlashMessage("danger", [{ title: "flash_title_danger", description: error.message }])
+               throw new Error(error.message)
           }
      }
 

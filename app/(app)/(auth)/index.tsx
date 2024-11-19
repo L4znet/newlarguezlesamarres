@@ -2,27 +2,29 @@ import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { router } from "expo-router"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Index() {
+     const t = getTranslator()
      return (
           <View style={styles.container}>
                <View style={styles.header}>
                     <Text style={styles.title} variant="titleLarge">
-                         Bonjour et bienvenue sur Larguez les amarres !
+                         {t("home_title")}
                     </Text>
                     <Text style={styles.subtitle} variant="titleMedium">
-                         Pour une expérience plus confortable à bord, connectez-vous !
+                         {t("home_subtitle")}
                     </Text>
                     <Text style={styles.subtitle} variant="titleMedium">
-                         Si vous n'avez pas de compte, inscrivez-vous
+                         {t("home_noaccount")}
                     </Text>
                </View>
                <View style={styles.buttons}>
                     <Button style={styles.button} mode="contained" onPress={() => router.replace("/(app)/(auth)/signin")}>
-                         Connexion
+                         {t("login_btn")}
                     </Button>
                     <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signup")}>
-                         Inscription
+                         {t("register_btn")}
                     </Button>
                </View>
           </View>

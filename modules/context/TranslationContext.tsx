@@ -12,23 +12,22 @@ export type Translations = typeof translationFiles.en
 
 export interface TranslationContextProps {
      t: (key: string | number | symbol) => string
-     locale: Locale
      setLocale: (locale: Locale) => void
      translateErrors: (errors: ValidationError[]) => string[]
+     locale: Locale
 }
 
 export const TranslationContext = createContext<TranslationContextProps | null>(null)
 
-export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-     const [locale, setLocale] = useState<Locale>("fr")
+export const getTranslator = (): ((key: string | number | symbol) => string) => {
+     const translations: Translations = translationFiles["fr"] // Default to French
 
-     const t = (key: string | number | symbol): string => {
+     return (key: string | number | symbol): string => {
           if (typeof key !== "string") {
                console.warn(`Invalid translation key: ${String(key)}`)
-               return String(key) // Retourne la clé convertie en chaîne si ce n'est pas une chaîne
+               return String(key)
           }
 
-          const translations: Translations = translationFiles[locale]
           const value = translations[key as keyof Translations]
 
           if (typeof value === "object" && value.translation) {
@@ -42,6 +41,12 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
           console.warn(`Missing translation for key: ${key}`)
           return key
      }
+}
+
+export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+     const [locale, setLocale] = useState<Locale>("fr")
+
+     const t = useMemo(() => getTranslator(), [locale])
 
      const translateErrors = (errors: ValidationError[]): string[] => {
           return translateValidationErrors(errors, t)
@@ -50,11 +55,11 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
      const value = useMemo(
           () => ({
                t,
-               locale,
                setLocale,
                translateErrors,
+               locale,
           }),
-          [locale]
+          [t]
      )
 
      return <TranslationContext.Provider value={value}>{children}</TranslationContext.Provider>

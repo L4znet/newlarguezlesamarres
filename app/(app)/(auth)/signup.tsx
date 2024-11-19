@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native"
 import { Button, Text, TextInput } from "react-native-paper"
 import { router } from "expo-router"
 import { useAuth } from "@/modules/context/AuthProvider"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Signup() {
      const [userInfo, setUserInfo] = useState({
@@ -10,25 +11,25 @@ export default function Signup() {
           firstname: "Charly",
           username: "cyrlah",
           email: "charly.escalona1@gmail.com",
-          password: "testtesttesttest",
-          confirmPassword: "testtesttesttest",
+          password: "s",
+          confirmPassword: "t",
      })
 
-     const [error, setError] = useState<string | null>(null)
-
      const { signUp } = useAuth()
+
+     const t = getTranslator()
 
      return (
           <View style={styles.container}>
                <View style={styles.form}>
-                    <Text variant="titleLarge">C'est votre première fois ici ?</Text>
-                    <Text variant="titleMedium">Créez votre compte !</Text>
-                    <TextInput style={styles.input} label="Nom" value={userInfo.lastname} onChangeText={(lastname) => setUserInfo({ ...userInfo, lastname })} />
-                    <TextInput style={styles.input} label="Prénom" value={userInfo.firstname} onChangeText={(firstname) => setUserInfo({ ...userInfo, firstname })} />
-                    <TextInput style={styles.input} label="Pseudo" value={userInfo.username} onChangeText={(username) => setUserInfo({ ...userInfo, username })} />
-                    <TextInput style={styles.input} label="E-mail" value={userInfo.email} onChangeText={(email) => setUserInfo({ ...userInfo, email })} />
-                    <TextInput style={styles.input} label="Password" value={userInfo.password} onChangeText={(password) => setUserInfo({ ...userInfo, password })} secureTextEntry />
-                    <TextInput style={styles.input} label="Confirmez le mot de passe" value={userInfo.confirmPassword} onChangeText={(confirmPassword) => setUserInfo({ ...userInfo, confirmPassword })} secureTextEntry />
+                    <Text variant="titleLarge">{t("register_title")}</Text>
+                    <Text variant="titleMedium">{t("register_subtitle")}</Text>
+                    <TextInput style={styles.input} placeholder={t("register_lastname_placeholder")} label={t("register_email_label")} value={userInfo.lastname} onChangeText={(lastname) => setUserInfo({ ...userInfo, lastname })} />
+                    <TextInput style={styles.input} placeholder={t("register_firstname_placeholder")} label={t("register_lastname_label")} value={userInfo.firstname} onChangeText={(firstname) => setUserInfo({ ...userInfo, firstname })} />
+                    <TextInput style={styles.input} placeholder={t("register_username_placeholder")} label={t("register_firstname_label")} value={userInfo.username} onChangeText={(username) => setUserInfo({ ...userInfo, username })} />
+                    <TextInput style={styles.input} placeholder={t("register_email_placeholder")} label={t("register_email_label")} value={userInfo.email} onChangeText={(email) => setUserInfo({ ...userInfo, email })} />
+                    <TextInput style={styles.input} placeholder={t("register_password_placeholder")} label={t("register_password_label")} value={userInfo.password} onChangeText={(password) => setUserInfo({ ...userInfo, password })} secureTextEntry />
+                    <TextInput style={styles.input} placeholder={t("register_password_confirm_placeholder")} label={t("register_password_confirm_label")} value={userInfo.confirmPassword} onChangeText={(confirmPassword) => setUserInfo({ ...userInfo, confirmPassword })} secureTextEntry />
                     <Button
                          icon="login"
                          mode="contained"
@@ -37,15 +38,15 @@ export default function Signup() {
                               await signUp(userInfo.email, userInfo.password, userInfo.confirmPassword, userInfo.firstname, userInfo.lastname, userInfo.username)
                          }}
                     >
-                         Inscription
+                         {t("register_submit")}
                     </Button>
                </View>
                <View style={styles.buttons}>
                     <Text variant="titleLarge" style={styles.noAccount}>
-                         Vous avez déjà un compte ? Connectez-vous
+                         {t("register_already_account")}
                     </Text>
                     <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signin")}>
-                         J'ai un compte !
+                         {t("register_login_btn")}
                     </Button>
                </View>
           </View>

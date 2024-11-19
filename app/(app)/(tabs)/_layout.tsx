@@ -7,7 +7,6 @@ import { useAuth } from "@/modules/context/AuthProvider"
 export default function Layout() {
      const { user } = useAuth()
      useEffect(() => {
-          console.log("user", user)
           if (!user) router.replace("/(app)/(auth)")
      }, [user])
      return (

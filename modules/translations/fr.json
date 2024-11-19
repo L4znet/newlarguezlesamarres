@@ -1,66 +1,153 @@
 {
-  "flash_title_danger": "Erreur",
-  "flash_title_success": "Succès",
-  "flash_title_warning": "Avertissement",
-  "flash_title_info": "Information",
-  "flash_title_default": "Information",
-  "flash_title_none": "Information",
+     "home_title": "Bonjour et bienvenue sur Larguez les amarres !",
+     "home_subtitle": "Pour une expérience plus confortable à bord, connectez-vous !",
+     "home_noaccount": "Si vous n'avez pas encore de compte, inscrivez-vous !",
 
-  "auth_api_error_user_already_registered": {
-    "supabase_message": "User already registered",
-    "translation": "Vous avez déjà un compte avec cette adresse e-mail."
-  },
-  "auth_api_error_email_not_confirmed": {
-    "supabase_message": "Email not confirmed",
-    "translation": "L'adresse e-mail n'a pas été confirmée."
-  },
-  "auth_api_error_invalid_credentials": {
-    "supabase_message": "Invalid login credentials",
-    "translation": "Identifiants de connexion invalides."
-  },
+     "language_switcher": "Langue de l'application",
+     "language_switcher_french_btn": "Français",
+     "language_switcher_english_btn": "Anglais",
 
-  "auth_api_success_user_registered": {
-    "supabase_message": "User successfully registered",
-    "translation": "Inscription réussie."
-  },
-  "auth_api_success_password_reset_sent": {
-    "supabase_message": "Password reset email sent",
-    "translation": "Un e-mail de réinitialisation a été envoyé."
-  },
-  "auth_api_success_email_confirmed": {
-    "supabase_message": "Email confirmed successfully",
-    "translation": "L'adresse e-mail a été confirmée avec succès."
-  },
-  "auth_api_success_password_reset": {
-    "supabase_message": "Password successfully reset",
-    "translation": "Le mot de passe a été réinitialisé avec succès."
-  },
-  "auth_api_success_password_changed": {
-    "supabase_message": "Password successfully changed",
-    "translation": "Le mot de passe a été changé avec succès."
-  },
-  "auth_api_success_email_changed": {
-    "supabase_message": "Email successfully changed",
-    "translation": "L'adresse e-mail a été changée avec succès."
-  },
-  "auth_api_success_user_updated": {
-    "supabase_message": "User profile updated",
-    "translation": "Le profil a été mis à jour avec succès."
-  },
-  "auth_api_success_user_deleted": {
-    "supabase_message": "User account deleted",
-    "translation": "Le compte a été supprimé avec succès."
-  },
-  "auth_api_success_email_sent": {
-    "supabase_message": "Email sent successfully",
-    "translation": "L'e-mail a été envoyé avec succès."
-  },
-  "auth_api_success_user_logged_out": {
-    "supabase_message": "User logged out successfully",
-    "translation": "Vous avez été déconnecté avec succès."
-  },
-  "auth_api_success_user_logged_in": {
-    "supabase_message": "User logged in successfully",
-    "translation": "Vous êtes maintenant connecté"
-  }
+     "login_title": "Vous avez déjà un compte ?",
+     "login_subtitle": "Connectez-vous !",
+
+     "login_email_label": "E-mail",
+     "login_password_label": "Mot de passe",
+     "login_email_placeholder": "E-mail",
+     "login_password_placeholder": "Mot de passe",
+
+     "login_forgot_password": "Mot de passe oublié ?",
+     "login_noaccount": "Pas de compte ? Aucun problème !",
+     "login_signup_btn": "Je file me créer un compte",
+     "login_submit": "Se connecter",
+
+     "register_title": "C'est votre première fois ici ?",
+     "register_subtitle": "Créez votre compte !",
+
+     "register_lastname_label": "Nom",
+     "register_firstname_label": "Prénom",
+     "register_username_label": "Nom d'utilisateur",
+     "register_email_label": "E-mail",
+     "register_password_label": "Mot de passe",
+     "register_password_confirm_label": "Confirmez le mot de passe",
+
+     "register_lastname_placeholder": "Nom",
+     "register_firstname_placeholder": "Prénom",
+     "register_username_placeholder": "Nom d'utilisateur",
+     "register_email_placeholder": "E-mail",
+     "register_password_placeholder": "Mot de passe",
+     "register_password_confirm_placeholder": "Confirmez le mot de passe",
+
+     "register_already_account": "Vous avez déjà un compte ? Connectez-vous",
+     "register_login_btn": "J'ai un compte !",
+     "register_submit": "S'inscrire",
+
+     "forgot_password_title": "Impossible de vous souvenir de votre mot de passe ?",
+     "forgot_password_subtitle": "Cela arrive ! Nous allons vous aider à le récupérer",
+
+     "forgot_password_email_label": "E-mail",
+     "forgot_password_email_placeholder": "E-mail",
+     "forgot_password_submit": "Récupérer mon mot de passe",
+     "forgot_remembered_password_title": "Finalement je m'en souviens !",
+     "forgot_remembered_password_login": "Je me connecte !",
+
+     "reset_password_title": "Réinitialiser le mot de passe",
+     "reset_password_new_password": "Nouveau mot de passe",
+     "reset_password_new_password_confirm": "Confirmez le nouveau mot de passe",
+     "reset_password_submit": "Réinitialiser le mot de passe",
+
+     "bottom_bar_index": "Accueil",
+     "bottom_bar_profile": "Profil",
+     "bottom_bar_login": "Connexion",
+     "bottom_bar_register": "Inscription",
+     "bottom_bar_feed": "Feed",
+
+     "login_btn": "Connexion",
+     "register_btn": "Inscription",
+     "logout_btn": "Déconnexion",
+     "forgot_password_btn": "Mot de passe oublié",
+     "noaccount_btn": "Pas encore de compte ?",
+
+     "flash_title_danger": "Erreur",
+     "flash_title_success": "Succès",
+     "flash_title_warning": "Avertissement",
+     "flash_title_info": "Information",
+     "flash_title_default": "Information",
+     "flash_title_none": "Information",
+
+     "validation_email_invalid": "L'adresse e-mail est invalide.",
+     "validation_password_too_short": "Le mot de passe doit contenir au moins 8 caractères.",
+     "validation_firstname_required": "Le prénom est requis.",
+     "validation_lastname_required": "Le nom de famille est requis.",
+     "validation_username_required": "Le nom d'utilisateur est requis.",
+     "validation_passwords_do_not_match": "Les mots de passe ne correspondent pas.",
+
+     "auth_api_error_rate_limit_exceeded": {
+          "supabase_message": "Email rate limit exceeded",
+          "translation": "Vous avez dépassé la limite de fréquence des e-mails."
+     },
+     "auth_api_error_invalid_email": {
+          "supabase_message": "Invalid email",
+          "translation": "Adresse e-mail invalide."
+     },
+     "auth_api_error_invalid_password": {
+          "supabase_message": "Invalid password",
+          "translation": "Mot de passe invalide."
+     },
+     "auth_api_error_user_already_registered": {
+          "supabase_message": "User already registered",
+          "translation": "Vous avez déjà un compte avec cette adresse e-mail."
+     },
+     "auth_api_error_email_not_confirmed": {
+          "supabase_message": "Email not confirmed",
+          "translation": "L'adresse e-mail n'a pas été confirmée."
+     },
+     "auth_api_error_invalid_credentials": {
+          "supabase_message": "Invalid login credentials",
+          "translation": "Identifiants de connexion invalides."
+     },
+
+     "auth_api_success_user_registered": {
+          "supabase_message": "User successfully registered",
+          "translation": "Inscription réussie."
+     },
+     "auth_api_success_password_reset_sent": {
+          "supabase_message": "Password reset email sent",
+          "translation": "Un e-mail de réinitialisation a été envoyé."
+     },
+     "auth_api_success_email_confirmed": {
+          "supabase_message": "Email confirmed successfully",
+          "translation": "L'adresse e-mail a été confirmée avec succès."
+     },
+     "auth_api_success_password_reset": {
+          "supabase_message": "Password successfully reset",
+          "translation": "Le mot de passe a été réinitialisé avec succès."
+     },
+     "auth_api_success_password_changed": {
+          "supabase_message": "Password successfully changed",
+          "translation": "Le mot de passe a été changé avec succès."
+     },
+     "auth_api_success_email_changed": {
+          "supabase_message": "Email successfully changed",
+          "translation": "L'adresse e-mail a été changée avec succès."
+     },
+     "auth_api_success_user_updated": {
+          "supabase_message": "User profile updated",
+          "translation": "Le profil a été mis à jour avec succès."
+     },
+     "auth_api_success_user_deleted": {
+          "supabase_message": "User account deleted",
+          "translation": "Le compte a été supprimé avec succès."
+     },
+     "auth_api_success_email_sent": {
+          "supabase_message": "Email sent successfully",
+          "translation": "L'e-mail a été envoyé avec succès."
+     },
+     "auth_api_success_user_logged_out": {
+          "supabase_message": "User logged out successfully",
+          "translation": "Vous avez été déconnecté avec succès."
+     },
+     "auth_api_success_user_logged_in": {
+          "supabase_message": "User logged in successfully",
+          "translation": "Vous êtes maintenant connecté"
+     }
 }

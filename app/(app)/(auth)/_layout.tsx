@@ -3,9 +3,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Redirect, router, Tabs } from "expo-router"
 import AuthTabBar from "@/modules/components/AuthTabBar"
 import { useAuth } from "@/modules/context/AuthProvider"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Layout() {
      const { user } = useAuth()
+
+     const t = getTranslator()
+
      useEffect(() => {
           if (user) router.replace("/(app)/(tabs)")
      }, [user])
@@ -37,21 +41,21 @@ export default function Layout() {
                <Tabs.Screen
                     name="index"
                     options={{
-                         title: "Accueil",
+                         title: t("bottom_bar_index"),
                          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
                     }}
                />
                <Tabs.Screen
                     name="signin"
                     options={{
-                         title: "Connexion",
+                         title: t("bottom_bar_login"),
                          tabBarIcon: ({ color }) => <FontAwesome size={28} name="sign-in" color={color} />,
                     }}
                />
                <Tabs.Screen
                     name="signup"
                     options={{
-                         title: "Inscription",
+                         title: t("bottom_bar_register"),
                          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-plus" color={color} />,
                     }}
                />

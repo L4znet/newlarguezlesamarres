@@ -3,6 +3,7 @@ import React from "react"
 import { Text, BottomNavigation } from "react-native-paper"
 import TabBarButton from "./TabBarButton"
 import { Href, router } from "expo-router"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 interface Route {
      key: string
@@ -23,11 +24,12 @@ interface TabBarProps {
 }
 
 const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets, isUserLoggedIn }) => {
+     const t = getTranslator()
+
      const primaryColor = "#0891b2"
      const greyColor = "#737373"
 
      const handleTabPress = ({ route }: { route: Route }) => {
-          console.log("Tab pressed:", route)
           const routeName = route.key.split("-")[0]
           const routeToGo = routeName === "index" ? "/(tabs)" : `/(tabs)/${routeName}`
           router.push(routeToGo as Href)
@@ -42,8 +44,8 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
      }
 
      const getTabLabel = ({ route }: { route: Route }) => {
-          const descriptor = descriptors[route.key]
-          return descriptor?.options?.tabBarLabel ?? descriptor?.options?.title ?? route.title ?? route.name
+          const labelKey = `bottom_bar_${route.name}`
+          return t(labelKey) ?? descriptors[route.key]?.options?.tabBarLabel ?? descriptors[route.key]?.options?.title ?? route.title ?? route.name
      }
 
      const filteredRoutes = state.routes.filter((route) => {

@@ -26,9 +26,7 @@ const AuthTabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, ins
      const greyColor = "#737373"
 
      const handleTabPress = ({ route }: { route: Route }) => {
-          console.log("Tab pressed:", route)
           const routeName = route.key.split("-")[0]
-          console.log(routeName)
           const routeToGo = routeName === "index" ? "/(auth)" : `/(auth)/${routeName}`
           router.push(routeToGo as Href)
      }

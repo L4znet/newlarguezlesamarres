@@ -3,12 +3,15 @@ import { View, StyleSheet } from "react-native"
 import { Button, Text, TextInput } from "react-native-paper"
 import { router } from "expo-router"
 import { useAuth } from "@/modules/context/AuthProvider"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Signin() {
      const [loginInfo, setLoginInfo] = useState({
           email: "charly.escalona1@gmail.com",
           password: "testtesttesttest",
      })
+
+     const t = getTranslator()
 
      const [error, setError] = useState<string | null>(null)
 
@@ -17,23 +20,23 @@ export default function Signin() {
      return (
           <View style={styles.container}>
                <View style={styles.form}>
-                    <Text variant="titleLarge">Vous avez déjà un compte ?</Text>
-                    <Text variant="titleMedium">Connectez-vous !</Text>
-                    <TextInput style={styles.input} label="Email" value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
-                    <TextInput style={styles.input} label="Password" value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
+                    <Text variant="titleLarge">{t("login_title")}</Text>
+                    <Text variant="titleMedium">{t("login_subtitle")}</Text>
+                    <TextInput style={styles.input} placeholder={t("login_email_placeholder")} label={t("login_email_label")} value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
+                    <TextInput style={styles.input} placeholder={t("login_password_placeholder")} label={t("login_password_label")} value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
                     <Button icon="login" mode="contained" style={styles.login} onPress={() => signIn(loginInfo.email, loginInfo.password)}>
-                         Connexion
+                         {t("login_submit")}
                     </Button>
                </View>
                <View style={styles.buttons}>
                     <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/forgot-password")}>
-                         Mot de passe oublié
+                         {t("forgot_password_btn")}
                     </Button>
                     <Text variant="titleLarge" style={styles.noAccount}>
-                         Pas de compte ? Aucun problème
+                         {t("login_noaccount")}
                     </Text>
                     <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signin")}>
-                         Je file me créer un compte
+                         {t("login_signup_btn")}
                     </Button>
                </View>
           </View>

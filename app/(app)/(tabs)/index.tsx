@@ -1,11 +1,14 @@
 import { Text } from "react-native-paper"
 import React from "react"
 import { StyleSheet, View } from "react-native"
+import { getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Index() {
+     const t = getTranslator()
+
      return (
           <View style={styles.container}>
-               <Text variant="titleLarge">Bonjour et bienvenue sur Larguez les amarres !</Text>
+               <Text variant="titleLarge">{t("home_title")}</Text>
           </View>
      )
 }

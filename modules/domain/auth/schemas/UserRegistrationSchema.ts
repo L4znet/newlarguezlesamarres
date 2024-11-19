@@ -1,24 +1,39 @@
 import { z } from "zod"
+import { getTranslator } from "@/modules/context/TranslationContext"
+
+const t = getTranslator()
 
 export const UserRegistrationSchema = z
      .object({
-          email: z.string().email("L'adresse email est invalide"),
-          password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-          confirmPassword: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-          firstname: z.string().min(1, "Le prénom est requis"),
-          lastname: z.string().min(1, "Le nom de famille est requis"),
-          username: z.string().min(1, "Le nom d'utilisateur est requis"),
+          email: z
+               .string()
+               .email(t("validation_email_invalid"))
+               .transform((email) => email.trim().toLowerCase()),
+          password: z.string().min(8, t("validation_password_too_short")),
+          confirmPassword: z.string().min(8, t("validation_password_too_short")),
+          firstname: z
+               .string()
+               .min(1, t("validation_firstname_required"))
+               .transform((val) => val.trim()),
+          lastname: z
+               .string()
+               .min(1, t("validation_lastname_required"))
+               .transform((val) => val.trim()),
+          username: z
+               .string()
+               .min(1, t("validation_username_required"))
+               .transform((val) => val.trim()),
      })
      .refine((data) => data.password === data.confirmPassword, {
-          message: "Les mots de passe ne correspondent pas",
+          message: t("validation_passwords_do_not_match"),
           path: ["confirmPassword"],
      })
      .transform((data) => ({
+          email: data.email,
           password: data.password,
           firstname: data.firstname,
           lastname: data.lastname,
           username: data.username,
-          email: data.email,
      }))
 
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>
