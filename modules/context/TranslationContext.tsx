@@ -11,7 +11,7 @@ const translationFiles = {
 export type Translations = typeof translationFiles.en
 
 export interface TranslationContextProps {
-     t: (key: Extract<keyof Translations, string>) => string
+     t: (key: string | number | symbol) => string
      locale: Locale
      setLocale: (locale: Locale) => void
      translateErrors: (errors: ValidationError[]) => string[]
@@ -22,9 +22,14 @@ export const TranslationContext = createContext<TranslationContextProps | null>(
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
      const [locale, setLocale] = useState<Locale>("fr")
 
-     const t = (key: Extract<keyof Translations, string>): string => {
+     const t = (key: string | number | symbol): string => {
+          if (typeof key !== "string") {
+               console.warn(`Invalid translation key: ${String(key)}`)
+               return String(key) // Retourne la clé convertie en chaîne si ce n'est pas une chaîne
+          }
+
           const translations: Translations = translationFiles[locale]
-          const value = translations[key]
+          const value = translations[key as keyof Translations]
 
           if (typeof value === "object" && value.translation) {
                return value.translation
@@ -39,7 +44,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
      }
 
      const translateErrors = (errors: ValidationError[]): string[] => {
-          return translateValidationErrors(errors)
+          return translateValidationErrors(errors, t)
      }
 
      const value = useMemo(

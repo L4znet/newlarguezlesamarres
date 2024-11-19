@@ -1,55 +1,114 @@
 import React from "react"
-import { Redirect, Stack } from "expo-router"
+import { Stack } from "expo-router"
 import { useColorScheme } from "react-native"
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider, MD3Theme } from "react-native-paper"
-import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from "@react-navigation/native"
+import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider as NavigationThemeProvider, Theme } from "@react-navigation/native"
 import merge from "deepmerge"
 import { Colors } from "@/constants/Colors"
 import { AuthProvider } from "@/modules/context/AuthProvider"
 import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 import { TranslationProvider } from "@/modules/context/TranslationContext"
 
-// Définir les thèmes personnalisés
-const customDarkTheme: MD3Theme = {
+// Création des thèmes personnalisés pour React Native Paper
+const customDarkPaperTheme: MD3Theme = {
      ...MD3DarkTheme,
-     colors: Colors.dark,
+     colors: {
+          ...MD3DarkTheme.colors,
+          ...Colors.dark,
+     },
      fonts: {
           ...MD3DarkTheme.fonts,
-          regular: { ...MD3DarkTheme.fonts.bodyMedium, fontWeight: "400" as const },
-          medium: { ...MD3DarkTheme.fonts.titleMedium, fontWeight: "500" as const },
-          bold: { ...MD3DarkTheme.fonts.headlineMedium, fontWeight: "700" as const },
-          heavy: { ...MD3DarkTheme.fonts.bodyLarge, fontWeight: "900" as const },
+          bodyMedium: { ...MD3DarkTheme.fonts.bodyMedium, fontWeight: "400" as const },
+          titleMedium: { ...MD3DarkTheme.fonts.titleMedium, fontWeight: "500" as const },
+          headlineMedium: { ...MD3DarkTheme.fonts.headlineMedium, fontWeight: "700" as const },
+          bodyLarge: { ...MD3DarkTheme.fonts.bodyLarge, fontWeight: "900" as const },
      },
 }
 
-const customLightTheme: MD3Theme = {
+const customLightPaperTheme: MD3Theme = {
      ...MD3LightTheme,
-     colors: Colors.light,
+     colors: {
+          ...MD3LightTheme.colors,
+          ...Colors.light,
+     },
      fonts: {
           ...MD3LightTheme.fonts,
-          regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" as const },
-          medium: { ...MD3LightTheme.fonts.titleMedium, fontWeight: "500" as const },
-          bold: { ...MD3LightTheme.fonts.headlineMedium, fontWeight: "700" as const },
-          heavy: { ...MD3LightTheme.fonts.bodyLarge, fontWeight: "900" as const },
+          bodyMedium: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" as const },
+          titleMedium: { ...MD3LightTheme.fonts.titleMedium, fontWeight: "500" as const },
+          headlineMedium: { ...MD3LightTheme.fonts.headlineMedium, fontWeight: "700" as const },
+          bodyLarge: { ...MD3LightTheme.fonts.bodyLarge, fontWeight: "900" as const },
      },
 }
 
-// Fusionner les thèmes avec react-navigation
+// Adapter les thèmes de React Navigation pour qu'ils soient compatibles
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
      reactNavigationLight: NavigationDefaultTheme,
      reactNavigationDark: NavigationDarkTheme,
 })
 
-const CombinedLightTheme: MD3Theme = merge(LightTheme, customLightTheme)
-const CombinedDarkTheme: MD3Theme = merge(DarkTheme, customDarkTheme)
+// Fusionner les thèmes de Navigation avec les couleurs personnalisées
+const CombinedLightTheme: Theme = {
+     ...LightTheme,
+     colors: {
+          ...LightTheme.colors,
+          ...customLightPaperTheme.colors,
+     },
+     dark: LightTheme.dark,
+     fonts: {
+          regular: {
+               fontFamily: "System",
+               fontWeight: "400" as const,
+          },
+          medium: {
+               fontFamily: "System",
+               fontWeight: "500" as const,
+          },
+          bold: {
+               fontFamily: "System",
+               fontWeight: "700" as const,
+          },
+          heavy: {
+               fontFamily: "System",
+               fontWeight: "900" as const,
+          },
+     },
+}
+
+const CombinedDarkTheme: Theme = {
+     ...DarkTheme,
+     colors: {
+          ...DarkTheme.colors,
+          ...customDarkPaperTheme.colors,
+     },
+     dark: DarkTheme.dark,
+     fonts: {
+          regular: {
+               fontFamily: "System",
+               fontWeight: "400" as const,
+          },
+          medium: {
+               fontFamily: "System",
+               fontWeight: "500" as const,
+          },
+          bold: {
+               fontFamily: "System",
+               fontWeight: "700" as const,
+          },
+          heavy: {
+               fontFamily: "System",
+               fontWeight: "900" as const,
+          },
+     },
+}
 
 export default function RootLayout() {
      const colorScheme = useColorScheme()
-     const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
+     const paperTheme = colorScheme === "dark" ? customDarkPaperTheme : customLightPaperTheme
+     const navigationTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
 
      return (
           <PaperProvider theme={paperTheme}>
-               <ThemeProvider value={paperTheme}>
+               <NavigationThemeProvider value={navigationTheme}>
                     <TranslationProvider>
                          <FlashMessageProvider>
                               <AuthProvider>
@@ -64,7 +123,7 @@ export default function RootLayout() {
                               </AuthProvider>
                          </FlashMessageProvider>
                     </TranslationProvider>
-               </ThemeProvider>
+               </NavigationThemeProvider>
           </PaperProvider>
      )
 }
