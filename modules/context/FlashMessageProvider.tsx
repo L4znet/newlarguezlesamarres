@@ -1,37 +1,51 @@
-import React, { createContext, useContext, useState, ReactNode } from "react"
-
-type FlashMessage = {
-     type: "error" | "success" | "info"
-     message: string
-}
+import React, { createContext, useContext, ReactNode } from "react"
+import FlashMessage, { showMessage, MessageType } from "react-native-flash-message"
+import { useTranslation } from "@/modules/context/TranslationContext"
+import { mapMessage } from "@/modules/utils/messageMapper"
 
 type FlashMessageContextType = {
-     flashMessage: FlashMessage | null
-     setFlashMessage: (type: "error" | "success" | "info", message: string) => void
-     clearFlashMessage: () => void
+     showTranslatedFlashMessage: (type: MessageType, messageOrMessages: { title: string; description: string } | Array<{ title: string; description: string }>, locale?: string) => void
 }
 
 const FlashMessageContext = createContext<FlashMessageContextType | null>(null)
 
-export const FlashMessageProvider = ({ children }: { children: ReactNode }) => {
-     const [flashMessage, setFlashMessageState] = useState<FlashMessage | null>(null)
+export const FlashMessageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+     const { locale } = useTranslation()
 
-     const setFlashMessage = (type: "error" | "success" | "info", message: string) => {
-          setFlashMessageState({ type, message })
-          console.log("flashMessage", flashMessage)
-          setTimeout(() => {
-               clearFlashMessage()
-          }, 3000)
+     const showTranslatedFlashMessage = (type: MessageType, messageOrMessages: { title: string; description: string } | Array<{ title: string; description: string }>) => {
+          if (!Array.isArray(messageOrMessages)) {
+               const { description } = messageOrMessages
+               const translatedMessage = mapMessage(description, type, locale)
+
+               showMessage({
+                    message: translatedMessage.title,
+                    description: translatedMessage.description,
+                    type: type,
+               })
+
+               return
+          }
+
+          messageOrMessages.forEach(({ description }) => {
+               const translatedMessage = mapMessage(description, type, locale)
+
+               showMessage({
+                    message: translatedMessage.title,
+                    description: translatedMessage.description,
+                    type: type,
+               })
+          })
      }
 
-     const clearFlashMessage = () => {
-          setFlashMessageState(null)
-     }
-
-     return <FlashMessageContext.Provider value={{ flashMessage, setFlashMessage, clearFlashMessage }}>{children}</FlashMessageContext.Provider>
+     return (
+          <FlashMessageContext.Provider value={{ showTranslatedFlashMessage }}>
+               {children}
+               <FlashMessage position="top" />
+          </FlashMessageContext.Provider>
+     )
 }
 
-export const useFlashMessage = () => {
+export const useFlashMessage = (): FlashMessageContextType => {
      const context = useContext(FlashMessageContext)
      if (!context) {
           throw new Error("useFlashMessage must be used within a FlashMessageProvider")

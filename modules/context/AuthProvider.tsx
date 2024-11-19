@@ -1,10 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from "react"
+// AuthProvider.tsx
+import React, { createContext, useContext, useEffect, useState } from "react"
 import AuthEntity from "../domain/auth/AuthEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
 import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
+import { parseObj } from "sucrase/dist/types/parser/traverser/expression"
 
 type AuthContextType = {
      user: AuthEntity | null
@@ -17,56 +19,38 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const [user, setUser] = useState<AuthEntity | null>(null)
-     const { setFlashMessage } = useFlashMessage()
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
-     /**
-      * Sign up the user
-      *
-      * @param email
-      * @param password
-      * @param confirmPassword
-      * @param firstname
-      * @param lastname
-      * @param username
-      */
      const signUp = async (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => {
           try {
-               const user = await signupUseCase({ email, password, confirmPassword, firstname, lastname, username })
+               const user = await signupUseCase({ email, password, confirmPassword, firstname, lastname, username }, showTranslatedFlashMessage)
                setUser(user ?? null)
-               setFlashMessage("success", "Registration successful!")
+               if (user) {
+                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User successfully registered" })
+               }
           } catch (error: any) {
-               setFlashMessage("error", error.message)
-               throw new Error(error.message)
+               //showTranslatedFlashMessage("danger", [{ title: "flash_title_danger", description: error.message }])
+               //throw new Error(error.message)
           }
      }
 
-     /**
-      * Login the user
-      *
-      * @param email
-      * @param password
-      */
      const signIn = async (email: string, password: string) => {
           try {
                const user = await loginUseCase(email, password)
                setUser(user)
-               setFlashMessage("success", "Sign in successful!")
+               showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
           } catch (error: any) {
-               setFlashMessage("error", error.message)
+               showTranslatedFlashMessage("success", { title: "flash_title_danger", description: error.message })
           }
      }
 
-     /**
-      * Logout the user
-      *
-      */
      const signOut = async () => {
           try {
                await logoutUseCase()
                setUser(null)
-               setFlashMessage("success", "You have successfully signed out.")
+               showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
-               setFlashMessage("error", error.message)
+               showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
           }
      }
 
@@ -78,7 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                          setUser(currentUser)
                     }
                } catch (error: any) {
-                    setFlashMessage("error", error.message)
+                    showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
                }
           }
           fetchCurrentUser()

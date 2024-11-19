@@ -5,9 +5,6 @@ export const getCurrentUserUseCase = async () => {
      try {
           const user = await authRepository.getCurrentUser()
 
-          if (!user) {
-               throw new Error("No user is currently logged in")
-          }
           return AuthEntity.fromSupabaseUser({
                lastname: user.lastname,
                firstname: user.firstname,

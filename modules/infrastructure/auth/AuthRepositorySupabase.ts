@@ -1,6 +1,7 @@
 // AuthRepositorySupabase.ts - Implementation of AuthRepository
 import { createClient, PostgrestSingleResponse } from "@supabase/supabase-js"
 import AuthRepository from "../../domain/auth/AuthRepository"
+import { mapMessage } from "@/modules/utils/messageMapper"
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ""
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || ""
@@ -10,21 +11,16 @@ interface Profile {
      lastname: string
      username: string
      email: string
+     user_id: string
 }
 
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string) {
-          const { data: user, error } = await supabase.auth.signUp({ email, password })
-          if (error) {
-               throw new Error(error.message)
+          const { data: user, error: errorAuth } = await supabase.auth.signUp({ email, password })
+
+          if (errorAuth) {
+               throw new Error(mapMessage(errorAuth.message))
           }
-
-          const { error: profileError } = await this.updateProfile(lastname, firstname, username)
-
-          if (profileError) {
-               throw new Error(profileError.message)
-          }
-
           return user
      }
 
@@ -45,9 +41,6 @@ class AuthRepositorySupabase implements AuthRepository {
 
      async getCurrentUser() {
           const { data: user, error: userError } = await supabase.auth.getUser()
-          if (userError || !user) {
-               throw new Error("No user is currently logged in")
-          }
 
           const { data: profile, error: profileError }: PostgrestSingleResponse<Profile> = await supabase.from("profiles").select("*").eq("user_id", user.user.id).single()
 
@@ -65,13 +58,16 @@ class AuthRepositorySupabase implements AuthRepository {
           }
      }
 
-     async getSession() {
-          return supabase.auth.getSession()
-     }
+     async updateProfile(user_id: string, lastname: string, firstname: string, username: string) {
+          const { data: user, error: userError } = await supabase.auth.getUser()
+          if (userError || !user) {
+               throw new Error("Problème lors de la récupération de l'utilisateur")
+          }
 
-     async updateProfile(lastname: string, firstname: string, username: string) {
-          const { data, error } = await supabase.from("profiles").upsert({ lastname, firstname, username })
-          return { data, error }
+          const { error } = await supabase.from("profiles").upsert({ user_id, lastname, firstname, username })
+          if (error) {
+               throw new Error(error.message)
+          }
      }
 }
 

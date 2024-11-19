@@ -5,11 +5,11 @@ import TabBar from "@/modules/components/TabBar"
 import { useAuth } from "@/modules/context/AuthProvider"
 
 export default function Layout() {
-     const { session } = useAuth()
+     const { user } = useAuth()
      useEffect(() => {
-          if (!session) router.replace("/(app)/(auth)")
-     }, [session])
-
+          console.log("user", user)
+          if (!user) router.replace("/(app)/(auth)")
+     }, [user])
      return (
           <Tabs
                tabBar={(props) => <TabBar {...props} />}

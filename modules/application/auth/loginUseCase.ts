@@ -6,7 +6,6 @@ export const loginUseCase = async (email: string, password: string) => {
           message: string
           code: string
      }
-
      try {
           const user = await authRepository.signIn(email, password)
           return AuthEntity.fromSupabaseUser(user)

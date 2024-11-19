@@ -18,10 +18,10 @@ export default function Index() {
                     </Text>
                </View>
                <View style={styles.buttons}>
-                    <Button style={styles.button} mode="contained" onPress={() => router.replace("/(auth)/signin")}>
+                    <Button style={styles.button} mode="contained" onPress={() => router.replace("/(app)/(auth)/signin")}>
                          Connexion
                     </Button>
-                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(auth)/signup")}>
+                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signup")}>
                          Inscription
                     </Button>
                </View>

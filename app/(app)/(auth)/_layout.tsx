@@ -5,10 +5,10 @@ import AuthTabBar from "@/modules/components/AuthTabBar"
 import { useAuth } from "@/modules/context/AuthProvider"
 
 export default function Layout() {
-     const { session } = useAuth()
+     const { user } = useAuth()
      useEffect(() => {
-          if (session) router.replace("/(app)/(tabs)")
-     }, [session])
+          if (user) router.replace("/(app)/(tabs)")
+     }, [user])
 
      interface Route {
           key: string

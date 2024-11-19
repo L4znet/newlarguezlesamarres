@@ -11,7 +11,7 @@ export default function Signup() {
           username: "cyrlah",
           email: "charly.escalona1@gmail.com",
           password: "testtesttesttest",
-          confirmPassword: "test",
+          confirmPassword: "testtesttesttest",
      })
 
      const [error, setError] = useState<string | null>(null)

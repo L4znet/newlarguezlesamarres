@@ -1,0 +1,66 @@
+{
+  "flash_title_danger": "Error",
+  "flash_title_success": "Success",
+  "flash_title_warning": "Warning",
+  "flash_title_info": "Information",
+  "flash_title_default": "Information",
+  "flash_title_none": "Information",
+
+  "auth_api_error_user_already_registered": {
+    "supabase_message": "User already registered",
+    "translation": "You already have an account with this email address."
+  },
+  "auth_api_error_email_not_confirmed": {
+    "supabase_message": "Email not confirmed",
+    "translation": "The email address has not been confirmed."
+  },
+  "auth_api_error_invalid_credentials": {
+    "supabase_message": "Invalid login credentials",
+    "translation": "Invalid login credentials."
+  },
+
+  "auth_api_success_user_registered": {
+    "supabase_message": "User successfully registered",
+    "translation": "Registration successful."
+  },
+  "auth_api_success_password_reset_sent": {
+    "supabase_message": "Password reset email sent",
+    "translation": "A password reset email has been sent."
+  },
+  "auth_api_success_email_confirmed": {
+    "supabase_message": "Email confirmed successfully",
+    "translation": "The email address has been successfully confirmed."
+  },
+  "auth_api_success_password_reset": {
+    "supabase_message": "Password successfully reset",
+    "translation": "Password successfully reset."
+  },
+  "auth_api_success_password_changed": {
+    "supabase_message": "Password successfully changed",
+    "translation": "Password successfully changed."
+  },
+  "auth_api_success_email_changed": {
+    "supabase_message": "Email successfully changed",
+    "translation": "Email successfully changed."
+  },
+  "auth_api_success_user_updated": {
+    "supabase_message": "User profile updated",
+    "translation": "The user profile has been updated successfully."
+  },
+  "auth_api_success_user_deleted": {
+    "supabase_message": "User account deleted",
+    "translation": "The user account has been deleted successfully."
+  },
+  "auth_api_success_email_sent": {
+    "supabase_message": "Email sent successfully",
+    "translation": "The email has been sent successfully."
+  },
+  "auth_api_success_user_logged_out": {
+    "supabase_message": "User logged out successfully",
+    "translation": "You have been logged out successfully."
+  },
+  "auth_api_success_user_logged_in": {
+    "supabase_message": "User logged in successfully",
+    "translation": "You are now logged in."
+  }
+}

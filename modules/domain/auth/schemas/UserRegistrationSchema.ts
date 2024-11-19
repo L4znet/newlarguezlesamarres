@@ -13,5 +13,12 @@ export const UserRegistrationSchema = z
           message: "Les mots de passe ne correspondent pas",
           path: ["confirmPassword"],
      })
+     .transform((data) => ({
+          password: data.password,
+          firstname: data.firstname,
+          lastname: data.lastname,
+          username: data.username,
+          email: data.email,
+     }))
 
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>
