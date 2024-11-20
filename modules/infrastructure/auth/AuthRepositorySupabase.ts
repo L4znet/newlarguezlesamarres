@@ -1,4 +1,3 @@
-// AuthRepositorySupabase.ts - Implementation of AuthRepository
 import { createClient, PostgrestSingleResponse, AuthError } from "@supabase/supabase-js"
 import AuthRepository from "../../domain/auth/AuthRepository"
 
@@ -11,10 +10,11 @@ interface Profile {
      lastname: string
      username: string
      email: string
+     avatar_url?: string
 }
 
 class AuthRepositorySupabase implements AuthRepository {
-     async signUp(email: string, password: string, lastname: string, firstname: string, username: string) {
+     async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
           try {
                const { data: user, error } = await supabase.auth.signUp({
                     email,
@@ -25,6 +25,7 @@ class AuthRepositorySupabase implements AuthRepository {
                               lastname,
                               username,
                               email,
+                              avatar_url,
                          },
                     },
                })
@@ -81,6 +82,7 @@ class AuthRepositorySupabase implements AuthRepository {
                lastname: profile.lastname,
                username: profile.username,
                email: user.user.email,
+               avatar_url: profile.avatar_url,
           }
      }
 

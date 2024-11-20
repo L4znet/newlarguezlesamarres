@@ -1,9 +1,10 @@
-// signupUseCase.test.ts
-
 import AuthRepositorySupabase from "@/modules/infrastructure/auth/AuthRepositorySupabase"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 
 jest.mock("@/modules/infrastructure/auth/AuthRepositorySupabase")
+jest.mock("@supabase/supabase-js", () => ({
+     createClient: jest.fn(),
+}))
 
 describe("Signup Use Case", () => {
      const mockShowTranslatedFlashMessage = jest.fn()
@@ -13,24 +14,24 @@ describe("Signup Use Case", () => {
      })
 
      it("should sign up successfully with valid data", async () => {
-          const mockUser = { email: "test@example.com", id: "user_123" }
+          const mockUser = { email: "charly2221@hotmail.fr", password: "password123", firstname: "John", lastname: "Doe", username: "johndoe", avatar_url: "https://example.com/avatar.jpg" }
           ;(AuthRepositorySupabase.signUp as jest.Mock).mockResolvedValue(mockUser)
 
           const result = await signupUseCase(
                {
-                    email: "test@example.com",
+                    email: "charly2221@hotmail.fr",
                     password: "password123",
                     confirmPassword: "password123",
                     firstname: "John",
                     lastname: "Doe",
                     username: "johndoe",
+                    avatar_url: "https://example.com/avatar.jpg",
                },
                mockShowTranslatedFlashMessage
           )
 
-          // Assert
           expect(result).toEqual(mockUser)
-          expect(AuthRepositorySupabase.signUp).toHaveBeenCalledWith("test@example.com", "password123", "Doe", "John", "johndoe")
+          expect(AuthRepositorySupabase.signUp).toHaveBeenCalledWith("charly2221@hotmail.fr", "password123", "John", "Doe", "johndoe", "https://example.com/avatar.jpg")
           expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("success", {
                title: "flash_title_success",
                description: "User successfully registered",

@@ -1,6 +1,5 @@
 export default class AuthEntity {
      constructor(
-          public id: string,
           public email: string,
           public firstname: string,
           public lastname: string,
@@ -8,6 +7,6 @@ export default class AuthEntity {
      ) {}
 
      static fromSupabaseUser(user: any): AuthEntity {
-          return new AuthEntity(user.id, user.email, user.firstname, user.lastname, user.username)
+          return new AuthEntity(user.email, user.firstname, user.lastname, user.username)
      }
 }

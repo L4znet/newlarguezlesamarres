@@ -32,8 +32,14 @@ yarn-error.*
 # local env files
 .env*.local
 .env
+.env.test
+
+# Jest setup with env variables
+jest.setup.ts
 
 # typescript
 *.tsbuildinfo
 
 app-example
+
+

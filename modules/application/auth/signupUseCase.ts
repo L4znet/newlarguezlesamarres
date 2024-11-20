@@ -11,6 +11,7 @@ export const signupUseCase = async (
           lastname: string
           username: string
           confirmPassword: string
+          avatar_url?: string
      },
      showTranslatedFlashMessage: (
           type: MessageType,
@@ -34,10 +35,10 @@ export const signupUseCase = async (
           return
      }
 
-     const { email, password, firstname, lastname, username } = parsedData.data
+     const { email, password, firstname, lastname, username, avatar_url } = parsedData.data
 
      try {
-          const { user, error } = await AuthRepositorySupabase.signUp(email, password, firstname, lastname, username)
+          const { user, error } = await AuthRepositorySupabase.signUp(email, password, firstname, lastname, username, avatar_url)
 
           if (error) {
                showTranslatedFlashMessage("danger", {
@@ -48,12 +49,18 @@ export const signupUseCase = async (
           }
 
           return AuthEntity.fromSupabaseUser(user)
-     } catch (error: any) {
-          console.dir(error)
+     } catch (error: unknown) {
+          let errorMessage = "Une erreur inattendue est survenue."
+
+          if (error instanceof Error) {
+               errorMessage = error.message
+          }
+
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",
-               description: error.message || "Une erreur inattendue est survenue.",
+               description: errorMessage,
           })
-          throw new Error(error.message)
+
+          throw new Error(errorMessage)
      }
 }
