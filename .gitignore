@@ -33,7 +33,7 @@ yarn-error.*
 .env*.local
 .env
 .env.test
-
+.env*.test
 # Jest setup with env variables
 ./jest.setup.ts
 jest.setup.ts
