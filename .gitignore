@@ -35,7 +35,7 @@ yarn-error.*
 .env.test
 
 # Jest setup with env variables
-jest.setup.ts
+./jest.setup.ts
 
 # typescript
 *.tsbuildinfo
