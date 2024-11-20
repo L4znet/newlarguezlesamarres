@@ -11,7 +11,6 @@ interface Profile {
      lastname: string
      username: string
      email: string
-     user_id: string
 }
 
 class AuthRepositorySupabase implements AuthRepository {
@@ -20,27 +19,18 @@ class AuthRepositorySupabase implements AuthRepository {
                const { data: user, error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                         data: {
+                              firstname,
+                              lastname,
+                              username,
+                              email,
+                         },
+                    },
                })
 
                if (error) {
                     throw new Error(error.message)
-               }
-
-               if (!user || !user.user) {
-                    throw new Error("Erreur lors de la création de l'utilisateur.")
-               }
-
-               const { error: profileError } = await supabase.from("profiles").insert([
-                    {
-                         email,
-                         firstname,
-                         lastname,
-                         username,
-                    },
-               ])
-
-               if (profileError) {
-                    throw new Error(profileError.message)
                }
 
                return { user, error }
@@ -101,13 +91,13 @@ class AuthRepositorySupabase implements AuthRepository {
           }
      }
 
-     async updateProfile(user_id: string, lastname: string, firstname: string, username: string) {
+     async updateProfile(lastname: string, firstname: string, username: string) {
           const { data: user, error: userError } = await supabase.auth.getUser()
           if (userError || !user) {
                throw new Error("Problème lors de la récupération de l'utilisateur courant.")
           }
 
-          const { error } = await supabase.from("profiles").upsert({ user_id, lastname, firstname, username })
+          const { error } = await supabase.from("profiles").upsert({ lastname, firstname, username })
 
           if (error) {
                throw new Error(`Erreur lors de la mise à jour du profil : ${error.message}`)
