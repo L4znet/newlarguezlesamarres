@@ -17,7 +17,31 @@ interface Profile {
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string) {
           try {
-               const { data: user, error } = await supabase.auth.signUp({ email, password })
+               const { data: user, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+               })
+
+               if (error) {
+                    throw new Error(error.message)
+               }
+
+               if (!user || !user.user) {
+                    throw new Error("Erreur lors de la création de l'utilisateur.")
+               }
+
+               const { error: profileError } = await supabase.from("profiles").insert([
+                    {
+                         email,
+                         firstname,
+                         lastname,
+                         username,
+                    },
+               ])
+
+               if (profileError) {
+                    throw new Error(profileError.message)
+               }
 
                return { user, error }
           } catch (error: unknown) {

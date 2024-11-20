@@ -11,8 +11,8 @@ export default function Signup() {
           firstname: "Charly",
           username: "cyrlah",
           email: "charly.escalona1@gmail.com",
-          password: "s",
-          confirmPassword: "t",
+          password: "testtesttesttest",
+          confirmPassword: "testtesttesttest",
      })
 
      const { signUp } = useAuth()
