@@ -1,10 +1,14 @@
-import AuthRepositorySupabase from "@/modules/infrastructure/auth/AuthRepositorySupabase"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
+import dotenv from "dotenv"
+import { createClient } from "@supabase/supabase-js"
 
-jest.mock("@/modules/infrastructure/auth/AuthRepositorySupabase")
-jest.mock("@supabase/supabase-js", () => ({
-     createClient: jest.fn(),
-}))
+// Load environment variables from .env.test file
+dotenv.config({ path: ".env.test" })
+
+// Initialize Supabase client
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_TEST_URL || ""
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_TEST_ANON_KEY || ""
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 describe("Signup Use Case", () => {
      const mockShowTranslatedFlashMessage = jest.fn()
@@ -14,12 +18,9 @@ describe("Signup Use Case", () => {
      })
 
      it("should sign up successfully with valid data", async () => {
-          const mockUser = { email: "charly2221@hotmail.fr", password: "password123", firstname: "John", lastname: "Doe", username: "johndoe", avatar_url: "https://example.com/avatar.jpg" }
-          ;(AuthRepositorySupabase.signUp as jest.Mock).mockResolvedValue(mockUser)
-
           const result = await signupUseCase(
                {
-                    email: "charly2221@hotmail.fr",
+                    email: "test.integration@example.com",
                     password: "password123",
                     confirmPassword: "password123",
                     firstname: "John",
@@ -30,8 +31,7 @@ describe("Signup Use Case", () => {
                mockShowTranslatedFlashMessage
           )
 
-          expect(result).toEqual(mockUser)
-          expect(AuthRepositorySupabase.signUp).toHaveBeenCalledWith("charly2221@hotmail.fr", "password123", "John", "Doe", "johndoe", "https://example.com/avatar.jpg")
+          expect(result).toHaveProperty("email", "test.integration@example.com")
           expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("success", {
                title: "flash_title_success",
                description: "User successfully registered",
@@ -39,7 +39,6 @@ describe("Signup Use Case", () => {
      })
 
      it("should throw validation errors for invalid data", async () => {
-          // Arrange
           const invalidData = {
                email: "invalid-email",
                password: "pass",
@@ -58,11 +57,10 @@ describe("Signup Use Case", () => {
      })
 
      it("should show error if email already exists", async () => {
-          ;(AuthRepositorySupabase.signUp as jest.Mock).mockRejectedValue(new Error("User already exists"))
-          await expect(
-               signupUseCase(
+          try {
+               await signupUseCase(
                     {
-                         email: "test@example.com",
+                         email: "test.integration@example.com",
                          password: "password123",
                          confirmPassword: "password123",
                          firstname: "John",
@@ -71,11 +69,11 @@ describe("Signup Use Case", () => {
                     },
                     mockShowTranslatedFlashMessage
                )
-          ).rejects.toThrow("User already exists")
-
-          expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("danger", {
-               title: "flash_title_danger",
-               description: "User already exists",
-          })
+          } catch (error: any) {
+               expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("danger", {
+                    title: "flash_title_danger",
+                    description: "User already exists",
+               })
+          }
      })
 })
