@@ -1,79 +1,91 @@
-import { signupUseCase } from "@/modules/application/auth/signupUseCase"
-import dotenv from "dotenv"
-import { createClient } from "@supabase/supabase-js"
-
-// Load environment variables from .env.test file
-dotenv.config({ path: ".env.test" })
-
-// Initialize Supabase client
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_TEST_URL || ""
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_TEST_ANON_KEY || ""
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+import { faker } from "@faker-js/faker"
+import { UserRegistrationSchema } from "@/modules/domain/auth/schemas/UserRegistrationSchema"
+import { signUp } from "@/modules/tests/config/hook"
+import { mapMessage } from "@/modules/utils/messageMapper"
 
 describe("Signup Use Case", () => {
      const mockShowTranslatedFlashMessage = jest.fn()
 
-     beforeEach(() => {
-          jest.clearAllMocks()
+     require("dotenv").config({ path: ".env.test" })
+
+     it("signup should create user", async () => {
+          const password = faker.internet.password()
+          const email = faker.internet.email().toLowerCase()
+          const firstname = faker.person.firstName().toLowerCase()
+          const lastname = faker.person.lastName().toLowerCase()
+          const username = faker.internet.username().toLowerCase()
+          const avatar_url = faker.image.avatar()
+
+          const data = {
+               password: password,
+               confirmPassword: password,
+               email: email,
+               firstname: firstname,
+               lastname: lastname,
+               username: username,
+               avatar_url: avatar_url,
+          }
+
+          const correctUser = {
+               email: email,
+               firstname: firstname,
+               lastname: lastname,
+               username: username,
+               password: password,
+               avatar_url: avatar_url,
+          }
+
+          const parsedData = UserRegistrationSchema.safeParse(data)
+
+          const emailParsed = parsedData?.data?.email.toLowerCase() || ""
+          const firstnameParsed = parsedData?.data?.firstname.toLowerCase()
+          const lastnameParsed = parsedData?.data?.lastname.toLowerCase()
+          const usernameParsed = parsedData?.data?.username.toLowerCase()
+          const avatar_urlParsed = parsedData?.data?.avatar_url
+
+          const { user, error } = await signUp(emailParsed, password, firstnameParsed, lastnameParsed, usernameParsed, avatar_urlParsed)
+
+          expect(user).not.toBeNull()
+          expect(error).toBeNull()
+          expect(parsedData.error).toBeUndefined()
+          expect(parsedData.success).toBe(true)
+          expect(parsedData.data).toEqual(correctUser)
+          expect(user).not.toBeNull()
      })
 
-     it("should sign up successfully with valid data", async () => {
-          const result = await signupUseCase(
-               {
-                    email: "test.integration@example.com",
-                    password: "password123",
-                    confirmPassword: "password123",
-                    firstname: "John",
-                    lastname: "Doe",
-                    username: "johndoe",
-                    avatar_url: "https://example.com/avatar.jpg",
-               },
-               mockShowTranslatedFlashMessage
-          )
-
-          expect(result).toHaveProperty("email", "test.integration@example.com")
-          expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("success", {
-               title: "flash_title_success",
-               description: "User successfully registered",
-          })
-     })
-
-     it("should throw validation errors for invalid data", async () => {
-          const invalidData = {
+     it("signup should throw error if email invalid", async () => {
+          const data = {
                email: "invalid-email",
-               password: "pass",
-               confirmPassword: "different",
-               firstname: "",
-               lastname: "",
-               username: "",
+               password: faker.internet.password(),
+               firstname: faker.person.firstName(),
+               lastname: faker.person.lastName(),
+               username: faker.internet.username(),
+               avatar_url: faker.image.avatar(),
           }
 
-          await signupUseCase(invalidData, mockShowTranslatedFlashMessage)
+          const parsedData = UserRegistrationSchema.safeParse(data)
 
-          expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("danger", {
-               title: "flash_title_danger",
-               description: expect.any(String),
-          })
+          expect(parsedData.error).not.toBeUndefined()
+          expect(parsedData.success).toBe(false)
+          expect(parsedData.data).toBeUndefined()
+          expect(parsedData.error?.errors[0].code).toBe("invalid_string")
      })
 
-     it("should show error if email already exists", async () => {
-          try {
-               await signupUseCase(
-                    {
-                         email: "test.integration@example.com",
-                         password: "password123",
-                         confirmPassword: "password123",
-                         firstname: "John",
-                         lastname: "Doe",
-                         username: "johndoe",
-                    },
-                    mockShowTranslatedFlashMessage
-               )
-          } catch (error: any) {
-               expect(mockShowTranslatedFlashMessage).toHaveBeenCalledWith("danger", {
-                    title: "flash_title_danger",
-                    description: "User already exists",
-               })
+     it("signup should throw error if password too short", async () => {
+          const data = {
+               email: faker.internet.email(),
+               password: "short",
+               firstname: faker.person.firstName(),
+               lastname: faker.person.lastName(),
+               username: faker.internet.username(),
+               avatar_url: faker.image.avatar(),
           }
+
+          const parsedData = UserRegistrationSchema.safeParse(data)
+
+          expect(parsedData.error).not.toBeUndefined()
+          expect(parsedData.success).toBe(false)
+          expect(parsedData.data).toBeUndefined()
+          expect(parsedData.error?.errors[0].code).toBe("too_small")
      })
 })

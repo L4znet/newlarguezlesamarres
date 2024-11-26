@@ -43,9 +43,9 @@ export const signupUseCase = async (
           if (error) {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_danger",
-                    description: error.message,
+                    description: error,
                })
-               throw new Error(error.message)
+               throw new Error(error)
           }
 
           return AuthEntity.fromSupabaseUser(user)

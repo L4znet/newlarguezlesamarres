@@ -1,4 +1,3 @@
-// AuthProvider.tsx
 import React, { createContext, useContext, useEffect, useState } from "react"
 import AuthEntity from "../domain/auth/AuthEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
