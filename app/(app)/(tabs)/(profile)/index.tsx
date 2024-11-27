@@ -5,7 +5,7 @@ import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
 
-export default function Profile() {
+export default function Index() {
      const { signOut } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)

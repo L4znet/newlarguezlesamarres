@@ -25,12 +25,12 @@ export default function Signup() {
                <View style={styles.form}>
                     <Text variant="titleLarge">{t("register_title")}</Text>
                     <Text variant="titleMedium">{t("register_subtitle")}</Text>
-                    <TextInput style={styles.input} placeholder={t("register_lastname_placeholder")} label={t("register_email_label")} value={userInfo.lastname} onChangeText={(lastname) => setUserInfo({ ...userInfo, lastname })} />
-                    <TextInput style={styles.input} placeholder={t("register_firstname_placeholder")} label={t("register_lastname_label")} value={userInfo.firstname} onChangeText={(firstname) => setUserInfo({ ...userInfo, firstname })} />
-                    <TextInput style={styles.input} placeholder={t("register_username_placeholder")} label={t("register_firstname_label")} value={userInfo.username} onChangeText={(username) => setUserInfo({ ...userInfo, username })} />
-                    <TextInput style={styles.input} placeholder={t("register_email_placeholder")} label={t("register_email_label")} value={userInfo.email} onChangeText={(email) => setUserInfo({ ...userInfo, email })} />
-                    <TextInput style={styles.input} placeholder={t("register_password_placeholder")} label={t("register_password_label")} value={userInfo.password} onChangeText={(password) => setUserInfo({ ...userInfo, password })} secureTextEntry />
-                    <TextInput style={styles.input} placeholder={t("register_password_confirm_placeholder")} label={t("register_password_confirm_label")} value={userInfo.confirmPassword} onChangeText={(confirmPassword) => setUserInfo({ ...userInfo, confirmPassword })} secureTextEntry />
+                    <TextInput style={styles.input} placeholder={t("lastname_placeholder")} label={t("lastname_label")} value={userInfo.lastname} onChangeText={(lastname) => setUserInfo({ ...userInfo, lastname })} />
+                    <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userInfo.firstname} onChangeText={(firstname) => setUserInfo({ ...userInfo, firstname })} />
+                    <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userInfo.username} onChangeText={(username) => setUserInfo({ ...userInfo, username })} />
+                    <TextInput style={styles.input} placeholder={t("email_placeholder")} label={t("email_label")} value={userInfo.email} onChangeText={(email) => setUserInfo({ ...userInfo, email })} />
+                    <TextInput style={styles.input} placeholder={t("password_placeholder")} label={t("password_label")} value={userInfo.password} onChangeText={(password) => setUserInfo({ ...userInfo, password })} secureTextEntry />
+                    <TextInput style={styles.input} placeholder={t("password_confirm_placeholder")} label={t("password_confirm_label")} value={userInfo.confirmPassword} onChangeText={(confirmPassword) => setUserInfo({ ...userInfo, confirmPassword })} secureTextEntry />
                     <Button
                          icon="login"
                          mode="contained"

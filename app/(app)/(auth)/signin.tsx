@@ -23,8 +23,8 @@ export default function Signin() {
                <View style={styles.form}>
                     <Text variant="titleLarge">{t("login_title")}</Text>
                     <Text variant="titleMedium">{t("login_subtitle")}</Text>
-                    <TextInput style={styles.input} placeholder={t("login_email_placeholder")} label={t("login_email_label")} value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
-                    <TextInput style={styles.input} placeholder={t("login_password_placeholder")} label={t("login_password_label")} value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
+                    <TextInput style={styles.input} placeholder={t("email_placeholder")} label={t("email_label")} value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
+                    <TextInput style={styles.input} placeholder={t("password_placeholder")} label={t("password_label")} value={loginInfo.password} onChangeText={(password) => setLoginInfo({ ...loginInfo, password })} secureTextEntry />
                     <Button icon="login" mode="contained" style={styles.login} onPress={() => signIn(loginInfo.email, loginInfo.password)}>
                          {t("login_submit")}
                     </Button>
