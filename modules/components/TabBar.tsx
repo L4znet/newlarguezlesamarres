@@ -32,7 +32,7 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
 
      const handleTabPress = ({ route }: { route: Route }) => {
           const routeName = route.key.split("-")[0]
-          const routeToGo = routeName === "index" ? "/(tabs)" : `/(tabs)/${routeName}`
+          const routeToGo = routeName === "/(tabs)/(home)" ? "/(tabs)/(home)" : `/(tabs)/${routeName}`
           router.push(routeToGo as Href)
      }
 
@@ -45,13 +45,13 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
      }
 
      const getTabLabel = ({ route }: { route: Route }) => {
-          const labelKey = `bottom_bar_${route.name}`
-          return t(labelKey) ?? descriptors[route.key]?.options?.tabBarLabel ?? descriptors[route.key]?.options?.title ?? route.title ?? route.name
+          const descriptor = descriptors[route.key]
+          return descriptor?.options?.tabBarLabel ?? descriptor?.options?.title ?? route.title ?? route.name
      }
 
      const filteredRoutes = state.routes.filter((route) => {
           if (!isUserLoggedIn) {
-               return !["settings"].includes(route.name)
+               return ![""].includes(route.name)
           }
           return true
      })

@@ -1,23 +1,27 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
-import { Button, Text } from "react-native-paper"
-import { useAuth } from "@/modules/context/AuthProvider"
-import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { Text } from "react-native-paper"
 import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Index() {
-     const { signOut } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-
+     let language = ""
+     switch (locale) {
+          case "en":
+               language = "English"
+               break
+          case "fr":
+               language = "Français"
+               break
+     }
      return (
           <View style={styles.container}>
-               <Text variant="titleLarge">Profile</Text>
-               <Text variant="titleMedium">Title Medium</Text>
-
-               <Button icon="login" mode="contained" onPress={signOut}>
-                    {t("logout_btn")}
-               </Button>
+               <Text variant="titleLarge">{t("settings_app_currently_in")}</Text>
+               <Text variant="titleLarge">{language}</Text>
+               <Text variant="titleMedium">{t("settings_change_language")}</Text>
+               <LanguageSwitcher />
           </View>
      )
 }

@@ -50,11 +50,12 @@
      "reset_password_new_password_confirm": "Confirm new password",
      "reset_password_submit": "Reset password",
 
-     "bottom_bar_index": "Home",
+     "bottom_bar_(home)/index": "Home",
      "bottom_bar_(profile)": "Profile",
      "bottom_bar_login": "Log in",
      "bottom_bar_register": "Sign up",
      "bottom_bar_feed": "Feed",
+     "bottom_bar_settings": "Settings",
 
      "login_btn": "Log in",
      "register_btn": "Sign up",
@@ -144,5 +145,15 @@
      "auth_api_success_user_logged_in": {
           "supabase_message": "User logged in successfully",
           "translation": "You are now logged in."
-     }
+     },
+
+     "drawer_setting_btn": "Settings",
+     "drawer_settings_change_language": "Change language",
+
+     "profile_title": "My profile",
+
+     "settings_title": "My settings",
+     "settings_language": "Change language",
+     "settings_app_currently_in": "The application is currently in",
+     "settings_change_language": "Wanna change it?"
 }

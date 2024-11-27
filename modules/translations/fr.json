@@ -50,8 +50,10 @@
      "reset_password_new_password_confirm": "Confirmez le nouveau mot de passe",
      "reset_password_submit": "Réinitialiser le mot de passe",
 
+     "bottom_bar_(home)/index": "Accueil",
      "bottom_bar_index": "Accueil",
      "bottom_bar_(profile)": "Profil",
+     "bottom_bar_settings": "Paramètres",
      "bottom_bar_login": "Connexion",
      "bottom_bar_register": "Inscription",
      "bottom_bar_feed": "Feed",
@@ -144,5 +146,15 @@
      "auth_api_success_user_logged_in": {
           "supabase_message": "User logged in successfully",
           "translation": "Vous êtes maintenant connecté"
-     }
+     },
+
+     "drawer_setting_btn": "Paramètres",
+     "drawer_settings_change_language": "Changer la langue",
+
+     "profile_title": "Mon profil",
+
+     "settings_title": "Mes paramètres",
+     "settings_language": "Changer la langue",
+     "settings_app_currently_in": "L'application est actuellement en",
+     "settings_change_language": "Pour changer la langue"
 }

@@ -31,7 +31,7 @@ const AuthTabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, ins
 
      const handleTabPress = ({ route }: { route: Route }) => {
           const routeName = route.key.split("-")[0]
-          const routeToGo = routeName === "index" ? "/(auth)" : `/(auth)/${routeName}`
+          const routeToGo = routeName === "/(auth)/(home)" ? "/(auth)/(home)" : `/(auth)/${routeName}`
           router.push(routeToGo as Href)
      }
 
