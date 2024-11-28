@@ -1,7 +1,7 @@
 import { AuthResponse, createClient, SupabaseClient, SupabaseClientOptions } from "@supabase/supabase-js"
 import dotenv from "dotenv"
 
-dotenv.config({ path: ".env.test" })
+require("dotenv").config()
 
 const createSupaClient = (url: string, key: string, options: SupabaseClientOptions<"public"> = {}): SupabaseClient => {
      options.auth = options.auth || {}
@@ -10,7 +10,7 @@ const createSupaClient = (url: string, key: string, options: SupabaseClientOptio
      return createClient(url, key, options)
 }
 
-const supabase = createSupaClient(process.env.EXPO_PUBLIC_SUPABASE_TEST_URL || "", process.env.EXPO_PUBLIC_SUPABASE_TEST_ANON_KEY || "")
+const supabase = createSupaClient(process.env.EXPO_PUBLIC_SUPABASE_TEST_URL, process.env.EXPO_PUBLIC_SUPABASE_TEST_ANON_KEY)
 
 const signUp = async (email: string, password: string, lastname: string | undefined, firstname: string | undefined, username: string | undefined, avatar_url?: string | undefined) => {
      try {

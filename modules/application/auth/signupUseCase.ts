@@ -38,7 +38,7 @@ export const signupUseCase = async (
      const { email, password, firstname, lastname, username, avatar_url } = parsedData.data
 
      try {
-          const { user, error } = await AuthRepositorySupabase.signUp(email, password, firstname, lastname, username, avatar_url)
+          const { user, error } = await AuthRepositorySupabase.signUp(email, password, lastname, firstname, username, avatar_url)
 
           if (error) {
                showTranslatedFlashMessage("danger", {
@@ -47,8 +47,11 @@ export const signupUseCase = async (
                })
                throw new Error(error)
           }
-
-          return AuthEntity.fromSupabaseUser(user)
+          if (user !== null && user?.user?.id) {
+               return AuthEntity.fromSupabaseUser({ userId: user.user.id })
+          } else {
+               return null
+          }
      } catch (error: unknown) {
           let errorMessage = "Une erreur inattendue est survenue."
 

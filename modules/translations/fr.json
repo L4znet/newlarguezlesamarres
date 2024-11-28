@@ -63,6 +63,7 @@
      "logout_btn": "Déconnexion",
      "forgot_password_btn": "Mot de passe oublié",
      "noaccount_btn": "Pas encore de compte ?",
+     "edit_profile_btn": "Modifier le profil",
 
      "flash_title_danger": "Erreur",
      "flash_title_success": "Succès",

@@ -1,12 +1,7 @@
 export default class AuthEntity {
-     constructor(
-          public email: string,
-          public firstname: string,
-          public lastname: string,
-          public username: string
-     ) {}
+     constructor(public userId: User) {}
 
-     static fromSupabaseUser(user: any): AuthEntity {
-          return new AuthEntity(user.email, user.firstname, user.lastname, user.username)
+     static fromSupabaseUser(userId: User): AuthEntity {
+          return new AuthEntity(userId)
      }
 }

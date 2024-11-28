@@ -5,6 +5,8 @@ import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
 import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
+import authRepository from "@/modules/infrastructure/auth/AuthRepositorySupabase"
+import { subscribeToAuthChangesUseCase } from "@/modules/application/auth/subscribeToAuthChangeUseCase"
 
 type AuthContextType = {
      user: AuthEntity | null
@@ -22,7 +24,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const signUp = async (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => {
           try {
                const user = await signupUseCase({ email, password, confirmPassword, firstname, lastname, username }, showTranslatedFlashMessage)
-               setUser(user ?? null)
                if (user) {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User successfully registered" })
                }
@@ -35,7 +36,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const signIn = async (email: string, password: string) => {
           try {
                const user = await loginUseCase({ email, password }, showTranslatedFlashMessage)
-               setUser(user ?? null)
                if (user) {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
                }
@@ -55,6 +55,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
      }
 
+     const [userId, setUserId] = useState<any>(null)
+
      useEffect(() => {
           const fetchCurrentUser = async () => {
                try {
@@ -66,7 +68,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
                }
           }
+
           fetchCurrentUser()
+
+          const unsubscribe = subscribeToAuthChangesUseCase((user) => {
+               if (user) {
+                    fetchCurrentUser()
+               } else {
+                    setUser(null)
+               }
+          })
+
+          // Cleanup subscription on unmount
+          return () => {
+               unsubscribe()
+          }
      }, [])
 
      return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>

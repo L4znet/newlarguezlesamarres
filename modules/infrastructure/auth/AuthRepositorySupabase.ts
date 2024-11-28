@@ -1,16 +1,12 @@
-import { createClient, PostgrestSingleResponse, AuthError } from "@supabase/supabase-js"
+import { createClient, PostgrestSingleResponse, AuthError, AuthChangeEvent, Session } from "@supabase/supabase-js"
 import AuthRepository from "../../domain/auth/AuthRepository"
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ""
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || ""
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-interface Profile {
-     firstname: string
-     lastname: string
-     username: string
-     email: string
-     avatar_url?: string
+export interface User {
+     userId: string
 }
 
 class AuthRepositorySupabase implements AuthRepository {
@@ -66,24 +62,21 @@ class AuthRepositorySupabase implements AuthRepository {
      }
 
      async getCurrentUser() {
-          const { data: user, error: userError } = await supabase.auth.getUser()
-          if (userError || !user) {
-               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
-          }
+          return new Promise((resolve, reject) => {
+               const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
+                    if (session?.user) {
+                         resolve({
+                              userId: session.user.id,
+                         })
+                    } else {
+                         reject(new Error("Erreur lors de la récupération de l'utilisateur courant."))
+                    }
+               })
 
-          const { data: profile, error: profileError }: PostgrestSingleResponse<Profile> = await supabase.from("profiles").select("*").eq("user_id", user.user.id).single()
-
-          if (profileError) {
-               throw new Error(`Erreur lors de la récupération du profil utilisateur : ${profileError.message}`)
-          }
-
-          return {
-               firstname: profile.firstname,
-               lastname: profile.lastname,
-               username: profile.username,
-               email: user.user.email,
-               avatar_url: profile.avatar_url,
-          }
+               return () => {
+                    subscription.subscription.unsubscribe()
+               }
+          })
      }
 
      async resetPassword(email: string) {
@@ -103,6 +96,16 @@ class AuthRepositorySupabase implements AuthRepository {
 
           if (error) {
                throw new Error(`Erreur lors de la mise à jour du profil : ${error.message}`)
+          }
+     }
+
+     onAuthStateChanged(callback: (session: Session | null) => void) {
+          const { data: subscription } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+               callback(session)
+          })
+
+          return () => {
+               subscription.subscription?.unsubscribe()
           }
      }
 }

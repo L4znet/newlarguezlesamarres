@@ -1,11 +1,8 @@
 import { faker } from "@faker-js/faker"
-import { UserRegistrationSchema } from "@/modules/domain/auth/schemas/UserRegistrationSchema"
 import { signIn, signUp } from "@/modules/tests/config/hook"
 
 describe("Login Use Case", () => {
      const mockShowTranslatedFlashMessage = jest.fn()
-
-     require("dotenv").config({ path: ".env.test" })
 
      it("login should login user", async () => {
           const password = faker.internet.password()
@@ -42,4 +39,6 @@ describe("Login Use Case", () => {
           expect(error).toBeDefined()
           expect(signUpError).toBeNull()
      })
+
+     // @TODO add a test that check if user account is activated, if not I can't login and we must show a message to the user
 })

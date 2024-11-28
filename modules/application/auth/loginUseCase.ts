@@ -43,7 +43,11 @@ export const loginUseCase = async (
                throw new Error(error.message)
           }
 
-          return AuthEntity.fromSupabaseUser(user)
+          if (user !== null && user?.user?.id) {
+               return AuthEntity.fromSupabaseUser({ userId: user.user.id })
+          } else {
+               return null
+          }
      } catch (error: any) {
           console.dir(error)
           showTranslatedFlashMessage("danger", {

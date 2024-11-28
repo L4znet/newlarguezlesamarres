@@ -12,7 +12,7 @@ export default function Layout() {
      const t = getTranslator(locale)
 
      useEffect(() => {
-          if (user) router.replace("/(app)/(tabs)")
+          if (user) router.replace("/(app)/(tabs)/(home)")
      }, [user])
 
      interface Route {

@@ -1,13 +1,11 @@
 import authRepository from "../../infrastructure/auth/AuthRepositorySupabase"
 import AuthEntity from "../../domain/auth/AuthEntity"
 
-export const getCurrentUserUseCase = async () => {
+export const getProfileUseCase = async () => {
      try {
-          const user = await authRepository.getCurrentUser()
+          const user: unknown = await authRepository.getCurrentUser()
 
-          return AuthEntity.fromSupabaseUser({
-               userId: user.userId,
-          })
+          return new AuthEntity(email)
      } catch (error: any) {
           throw new Error((error as Error).message)
      }
