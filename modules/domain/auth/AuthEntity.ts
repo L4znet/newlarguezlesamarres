@@ -1,7 +1,9 @@
-export default class AuthEntity {
-     constructor(public userId: User) {}
+import { User } from "@supabase/auth-js"
 
-     static fromSupabaseUser(userId: User): AuthEntity {
-          return new AuthEntity(userId)
+export default class AuthEntity {
+     constructor(public user: { user: User }) {}
+
+     static fromSupabaseUser(user: { user: User }): AuthEntity {
+          return new AuthEntity(user)
      }
 }

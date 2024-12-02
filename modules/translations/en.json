@@ -63,6 +63,8 @@
      "forgot_password_btn": "Forgot password",
      "noaccount_btn": "No account yet?",
      "edit_profile_btn": "Edit profile",
+     "edit_btn": "Save changes",
+     "delete_btn": "Confirm deletion",
 
      "flash_title_danger": "Error",
      "flash_title_success": "Success",

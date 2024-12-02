@@ -12,10 +12,16 @@ export default function editProfile() {
      const { user } = useAuth()
 
      const [userData, setUserData] = useState({
-          lastname: user?.lastname,
-          firstname: user?.firstname,
-          username: user?.username,
+          lastname: user?.user.user.user_metadata.lastname,
+          firstname: user?.user.user.user_metadata.firstname,
+          username: user?.user.user.user_metadata.username,
      })
+
+     console.log("userid", user?.user.user.user_metadata)
+
+     const updateProfile = () => {
+          console.log("updateProfile", userData)
+     }
 
      return (
           <View style={styles.container}>
@@ -25,8 +31,8 @@ export default function editProfile() {
                     <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userData.firstname} onChangeText={(firstname) => setUserData({ ...userData, firstname })} />
                     <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userData.username} onChangeText={(username) => setUserData({ ...userData, username })} />
                </View>
-               <Button icon="login" mode="contained" onPress={signOut}>
-                    {t("logout_btn")}
+               <Button icon="pencil" mode="contained" onPress={updateProfile}>
+                    {t("edit_btn")}
                </Button>
           </View>
      )

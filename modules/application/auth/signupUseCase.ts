@@ -48,7 +48,7 @@ export const signupUseCase = async (
                throw new Error(error)
           }
           if (user !== null && user?.user?.id) {
-               return AuthEntity.fromSupabaseUser({ userId: user.user.id })
+               return AuthEntity.fromSupabaseUser({ user: user.user })
           } else {
                return null
           }

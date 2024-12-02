@@ -43,8 +43,8 @@ export const loginUseCase = async (
                throw new Error(error.message)
           }
 
-          if (user !== null && user?.user?.id) {
-               return AuthEntity.fromSupabaseUser({ userId: user.user.id })
+          if (user !== null && user?.user) {
+               return AuthEntity.fromSupabaseUser({ user: user.user })
           } else {
                return null
           }

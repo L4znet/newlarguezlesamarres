@@ -5,10 +5,6 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ""
 const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || ""
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-export interface User {
-     userId: string
-}
-
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
           try {
@@ -66,7 +62,7 @@ class AuthRepositorySupabase implements AuthRepository {
                const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
                     if (session?.user) {
                          resolve({
-                              userId: session.user.id,
+                              user: session.user,
                          })
                     } else {
                          reject(new Error("Erreur lors de la récupération de l'utilisateur courant."))
@@ -87,15 +83,25 @@ class AuthRepositorySupabase implements AuthRepository {
      }
 
      async updateProfile(lastname: string, firstname: string, username: string) {
-          const { data: user, error: userError } = await supabase.auth.getUser()
-          if (userError || !user) {
-               throw new Error("Problème lors de la récupération de l'utilisateur courant.")
-          }
+          try {
+               const { data: user, error: userError } = await supabase.auth.getUser()
+               if (userError || !user) {
+                    throw new Error("Problème lors de la récupération de l'utilisateur courant.")
+               }
 
-          const { error } = await supabase.from("profiles").upsert({ lastname, firstname, username })
+               const { error } = await supabase.from("profiles").upsert({ lastname, firstname, username })
 
-          if (error) {
-               throw new Error(`Erreur lors de la mise à jour du profil : ${error.message}`)
+               if (error) {
+                    throw new Error(error.message)
+               }
+
+               return { user, error }
+          } catch (error: unknown) {
+               if (error instanceof Error) {
+                    throw error
+               } else {
+                    throw new Error("Une erreur inattendue est survenue.")
+               }
           }
      }
 
