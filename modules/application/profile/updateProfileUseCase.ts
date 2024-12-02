@@ -2,6 +2,7 @@ import AuthRepositorySupabase from "../../infrastructure/auth/AuthRepositorySupa
 import AuthEntity from "../../domain/auth/AuthEntity"
 import { MessageType } from "react-native-flash-message"
 import { ProfileUpdateSchema } from "@/modules/domain/profile/schemas/ProfileUpdateSchema"
+import ProfileEntity from "@/modules/domain/profile/ProfileEntity"
 
 export const updateProfileUseCase = async (
      data: {
@@ -32,10 +33,10 @@ export const updateProfileUseCase = async (
           return
      }
 
-     const { firstname, lastname, username } = parsedData.data
+     const { firstname, lastname, username, email } = parsedData.data
 
      try {
-          const { user, error } = await AuthRepositorySupabase.updateProfile(lastname, firstname, username)
+          const { user, error } = await AuthRepositorySupabase.updateProfile(lastname, firstname, username, email)
 
           if (error) {
                showTranslatedFlashMessage("danger", {
@@ -45,7 +46,14 @@ export const updateProfileUseCase = async (
                throw new Error(error)
           }
           if (user !== null && user?.user?.id) {
-               return AuthEntity.fromSupabaseUser({ user: user.user })
+               return ProfileEntity.fromSupabaseUser({
+                    profile: {
+                         lastname: user.user.user_metadata.lastname,
+                         firstname: user.user.user_metadata.firstname,
+                         username: user.user.user_metadata.username,
+                         email: user?.user?.email || "",
+                    },
+               })
           } else {
                return null
           }

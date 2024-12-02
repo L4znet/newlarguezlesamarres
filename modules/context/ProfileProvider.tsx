@@ -6,7 +6,7 @@ import { getProfileUseCase } from "@/modules/application/profile/getProfileUseCa
 interface ProfileContextProps {
      profile: Profile | null
      getProfile: () => Promise<void>
-     updateProfile: (firstname: string, lastname: string, username: string) => Promise<void>
+     updateProfile: (firstname: string, lastname: string, username: string, email: string | undefined) => Promise<void>
 }
 
 const ProfileContext = createContext<ProfileContextProps | undefined>(undefined)
@@ -24,9 +24,13 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
           }
      }
 
-     const updateProfile = async (firstname: string, lastname: string, username: string) => {
+     const updateProfile = async (firstname: string, lastname: string, username: string, email: string) => {
           try {
-               await updateProfileUseCase({ firstname, lastname, username }, showTranslatedFlashMessage)
+               const user = await updateProfileUseCase({ firstname, lastname, username, email }, showTranslatedFlashMessage)
+               if (user) {
+                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User profile updated" })
+                    setProfile(user)
+               }
           } catch (error) {
                console.error("Erreur lors de la mise à jour du profil:", error)
           }

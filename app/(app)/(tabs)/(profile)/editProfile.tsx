@@ -18,9 +18,8 @@ export default function editProfile() {
           lastname: user?.user.user.user_metadata.lastname,
           firstname: user?.user.user.user_metadata.firstname,
           username: user?.user.user.user_metadata.username,
+          email: user?.user.user.email,
      })
-
-     console.log("userid", user?.user.user.user_metadata)
 
      return (
           <View style={styles.container}>
@@ -29,8 +28,9 @@ export default function editProfile() {
                     <TextInput style={styles.input} placeholder={t("lastname_placeholder")} label={t("lastname_label")} value={userData.lastname} onChangeText={(lastname) => setUserData({ ...userData, lastname })} />
                     <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userData.firstname} onChangeText={(firstname) => setUserData({ ...userData, firstname })} />
                     <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userData.username} onChangeText={(username) => setUserData({ ...userData, username })} />
+                    <TextInput style={styles.input} placeholder={t("email_placeholder")} label={t("email_label")} value={userData.email} onChangeText={(email) => setUserData({ ...userData, email })} />
                </View>
-               <Button icon="pencil" mode="contained" onPress={async () => await updateProfile(userData.firstname, userData.lastname, userData.username)}>
+               <Button icon="pencil" mode="contained" onPress={async () => await updateProfile(userData.firstname, userData.lastname, userData.username, userData.email)}>
                     {t("edit_btn")}
                </Button>
           </View>

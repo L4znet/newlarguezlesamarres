@@ -13,8 +13,8 @@ class AuthRepositorySupabase implements AuthRepository {
                     password,
                     options: {
                          data: {
-                              firstname,
                               lastname,
+                              firstname,
                               username,
                               email,
                               avatar_url,
@@ -82,20 +82,27 @@ class AuthRepositorySupabase implements AuthRepository {
           }
      }
 
-     async updateProfile(lastname: string, firstname: string, username: string) {
+     async updateProfile(lastname: string, firstname: string, username: string, email: string | undefined) {
           try {
                const { data: user, error: userError } = await supabase.auth.getUser()
                if (userError || !user) {
                     throw new Error("Problème lors de la récupération de l'utilisateur courant.")
                }
 
-               const { error } = await supabase.from("profiles").upsert({ lastname, firstname, username })
+               const { data: updatedUser, error } = await supabase.auth.updateUser({
+                    data: {
+                         lastname,
+                         firstname,
+                         username,
+                         email,
+                    },
+               })
 
                if (error) {
                     throw new Error(error.message)
+               } else {
+                    return { user, error }
                }
-
-               return { user, error }
           } catch (error: unknown) {
                if (error instanceof Error) {
                     throw error
