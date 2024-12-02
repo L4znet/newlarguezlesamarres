@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react"
-import { getProfileUseCase } from "@/modules/application/auth/getProfileUseCase"
+import { updateProfileUseCase } from "@/modules/application/profile/updateProfileUseCase"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { getProfileUseCase } from "@/modules/application/profile/getProfileUseCase"
 
 interface ProfileContextProps {
      profile: Profile | null
@@ -11,6 +13,7 @@ const ProfileContext = createContext<ProfileContextProps | undefined>(undefined)
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      const [profile, setProfile] = useState<Profile | null>(null)
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const getProfile = async () => {
           try {
@@ -23,8 +26,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
      const updateProfile = async (firstname: string, lastname: string, username: string) => {
           try {
-               await updateProfileUseCase(firstname, lastname, username)
-               await getProfile()
+               await updateProfileUseCase({ firstname, lastname, username }, showTranslatedFlashMessage)
           } catch (error) {
                console.error("Erreur lors de la mise à jour du profil:", error)
           }

@@ -4,12 +4,15 @@ import { Avatar, Button, Text, TextInput } from "react-native-paper"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
+import { updateProfileUseCase } from "@/modules/application/profile/updateProfileUseCase"
+import { useProfile } from "@/modules/context/ProfileProvider"
 
 export default function editProfile() {
      const { signOut } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const { user } = useAuth()
+     const { updateProfile } = useProfile()
 
      const [userData, setUserData] = useState({
           lastname: user?.user.user.user_metadata.lastname,
@@ -19,10 +22,6 @@ export default function editProfile() {
 
      console.log("userid", user?.user.user.user_metadata)
 
-     const updateProfile = () => {
-          console.log("updateProfile", userData)
-     }
-
      return (
           <View style={styles.container}>
                <View style={styles.form}>
@@ -31,7 +30,7 @@ export default function editProfile() {
                     <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userData.firstname} onChangeText={(firstname) => setUserData({ ...userData, firstname })} />
                     <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userData.username} onChangeText={(username) => setUserData({ ...userData, username })} />
                </View>
-               <Button icon="pencil" mode="contained" onPress={updateProfile}>
+               <Button icon="pencil" mode="contained" onPress={async () => await updateProfile(userData.firstname, userData.lastname, userData.username)}>
                     {t("edit_btn")}
                </Button>
           </View>

@@ -8,6 +8,7 @@ import { Colors } from "@/constants/Colors"
 import { AuthProvider } from "@/modules/context/AuthProvider"
 import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 import { TranslationProvider } from "@/modules/context/TranslationContext"
+import { ProfileProvider } from "@/modules/context/ProfileProvider"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -23,7 +24,7 @@ const customDarkTheme = {
 
 const customLightTheme = {
      ...MD3LightTheme,
-     colors: Colors.dark,
+     colors: Colors.light,
      fonts: {
           ...MD3LightTheme.fonts,
           regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" },
@@ -50,16 +51,18 @@ export default function RootLayout() {
                <PaperProvider theme={paperTheme}>
                     <ThemeProvider value={paperTheme}>
                          <FlashMessageProvider>
-                              <AuthProvider>
-                                   <Stack
-                                        screenOptions={{
-                                             headerShown: false,
-                                        }}
-                                   >
-                                        <Stack.Screen name="(auth)" />
-                                        <Stack.Screen name="(tabs)" />
-                                   </Stack>
-                              </AuthProvider>
+                              <ProfileProvider>
+                                   <AuthProvider>
+                                        <Stack
+                                             screenOptions={{
+                                                  headerShown: false,
+                                             }}
+                                        >
+                                             <Stack.Screen name="(auth)" />
+                                             <Stack.Screen name="(tabs)" />
+                                        </Stack>
+                                   </AuthProvider>
+                              </ProfileProvider>
                          </FlashMessageProvider>
                     </ThemeProvider>
                </PaperProvider>

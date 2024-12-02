@@ -24,4 +24,4 @@ export const ProfileUpdateSchema = z
           username: data.username,
      }))
 
-export type UserUpdate = z.infer<typeof ProfileUpdateSchema>
+export type ProfileUpdate = z.infer<typeof ProfileUpdateSchema>

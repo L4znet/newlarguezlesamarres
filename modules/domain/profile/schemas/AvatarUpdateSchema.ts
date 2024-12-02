@@ -3,25 +3,15 @@ import { getTranslator } from "@/modules/context/TranslationContext"
 
 const t = getTranslator()
 
-export const ProfileUpdateSchema = z
+export const AvatarUpdateSchema = z
      .object({
-          firstname: z
+          avatar_url: z
                .string()
                .min(1, t("validation_firstname_required"))
                .transform((val) => val.trim()),
-          lastname: z
-               .string()
-               .min(1, t("validation_lastname_required"))
-               .transform((val) => val.trim()),
-          username: z
-               .string()
-               .min(1, t("validation_username_required"))
-               .transform((val) => val.trim()),
      })
      .transform((data) => ({
-          firstname: data.firstname,
-          lastname: data.lastname,
-          username: data.username,
+          avatar_url: data.avatar_url,
      }))
 
-export type UserUpdate = z.infer<typeof ProfileUpdateSchema>
+export type AvatarUpdate = z.infer<typeof AvatarUpdateSchema>

@@ -1,17 +1,14 @@
 import AuthRepositorySupabase from "../../infrastructure/auth/AuthRepositorySupabase"
 import AuthEntity from "../../domain/auth/AuthEntity"
 import { MessageType } from "react-native-flash-message"
-import { UserUpdateSchema } from "@/modules/domain/auth/schemas/UserUpdateSchema"
+import { ProfileUpdateSchema } from "@/modules/domain/profile/schemas/ProfileUpdateSchema"
 
 export const updateProfileUseCase = async (
      data: {
-          email: string
-          password: string
           firstname: string
           lastname: string
           username: string
-          confirmPassword: string
-          avatar_url?: string
+          email: string
      },
      showTranslatedFlashMessage: (
           type: MessageType,
@@ -22,7 +19,7 @@ export const updateProfileUseCase = async (
           locale?: string
      ) => void
 ) => {
-     const parsedData = UserUpdateSchema.safeParse(data)
+     const parsedData = ProfileUpdateSchema.safeParse(data)
 
      if (!parsedData.success) {
           const errorMessages = parsedData.error.errors.map((err) => err.message).join("\n")
