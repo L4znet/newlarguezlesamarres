@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import { updateProfileUseCase } from "@/modules/application/profile/updateProfileUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getProfileUseCase } from "@/modules/application/profile/getProfileUseCase"
+import { router } from "expo-router"
 
 interface ProfileContextProps {
      profile: Profile | null
@@ -30,6 +31,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
                if (user) {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User profile updated" })
                     setProfile(user)
+                    router.push("/(app)/(tabs)/(profile)")
                }
           } catch (error) {
                console.error("Erreur lors de la mise à jour du profil:", error)

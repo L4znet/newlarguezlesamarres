@@ -7,6 +7,7 @@ import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
 import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
 import authRepository from "@/modules/infrastructure/auth/AuthRepositorySupabase"
 import { subscribeToAuthChangesUseCase } from "@/modules/application/auth/subscribeToAuthChangeUseCase"
+import { router } from "expo-router"
 
 type AuthContextType = {
      user: AuthEntity | null
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                const user = await signupUseCase({ email, password, confirmPassword, firstname, lastname, username }, showTranslatedFlashMessage)
                if (user) {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User successfully registered" })
+                    router.push("/(app)/(auth)/signin")
                }
           } catch (error: any) {
                showTranslatedFlashMessage("danger", [{ title: "flash_title_danger", description: error.message }])

@@ -84,6 +84,8 @@ class AuthRepositorySupabase implements AuthRepository {
 
      async updateProfile(lastname: string, firstname: string, username: string, email: string | undefined) {
           try {
+               console.log("Update profile", { lastname, firstname, username, email })
+
                const { data: user, error: userError } = await supabase.auth.getUser()
                if (userError || !user) {
                     throw new Error("Problème lors de la récupération de l'utilisateur courant.")
