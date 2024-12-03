@@ -27,6 +27,13 @@ export default function Layout() {
                               title: "Modifier mon profil",
                          }}
                     />
+                    <Drawer.Screen
+                         name="editEmail"
+                         options={{
+                              drawerLabel: "Modifier mon adresse e-mail",
+                              title: "Modifier mon adresse e-mail",
+                         }}
+                    />
                </Drawer>
           </GestureHandlerRootView>
      )

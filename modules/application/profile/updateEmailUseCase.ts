@@ -1,14 +1,13 @@
 import AuthRepositorySupabase from "../../infrastructure/auth/AuthRepositorySupabase"
 import AuthEntity from "../../domain/auth/AuthEntity"
 import { MessageType } from "react-native-flash-message"
-import { ProfileUpdateSchema } from "@/modules/domain/profile/schemas/ProfileUpdateSchema"
+import { EmailUpdateSchema } from "@/modules/domain/profile/schemas/EmailUpdateSchema"
 import ProfileEntity from "@/modules/domain/profile/ProfileEntity"
+import EmailUpdateEntity from "@/modules/domain/profile/EmailUpdateEntity"
 
-export const updateProfileUseCase = async (
+export const updateEmailUseCase = async (
      data: {
-          firstname: string
-          lastname: string
-          username: string
+          email: string
      },
      showTranslatedFlashMessage: (
           type: MessageType,
@@ -18,8 +17,8 @@ export const updateProfileUseCase = async (
           },
           locale?: string
      ) => void
-): Promise<ProfileEntity> => {
-     const parsedData = ProfileUpdateSchema.safeParse(data)
+): Promise<EmailUpdateEntity | undefined> => {
+     const parsedData = EmailUpdateSchema.safeParse(data)
 
      if (!parsedData.success) {
           const errorMessages = parsedData.error.errors.map((err) => err.message).join("\n")
@@ -30,10 +29,12 @@ export const updateProfileUseCase = async (
           throw new Error(errorMessages)
      }
 
-     const { firstname, lastname, username } = parsedData.data
+     const { email } = parsedData.data
 
      try {
-          const { user, error } = await AuthRepositorySupabase.updateProfile(lastname, firstname, username)
+          const updatedEmail = await AuthRepositorySupabase.updateEmail(email)
+
+          const { updatedUser, error } = updatedEmail
 
           if (error) {
                showTranslatedFlashMessage("danger", {
@@ -43,16 +44,11 @@ export const updateProfileUseCase = async (
                throw new Error(error)
           }
 
-          if (user && user.user?.id) {
-               return ProfileEntity.fromSupabaseUser({
-                    lastname: user.user.user_metadata.lastname,
-                    firstname: user.user.user_metadata.firstname,
-                    username: user.user.user_metadata.username,
-                    email: user.user.email || "",
+          if (updatedUser.user) {
+               return EmailUpdateEntity.fromSupabaseUser({
+                    email: updatedUser.user.email,
                })
           }
-
-          throw new Error("Utilisateur non trouvé après la mise à jour.")
      } catch (error: unknown) {
           let errorMessage = "Une erreur inattendue est survenue."
 

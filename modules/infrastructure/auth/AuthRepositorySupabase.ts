@@ -1,4 +1,4 @@
-import { createClient, PostgrestSingleResponse, AuthError, AuthChangeEvent, Session } from "@supabase/supabase-js"
+import { createClient, PostgrestSingleResponse, AuthError, AuthChangeEvent, Session, UserResponse } from "@supabase/supabase-js"
 import AuthRepository from "../../domain/auth/AuthRepository"
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ""
@@ -58,21 +58,31 @@ class AuthRepositorySupabase implements AuthRepository {
      }
 
      async getCurrentUser() {
-          return new Promise((resolve, reject) => {
-               const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
-                    if (session?.user) {
-                         resolve({
-                              user: session.user,
-                         })
-                    } else {
-                         reject(new Error("Erreur lors de la récupération de l'utilisateur courant."))
-                    }
-               })
+          const {
+               data: { user },
+               error,
+          } = await supabase.auth.getUser()
+          if (error || !user) {
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
+          }
+          return { user }
+     }
 
-               return () => {
-                    subscription.subscription.unsubscribe()
-               }
-          })
+     async getCurrentUserMetadata() {
+          const {
+               data: { user },
+               error,
+          } = await supabase.auth.getUser()
+          if (error || !user) {
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
+          }
+          return {
+               email: user.email,
+               lastname: user.user_metadata.lastname,
+               firstname: user.user_metadata.firstname,
+               username: user.user_metadata.username,
+               avatar_url: user.user_metadata.avatar_url,
+          }
      }
 
      async resetPassword(email: string) {
@@ -82,28 +92,40 @@ class AuthRepositorySupabase implements AuthRepository {
           }
      }
 
-     async updateProfile(lastname: string, firstname: string, username: string, email: string | undefined) {
+     async updateProfile(lastname: string, firstname: string, username: string) {
           try {
-               console.log("Update profile", { lastname, firstname, username, email })
-
-               const { data: user, error: userError } = await supabase.auth.getUser()
-               if (userError || !user) {
-                    throw new Error("Problème lors de la récupération de l'utilisateur courant.")
-               }
-
                const { data: updatedUser, error } = await supabase.auth.updateUser({
                     data: {
                          lastname,
                          firstname,
                          username,
-                         email,
                     },
                })
 
                if (error) {
                     throw new Error(error.message)
                } else {
-                    return { user, error }
+                    return { updatedUser, error }
+               }
+          } catch (error: unknown) {
+               if (error instanceof Error) {
+                    throw error
+               } else {
+                    throw new Error("Une erreur inattendue est survenue.")
+               }
+          }
+     }
+
+     async updateEmail(email: string) {
+          try {
+               const userResponse = await supabase.auth.updateUser({ email: email })
+
+               const { data: updatedUser, error } = userResponse as UserResponse
+
+               if (error) {
+                    throw new Error(error.message)
+               } else {
+                    return { updatedUser, error }
                }
           } catch (error: unknown) {
                if (error instanceof Error) {

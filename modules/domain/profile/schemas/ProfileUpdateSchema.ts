@@ -5,10 +5,6 @@ const t = getTranslator()
 
 export const ProfileUpdateSchema = z
      .object({
-          email: z
-               .string()
-               .email(t("validation_email_invalid"))
-               .transform((email) => email.trim().toLowerCase()),
           firstname: z
                .string()
                .min(1, t("validation_firstname_required"))
@@ -23,7 +19,6 @@ export const ProfileUpdateSchema = z
                .transform((val) => val.trim()),
      })
      .transform((data) => ({
-          email: data.email,
           firstname: data.firstname,
           lastname: data.lastname,
           username: data.username,

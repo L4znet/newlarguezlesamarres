@@ -7,28 +7,25 @@ import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
 import { updateProfileUseCase } from "@/modules/application/profile/updateProfileUseCase"
 import { useProfile } from "@/modules/context/ProfileProvider"
 
-export default function editProfile() {
-     const { signOut } = useAuth()
+export default function editEmail() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const { user } = useAuth()
-     const { updateProfile } = useProfile()
+     const { updateEmail } = useProfile()
 
      const [userData, setUserData] = useState({
-          lastname: user?.user.user.user_metadata.lastname,
-          firstname: user?.user.user.user_metadata.firstname,
-          username: user?.user.user.user_metadata.username,
+          email: user?.user.user.user_metadata.email,
      })
 
      return (
           <View style={styles.container}>
                <View style={styles.form}>
-                    <Avatar.Image size={150} source={require("@/assets/images/avatar.jpeg")} />
-                    <TextInput style={styles.input} placeholder={t("lastname_placeholder")} label={t("lastname_label")} value={userData.lastname} onChangeText={(lastname) => setUserData({ ...userData, lastname })} />
-                    <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userData.firstname} onChangeText={(firstname) => setUserData({ ...userData, firstname })} />
-                    <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userData.username} onChangeText={(username) => setUserData({ ...userData, username })} />
+                    <Text variant="titleLarge">Besoin d'un changement d'e-mail ?</Text>
+                    <Text variant="titleMedium">C'est comme si c'était fait !</Text>
+                    <Text variant="titleMedium">Uun e-mail de confirmation sera envoyé sur votre ancienne et sur votre nouvelle adresse</Text>
+                    <TextInput style={styles.input} placeholder={t("email_placeholder")} label={t("email_label")} value={userData.email} onChangeText={(email) => setUserData({ ...userData, email })} />
                </View>
-               <Button icon="pencil" mode="contained" onPress={async () => await updateProfile(userData.firstname, userData.lastname, userData.username)}>
+               <Button icon="pencil" mode="contained" onPress={async () => await updateEmail(userData.email)}>
                     {t("edit_btn")}
                </Button>
           </View>
@@ -47,6 +44,8 @@ const styles = StyleSheet.create({
      },
      text: {
           fontSize: 16,
+          width: "90%",
+          textAlign: "center",
      },
      form: {
           justifyContent: "center",
