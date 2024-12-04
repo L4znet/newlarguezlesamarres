@@ -13,7 +13,7 @@ export default function Index() {
      const t = getTranslator(locale)
      const { profile } = useProfile()
 
-     console.log("profile", profile?.username)
+     console.log(profile)
 
      return (
           <View style={styles.container}>

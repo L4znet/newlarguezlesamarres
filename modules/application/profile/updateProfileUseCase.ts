@@ -3,6 +3,7 @@ import AuthEntity from "../../domain/auth/AuthEntity"
 import { MessageType } from "react-native-flash-message"
 import { ProfileUpdateSchema } from "@/modules/domain/profile/schemas/ProfileUpdateSchema"
 import ProfileEntity from "@/modules/domain/profile/ProfileEntity"
+import { router } from "expo-router"
 
 export const updateProfileUseCase = async (
      data: {
@@ -43,16 +44,15 @@ export const updateProfileUseCase = async (
                throw new Error(error)
           }
 
-          if (user && user.user?.id) {
+          if (user && user.id) {
                return ProfileEntity.fromSupabaseUser({
-                    lastname: user.user.user_metadata.lastname,
-                    firstname: user.user.user_metadata.firstname,
-                    username: user.user.user_metadata.username,
-                    email: user.user.email || "",
+                    lastname: user.user_metadata?.lastname,
+                    firstname: user.user_metadata?.firstname,
+                    username: user.user_metadata?.username,
+                    avatar_url: user.user_metadata?.avatar_url,
+                    email: user.email as string,
                })
           }
-
-          throw new Error("Utilisateur non trouvé après la mise à jour.")
      } catch (error: unknown) {
           let errorMessage = "Une erreur inattendue est survenue."
 

@@ -6,13 +6,7 @@ export const listenToUserChangesUseCase = (onUserChange: (user: ProfileEntity) =
           if (session?.user) {
                try {
                     const userMetadata = await authRepository.getCurrentUserMetadata()
-                    const profileEntity = new ProfileEntity({
-                         email: userMetadata.email,
-                         firstname: userMetadata.firstname,
-                         lastname: userMetadata.lastname,
-                         username: userMetadata.username,
-                         avatar_url: userMetadata.avatar_url,
-                    })
+                    const profileEntity = new ProfileEntity(userMetadata.email, userMetadata.firstname, userMetadata.lastname, userMetadata.username, userMetadata.avatar_url)
                     onUserChange(profileEntity)
                } catch (error) {
                     console.error("Erreur lors de la récupération des métadonnées utilisateur:", error)

@@ -5,6 +5,8 @@ import { getProfileUseCase } from "@/modules/application/profile/getProfileUseCa
 import { listenToUserChangesUseCase } from "@/modules/application/profile/listenToUserChangesUseCase"
 import { router } from "expo-router"
 import { updateEmailUseCase } from "@/modules/application/profile/updateEmailUseCase"
+import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
+import { subscribeToAuthChangesUseCase } from "@/modules/application/auth/subscribeToAuthChangeUseCase"
 
 interface ProfileContextProps {
      profile: Profile | null
@@ -19,11 +21,16 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      const [profile, setProfile] = useState<Profile | null>(null)
      const { showTranslatedFlashMessage } = useFlashMessage()
 
+     const checkIfUserIsConnected = async () => {
+          console.log("checkIfUserIsConnected")
+          const currentUser = await getCurrentUserUseCase()
+          return currentUser !== null
+     }
+
      const refreshProfile = async () => {
           try {
                const fetchedProfile = await getProfileUseCase()
-
-               const profile = fetchedProfile.profile as Profile
+               const profile = fetchedProfile as unknown as Profile
 
                setProfile(profile)
           } catch (error) {
@@ -34,9 +41,15 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      const updateProfile = async (firstname: string, lastname: string, username: string) => {
           try {
                const updatedUser = await updateProfileUseCase({ firstname, lastname, username }, showTranslatedFlashMessage)
-
+               const user = updatedUser as unknown as Profile
+               console.log({
+                    user: user,
+                    updatedUser: updatedUser,
+               })
                if (updatedUser) {
+                    console.log("Modifié avec succès")
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User profile updated" })
+                    setProfile(user)
                     router.push("/(app)/(tabs)/(profile)")
                }
           } catch (error) {
@@ -47,11 +60,10 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      const updateEmail = async (email: string) => {
           try {
                const updatedUser = await updateEmailUseCase({ email }, showTranslatedFlashMessage)
-
-               console.log("updatedEmail", updatedUser)
-
+               const user = updatedUser as unknown as Profile
                if (updatedUser) {
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User email updated" })
+                    setProfile((prevProfile) => (prevProfile ? { ...prevProfile, email: user.email } : prevProfile))
                     router.push("/(app)/(tabs)/(profile)")
                }
           } catch (error) {
@@ -60,17 +72,32 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      }
 
      useEffect(() => {
-          refreshProfile()
+          const initializeProfile = async () => {
+               const isConnected = await checkIfUserIsConnected()
+               console.log("isConnected", isConnected)
+               if (isConnected) {
+                    await refreshProfile()
+               }
+          }
 
-          const unsubscribe = listenToUserChangesUseCase((updatedUser) => {
-               const profile = updatedUser.profile as Profile
+          initializeProfile()
 
-               console.log("updatedUser", updatedUser.profile.username)
+          const unsubscribeAuth = subscribeToAuthChangesUseCase((user) => {
+               if (user) {
+                    refreshProfile()
+               } else {
+                    setProfile(null)
+               }
+          })
+
+          const unsubscribeProfile = listenToUserChangesUseCase((updatedUser) => {
+               const profile = updatedUser as unknown as Profile
                setProfile(profile)
           })
 
           return () => {
-               unsubscribe()
+               unsubscribeAuth()
+               unsubscribeProfile()
           }
      }, [])
 

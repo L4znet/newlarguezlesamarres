@@ -62,8 +62,11 @@ class AuthRepositorySupabase implements AuthRepository {
                data: { user },
                error,
           } = await supabase.auth.getUser()
-          if (error || !user) {
-               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
+          if (error) {
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant." + error.message)
+          }
+          if (!user) {
+               throw new Error("Aucun utilisateur n'est connecté.")
           }
           return { user }
      }
@@ -73,15 +76,22 @@ class AuthRepositorySupabase implements AuthRepository {
                data: { user },
                error,
           } = await supabase.auth.getUser()
-          if (error || !user) {
-               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
+
+          if (error) {
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant." + error.message)
           }
+          if (!user) {
+               throw new Error("Aucun utilisateur n'est connecté.")
+          }
+
+          const { email, user_metadata: { lastname, firstname, username, avatar_url } = {} } = user
+
           return {
-               email: user.email,
-               lastname: user.user_metadata.lastname,
-               firstname: user.user_metadata.firstname,
-               username: user.user_metadata.username,
-               avatar_url: user.user_metadata.avatar_url,
+               email,
+               lastname,
+               firstname,
+               username,
+               avatar_url,
           }
      }
 
@@ -105,7 +115,11 @@ class AuthRepositorySupabase implements AuthRepository {
                if (error) {
                     throw new Error(error.message)
                } else {
-                    return { updatedUser, error }
+                    console.log("mise à jour")
+                    return {
+                         ...updatedUser,
+                         error,
+                    }
                }
           } catch (error: unknown) {
                if (error instanceof Error) {
