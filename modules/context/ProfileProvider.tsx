@@ -7,12 +7,14 @@ import { router } from "expo-router"
 import { updateEmailUseCase } from "@/modules/application/profile/updateEmailUseCase"
 import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
 import { subscribeToAuthChangesUseCase } from "@/modules/application/auth/subscribeToAuthChangeUseCase"
+import { updateAvatarUseCase } from "@/modules/application/profile/updateAvatarUseCase"
 
 interface ProfileContextProps {
      profile: Profile | null
      refreshProfile: () => Promise<void>
      updateProfile: (firstname: string, lastname: string, username: string) => Promise<void>
      updateEmail: (email: string) => Promise<void>
+     updateAvatar: (avatar: string) => Promise<void>
 }
 
 const ProfileContext = createContext<ProfileContextProps | undefined>(undefined)
@@ -22,7 +24,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      const checkIfUserIsConnected = async () => {
-          console.log("checkIfUserIsConnected")
           const currentUser = await getCurrentUserUseCase()
           return currentUser !== null
      }
@@ -31,7 +32,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
           try {
                const fetchedProfile = await getProfileUseCase()
                const profile = fetchedProfile as unknown as Profile
-
                setProfile(profile)
           } catch (error) {
                console.error("Erreur lors de la récupération du profil:", error)
@@ -42,10 +42,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
           try {
                const updatedUser = await updateProfileUseCase({ firstname, lastname, username }, showTranslatedFlashMessage)
                const user = updatedUser as unknown as Profile
-               console.log({
-                    user: user,
-                    updatedUser: updatedUser,
-               })
                if (updatedUser) {
                     console.log("Modifié avec succès")
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User profile updated" })
@@ -68,6 +64,20 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
                }
           } catch (error) {
                console.error("Erreur lors de la mise à jour de l'email:", error)
+          }
+     }
+
+     const updateAvatar = async (avatar: string) => {
+          try {
+               const updateAvatar = await updateAvatarUseCase({ avatar }, showTranslatedFlashMessage)
+
+               if (updateAvatar) {
+                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User avatar updated" })
+                    setProfile((prevProfile) => (prevProfile ? { ...prevProfile, avatar_url: avatar } : prevProfile))
+                    router.push("/(app)/(tabs)/(profile)")
+               }
+          } catch (error) {
+               console.error("Erreur lors de la mise à jour de l'avatar:", error)
           }
      }
 
@@ -101,7 +111,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
           }
      }, [])
 
-     return <ProfileContext.Provider value={{ profile, refreshProfile, updateProfile, updateEmail }}>{children}</ProfileContext.Provider>
+     return <ProfileContext.Provider value={{ profile, refreshProfile, updateProfile, updateEmail, updateAvatar }}>{children}</ProfileContext.Provider>
 }
 
 export const useProfile = () => {

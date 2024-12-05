@@ -49,7 +49,6 @@ export const updateProfileUseCase = async (
                     lastname: user.user_metadata?.lastname,
                     firstname: user.user_metadata?.firstname,
                     username: user.user_metadata?.username,
-                    avatar_url: user.user_metadata?.avatar_url,
                     email: user.email as string,
                })
           }

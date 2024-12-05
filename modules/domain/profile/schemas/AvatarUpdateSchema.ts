@@ -5,13 +5,13 @@ const t = getTranslator()
 
 export const AvatarUpdateSchema = z
      .object({
-          avatar_url: z
+          avatar: z
                .string()
-               .min(1, t("validation_firstname_required"))
+               .min(1, t("validation_avatar_required"))
                .transform((val) => val.trim()),
      })
      .transform((data) => ({
-          avatar_url: data.avatar_url,
+          avatar: data.avatar,
      }))
 
 export type AvatarUpdate = z.infer<typeof AvatarUpdateSchema>

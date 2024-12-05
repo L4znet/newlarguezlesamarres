@@ -13,13 +13,13 @@ export default function Index() {
      const t = getTranslator(locale)
      const { profile } = useProfile()
 
-     console.log(profile)
+     const avatar = profile?.avatar ? { uri: profile.avatar } : require("@/assets/images/avatars/default-avatar.png")
 
      return (
           <View style={styles.container}>
                <View style={styles.profile}>
                     <View style={styles.profileHeader}>
-                         <Avatar.Image size={150} source={require("@/assets/images/avatar.jpeg")} />
+                         <Avatar.Image size={150} source={avatar} />
                          <Text style={styles.title}>{profile?.username}</Text>
                          <Text style={styles.text}>
                               {profile?.firstname} {profile?.lastname}

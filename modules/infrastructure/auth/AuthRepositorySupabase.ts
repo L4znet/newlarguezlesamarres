@@ -115,7 +115,6 @@ class AuthRepositorySupabase implements AuthRepository {
                if (error) {
                     throw new Error(error.message)
                } else {
-                    console.log("mise à jour")
                     return {
                          ...updatedUser,
                          error,
@@ -133,6 +132,26 @@ class AuthRepositorySupabase implements AuthRepository {
      async updateEmail(email: string) {
           try {
                const userResponse = await supabase.auth.updateUser({ email: email })
+
+               const { data: updatedUser, error } = userResponse as UserResponse
+
+               if (error) {
+                    throw new Error(error.message)
+               } else {
+                    return { updatedUser, error }
+               }
+          } catch (error: unknown) {
+               if (error instanceof Error) {
+                    throw error
+               } else {
+                    throw new Error("Une erreur inattendue est survenue.")
+               }
+          }
+     }
+
+     async updateAvatar(avatar_url: string) {
+          try {
+               const userResponse = await supabase.auth.updateUser({ data: { avatar_url } })
 
                const { data: updatedUser, error } = userResponse as UserResponse
 

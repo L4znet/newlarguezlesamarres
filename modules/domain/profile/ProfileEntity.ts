@@ -4,7 +4,7 @@ export default class ProfileEntity {
           public readonly firstname: string,
           public readonly lastname: string,
           public readonly username: string,
-          public readonly avatar_url: string | undefined
+          public readonly avatar: string | undefined
      ) {}
 
      static fromSupabaseUser(profile: Profile): ProfileEntity {

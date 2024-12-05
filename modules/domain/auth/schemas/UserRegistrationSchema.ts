@@ -23,7 +23,6 @@ export const UserRegistrationSchema = z
                .string()
                .min(1, t("validation_username_required"))
                .transform((val) => val.trim()),
-          avatar_url: z.string().optional(),
      })
      .refine((data) => data.password === data.confirmPassword, {
           message: t("validation_passwords_do_not_match"),
@@ -35,7 +34,6 @@ export const UserRegistrationSchema = z
           firstname: data.firstname,
           lastname: data.lastname,
           username: data.username,
-          avatar_url: data.avatar_url,
      }))
 
 export type UserRegistration = z.infer<typeof UserRegistrationSchema>

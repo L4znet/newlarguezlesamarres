@@ -22,7 +22,9 @@ export const signupUseCase = async (
           locale?: string
      ) => void
 ) => {
-     const parsedData = UserRegistrationSchema.safeParse(data)
+     const newData = { ...data, avatar_url: data.avatar_url || "assets/images/default-avatar.png" }
+
+     const parsedData = UserRegistrationSchema.safeParse(newData)
 
      if (!parsedData.success) {
           const errorMessages = parsedData.error.errors.map((err) => err.message).join("\n")
