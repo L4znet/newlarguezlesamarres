@@ -5,5 +5,5 @@ interface Boat {
      location: string
      capacity: number
      type: number
-     thumbnails: string[]
+     thumbnails: BoatThumbnail[]
 }

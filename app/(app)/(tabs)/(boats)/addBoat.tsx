@@ -43,6 +43,8 @@ export default function AddBoat() {
      const theme = useTheme()
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
+          const thumbnails = [] as BoatThumbnail[]
+
           result.assets.map((asset) => {
                thumbnails.push({ url: asset.uri, caption: asset.fileName })
           })
@@ -59,6 +61,8 @@ export default function AddBoat() {
                     allowsMultipleSelection: true,
                     aspect: [1, 1],
                     quality: 1,
+                    orderedSelection: true,
+                    selectionLimit: 5,
                })
                if (!result.canceled) {
                     handleMultiplePicture(result)
@@ -72,7 +76,7 @@ export default function AddBoat() {
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <Slideshow dataSource={boat.thumbnails} />
+                         <Slideshow dataSource={boat.thumbnails} style={styles.slideShow} />
                          <Button mode="text" onPress={handleThumbnailChange}>
                               {t("change_thumbnail_btn")}
                          </Button>
@@ -126,6 +130,7 @@ const styles = StyleSheet.create({
      scrollViewBoats: {
           width: "90%",
           rowGap: 20,
+          paddingTop: 20,
      },
      safeView: {
           width: "90%",
