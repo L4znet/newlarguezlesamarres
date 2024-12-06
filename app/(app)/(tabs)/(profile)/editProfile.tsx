@@ -46,7 +46,7 @@ export default function editProfile() {
      }
 
      const updateUserProfile = async (firstname: string, lastname: string, username: string, avatar: string) => {
-          await updateProfile(lastname, firstname, username)
+          await updateProfile(firstname, lastname, username)
           await updateAvatar(avatar)
      }
 

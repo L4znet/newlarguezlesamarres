@@ -12,7 +12,6 @@ import { ProfileProvider } from "@/modules/context/ProfileProvider"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
-     colors: Colors.dark,
      fonts: {
           ...MD3DarkTheme.fonts,
           regular: { ...MD3DarkTheme.fonts.bodyMedium, fontWeight: "400" },
@@ -24,7 +23,6 @@ const customDarkTheme = {
 
 const customLightTheme = {
      ...MD3LightTheme,
-     colors: Colors.light,
      fonts: {
           ...MD3LightTheme.fonts,
           regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" },

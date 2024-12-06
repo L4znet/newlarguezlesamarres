@@ -34,6 +34,13 @@ export default function Layout() {
                     }}
                />
                <Tabs.Screen
+                    name="(boats)"
+                    options={{
+                         title: t("bottom_bar_(boats)"),
+                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="anchor" color={color} />,
+                    }}
+               />
+               <Tabs.Screen
                     name="(settings)"
                     options={{
                          title: t("bottom_bar_settings"),
