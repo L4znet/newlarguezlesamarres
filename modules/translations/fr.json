@@ -50,6 +50,13 @@
      "reset_password_new_password_confirm": "Confirmez le nouveau mot de passe",
      "reset_password_submit": "Réinitialiser le mot de passe",
 
+     "boat_name_label": "Nom du bateau",
+     "boat_description_label": "Description du bateau",
+
+     "boat_type_placeholder": "Type de bateau",
+     "boat_name_placeholder": "Nom du bateau",
+     "boat_description_placeholder": "Description du bateau",
+
      "bottom_bar_(home)/index": "Accueil",
      "bottom_bar_index": "Accueil",
      "bottom_bar_(profile)": "Profil",
@@ -67,6 +74,10 @@
      "edit_profile_btn": "Modifier le profil",
      "edit_btn": "Enregistrer les changements",
      "delete_btn": "Confirmer la suppression",
+     "add_boat_button": "Ajouter un bateau",
+     "close_btn": "Fermer",
+     "done_btn": "Terminé",
+     "change_thumbnail_btn": "Sélectionner des photos",
 
      "flash_title_danger": "Erreur",
      "flash_title_success": "Succès",
@@ -160,5 +171,11 @@
      "settings_title": "Mes paramètres",
      "settings_language": "Changer la langue",
      "settings_app_currently_in": "L'application est actuellement en",
-     "settings_change_language": "Pour changer la langue"
+     "settings_change_language": "Pour changer la langue",
+
+     "sailboat": "Voilier",
+     "motorboat": "Bateau à moteur",
+     "catamaran": "Catamaran",
+     "trimaran": "Trimaran",
+     "yacht": "Yacht"
 }
