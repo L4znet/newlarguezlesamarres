@@ -52,10 +52,12 @@
 
      "boat_name_label": "Nom du bateau",
      "boat_description_label": "Description du bateau",
+     "boat_capacity_label": "Capacité du bateau",
 
      "boat_type_placeholder": "Type de bateau",
      "boat_name_placeholder": "Nom du bateau",
      "boat_description_placeholder": "Description du bateau",
+     "boat_capacity_placeholder": "Capacité du bateau",
 
      "bottom_bar_(home)/index": "Accueil",
      "bottom_bar_index": "Accueil",

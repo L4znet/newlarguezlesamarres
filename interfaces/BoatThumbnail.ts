@@ -1,4 +1,4 @@
 interface BoatThumbnail {
-     url: string
+     uri: string
      caption: string | null | undefined
 }

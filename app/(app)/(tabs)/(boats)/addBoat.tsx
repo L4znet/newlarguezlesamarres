@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react"
-import { StyleSheet, View, Image, ScrollView, SafeAreaView } from "react-native"
+import { StyleSheet, View, Image, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
 import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
-import Slideshow from "react-native-image-slider-show"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
+import Slideshow from "@/modules/components/Slideshow"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -24,9 +24,8 @@ export default function AddBoat() {
      const [boat, setBoat] = useState<Boat>({
           name: "",
           description: "",
-          price: 0,
           location: "",
-          capacity: 0,
+          capacity: "",
           type: 0,
           thumbnails: [],
      })
@@ -46,7 +45,7 @@ export default function AddBoat() {
           const thumbnails = [] as BoatThumbnail[]
 
           result.assets.map((asset) => {
-               thumbnails.push({ url: asset.uri, caption: asset.fileName })
+               thumbnails.push({ uri: asset.uri, caption: asset.fileName })
           })
 
           console.log(thumbnails)
@@ -73,15 +72,12 @@ export default function AddBoat() {
      }
 
      return (
-          <View style={styles.container}>
+          <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <Slideshow dataSource={boat.thumbnails} style={styles.slideShow} />
-                         <Button mode="text" onPress={handleThumbnailChange}>
-                              {t("change_thumbnail_btn")}
-                         </Button>
                          <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.name} onChangeText={(name) => setBoat({ ...boat, name })} />
                          <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.description} onChangeText={(description) => setBoat({ ...boat, description })} />
+                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.capacity} keyboardType="decimal-pad" onChangeText={(capacity) => setBoat({ ...boat, capacity })} />
 
                          <View style={styles.selector}>
                               <PaperSelect
@@ -105,12 +101,18 @@ export default function AddBoat() {
                               />
                          </View>
 
+                         <Slideshow images={boat.thumbnails} />
+
+                         <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
+                              {t("change_thumbnail_btn")}
+                         </Button>
+
                          <Button mode="contained" style={styles.button}>
                               {t("add_boat_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
-          </View>
+          </KeyboardAvoidingView>
      )
 }
 
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
           fontSize: 16,
      },
      scrollViewBoats: {
-          width: "90%",
+          width: "100%",
           rowGap: 20,
           paddingTop: 20,
      },
@@ -164,5 +166,16 @@ const styles = StyleSheet.create({
      boatImage: {
           width: "100%",
           height: 250,
+     },
+     slideShow: {
+          width: "100%",
+          height: 250,
+          marginVertical: 30,
+     },
+     selectImageBtn: {
+          marginVertical: 30,
+     },
+     button: {
+          marginVertical: 30,
      },
 })
