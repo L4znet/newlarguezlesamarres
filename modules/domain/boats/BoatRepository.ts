@@ -1,9 +1,29 @@
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 interface BoatRepository {
-     createBoat(boat: BoatEntity): Promise<BoatEntity>
-     updateBoat(boatId: string, boat: BoatEntity): Promise<BoatEntity>
-     deleteBoat(boatId: string): Promise<void>
+     createBoat(
+          boatName: string,
+          boatDescription: string,
+          boatCapacity: string,
+          boatType: number,
+          images: [
+               {
+                    uri: string
+               },
+          ]
+     ): Promise<BoatEntity>
+     updateBoat(
+          boatId: string,
+          boatName: string,
+          boatDescription: string,
+          boatCapacity: string,
+          boatType: number,
+          images: [
+               {
+                    uri: string
+               },
+          ]
+     ): Promise<BoatEntity>
      getBoatById(boatId: string): Promise<BoatEntity>
      getBoats(): Promise<BoatEntity[]>
 }

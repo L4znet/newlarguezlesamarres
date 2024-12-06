@@ -7,6 +7,7 @@ import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
+import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -22,19 +23,24 @@ export default function AddBoat() {
      const boatTypeOptions = useBoatTypeOptions()
 
      const [boat, setBoat] = useState<Boat>({
-          name: "",
-          description: "",
-          location: "",
-          capacity: "",
-          type: 0,
-          thumbnails: [],
+          boat_name: "Mon super bateau",
+          boat_description: "La description de mon bateau",
+          boat_capacity: "10",
+          boat_type: 1,
+          boat_images: [
+               {
+                    uri: "",
+                    caption: "",
+               },
+          ],
      })
 
-     const [gender, setGender] = useState({
-          value: "",
+     const [types, setType] = useState({
+          value: boatTypeOptions[1].value,
           list: boatTypeOptions,
-          selectedList: [],
+          selectedList: [boatTypeOptions[1]],
           error: "",
+          id: 1,
      })
 
      const singleSelectRef = useRef(null)
@@ -50,7 +56,16 @@ export default function AddBoat() {
 
           console.log(thumbnails)
 
-          setBoat({ ...boat, thumbnails: thumbnails })
+          setBoat({ ...boat, boat_images: thumbnails })
+     }
+
+     const createBoat = async () => {
+          if (!types.id) {
+               setType({ ...types, error: "Please select a value." })
+               return
+          }
+
+          await createBoatUseCase(boat.boat_name, boat.boat_description, boat.boat_capacity, types.id, boat.boat_images)
      }
 
      const handleThumbnailChange = async () => {
@@ -75,25 +90,26 @@ export default function AddBoat() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.name} onChangeText={(name) => setBoat({ ...boat, name })} />
-                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.description} onChangeText={(description) => setBoat({ ...boat, description })} />
-                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.capacity} keyboardType="decimal-pad" onChangeText={(capacity) => setBoat({ ...boat, capacity })} />
+                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boat_name} onChangeText={(boat_name) => setBoat({ ...boat, boat_name })} />
+                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boat_description} onChangeText={(boat_description) => setBoat({ ...boat, boat_description })} />
+                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boat_capacity} keyboardType="decimal-pad" onChangeText={(boat_capacity) => setBoat({ ...boat, boat_capacity })} />
 
                          <View style={styles.selector}>
                               <PaperSelect
                                    label={t("boat_type_placeholder")}
-                                   value={gender.value}
+                                   value={types.value}
                                    onSelection={(value: any) => {
-                                        setGender({
-                                             ...gender,
+                                        setType({
+                                             ...types,
                                              value: value.text,
                                              selectedList: value.selectedList,
                                              error: "",
+                                             id: value.selectedList[0]._id,
                                         })
                                    }}
-                                   arrayList={[...gender.list]}
-                                   selectedArrayList={gender.selectedList}
-                                   errorText={gender.error}
+                                   arrayList={[...types.list]}
+                                   selectedArrayList={types.selectedList}
+                                   errorText={types.error}
                                    multiEnable={false}
                                    dialogTitleStyle={{ color: "white" }}
                                    dialogCloseButtonText={t("close_btn")}
@@ -101,13 +117,13 @@ export default function AddBoat() {
                               />
                          </View>
 
-                         <Slideshow images={boat.thumbnails} />
+                         <Slideshow images={boat.boat_images} />
 
                          <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                               {t("change_thumbnail_btn")}
                          </Button>
 
-                         <Button mode="contained" style={styles.button}>
+                         <Button mode="contained" style={styles.button} onPress={() => createBoat()}>
                               {t("add_boat_button")}
                          </Button>
                     </ScrollView>
