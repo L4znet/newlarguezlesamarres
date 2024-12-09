@@ -1,30 +1,29 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
-import AuthEntity from "../domain/auth/AuthEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
+import { useSession } from "@/modules/context/SessionProvider"
 import { router } from "expo-router"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import supabase from "@/supabaseClient"
-type Session = {
-     userId: string
-}
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Session, UserMetadata } from "@supabase/supabase-js"
+import { User } from "@supabase/auth-js"
 
 type AuthContextType = {
      signUp: (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => Promise<void>
      signIn: (email: string, password: string) => Promise<void>
      signOut: () => Promise<void>
-     setSession: (session: Session | null) => void
      session: Session | null
+     user: User | null
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-     const [user, setUser] = useState<AuthEntity | null>(null)
      const { showTranslatedFlashMessage } = useFlashMessage()
      const [session, setSession] = useState<Session | null>(null)
+     const [user, setUser] = useState<UserMetadata | null>(null)
 
      const signUp = async (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => {
           try {
@@ -42,9 +41,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           try {
                const loggedInUser = await loginUseCase({ email, password }, showTranslatedFlashMessage)
                if (loggedInUser) {
-                    setSession({
-                         userId: loggedInUser.user.user.id,
-                    })
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
                }
           } catch (error: any) {
@@ -55,40 +51,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const signOut = async () => {
           try {
                await logoutUseCase()
+               await AsyncStorage.removeItem("supabase_session")
                setSession(null)
+               setUser(null)
                showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
           }
      }
 
-     const loadSession = async () => {
-          try {
-               const savedSession = await AsyncStorage.getItem("session")
-               if (savedSession) {
-                    const parsedSession = JSON.parse(savedSession)
-                    setSession(parsedSession)
-               }
-          } catch (error) {
-               console.error("Failed to load session:", error)
-          }
-     }
-
-     const saveSession = async (session: Session | null) => {
-          if (session) {
-               await AsyncStorage.setItem("session", JSON.stringify(session))
-          } else {
-               await AsyncStorage.removeItem("session")
-          }
-     }
-
      useEffect(() => {
-          loadSession()
+          const getSession = async () => {
+               const storedSession = await AsyncStorage.getItem("supabase_session")
+               if (storedSession) {
+                    const parsedSession = JSON.parse(storedSession)
+                    setSession(parsedSession)
+                    setUser(parsedSession.user.user_metadata)
+               }
+          }
 
-          const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-               const updatedSession = session?.user.id ? { userId: session.user.id } : null
-               setSession(updatedSession)
-               saveSession(updatedSession)
+          getSession()
+
+          const { data: subscription } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+               if (newSession) {
+                    await AsyncStorage.setItem("supabase_session", JSON.stringify(newSession))
+                    setSession(newSession)
+                    console.log(newSession.user)
+                    setUser(newSession.user.user_metadata)
+               } else {
+                    await AsyncStorage.removeItem("supabase_session")
+                    setSession(null)
+                    setUser(null)
+               }
           })
 
           return () => {
@@ -96,7 +90,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
      }, [])
 
-     return <AuthContext.Provider value={{ signUp, signIn, signOut, session, setSession }}>{children}</AuthContext.Provider>
+     return <AuthContext.Provider value={{ signUp, signIn, signOut, session, user }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

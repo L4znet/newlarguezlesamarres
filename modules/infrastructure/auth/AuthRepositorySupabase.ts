@@ -1,10 +1,7 @@
-import { createClient, PostgrestSingleResponse, AuthError, AuthChangeEvent, Session, UserResponse } from "@supabase/supabase-js"
 import AuthRepository from "../../domain/auth/AuthRepository"
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || ""
-const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || ""
-const supabase = createClient(supabaseUrl, supabaseKey)
-
+import supabase from "@/supabaseClient"
+import { UserResponse } from "@supabase/auth-js"
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
           try {
@@ -171,6 +168,10 @@ class AuthRepositorySupabase implements AuthRepository {
           return () => {
                subscription.subscription?.unsubscribe()
           }
+     }
+
+     async getCurrentSession() {
+          return supabase.auth.getSession()
      }
 }
 

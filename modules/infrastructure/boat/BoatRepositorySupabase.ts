@@ -1,17 +1,14 @@
-import { createClient } from "@supabase/supabase-js"
 import BoatRepository from "@/modules/domain/boats/BoatRepository"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import boatRepository from "@/modules/domain/boats/BoatRepository"
-import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
 import supabase from "@/supabaseClient"
-import { useSession } from "@/modules/context/SessionProvider"
+import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
 class BoatRepositorySupabase implements BoatRepository {
      async createBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity> {
-          const currentUser = await getCurrentUserUseCase()
+          const session = await getCurrentSessionUseCase()
 
           console.warn({
-               profile_id: currentUser?.user.user.id,
+               profile_id: session.data.session?.user.id,
                boat_name: boatName,
                boat_type: boatType,
                boat_description: boatDescription,
@@ -20,7 +17,7 @@ class BoatRepositorySupabase implements BoatRepository {
 
           try {
                const { data: boatData, error: boatError } = await supabase.from("boats").insert({
-                    profile_id: currentUser?.user.user.id,
+                    profile_id: session.data.session?.user.id,
                     boat_name: boatName,
                     boat_type: boatType.toString(),
                     boat_description: boatDescription,
@@ -28,11 +25,8 @@ class BoatRepositorySupabase implements BoatRepository {
                })
 
                if (boatError) {
-                    console.log("error", boatError)
                     throw new Error(`Error adding boat: ${boatError.message}`)
                }
-
-               console.log(boatData)
           } catch (error) {
                console.log("error", error)
                throw new Error((error as Error).message)

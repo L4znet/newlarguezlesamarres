@@ -10,11 +10,6 @@ export default function Layout() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     const { session } = useAuth()
-
-     if (!session) {
-          router.replace("/(app)/(auth)/signin")
-     }
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>

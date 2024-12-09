@@ -12,7 +12,7 @@ export default function Layout() {
      const { session } = useAuth()
 
      if (!session) {
-          router.replace("/(app)/(auth)/signin")
+          router.replace("/(app)/(auth)")
      }
      return (
           <Tabs

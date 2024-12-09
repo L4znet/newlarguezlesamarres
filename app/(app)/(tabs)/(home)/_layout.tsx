@@ -9,9 +9,6 @@ import TabBar from "@/modules/components/TabBar"
 export default function Layout() {
      const { session } = useAuth()
 
-     if (!session) {
-          router.replace("/(app)/(auth)/signin")
-     }
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>

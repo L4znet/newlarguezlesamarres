@@ -6,11 +6,6 @@ import { useAuth } from "@/modules/context/AuthProvider"
 import { router } from "expo-router"
 
 export default function Layout() {
-     const { session } = useAuth()
-
-     if (!session) {
-          router.replace("/(app)/(auth)/signin")
-     }
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>

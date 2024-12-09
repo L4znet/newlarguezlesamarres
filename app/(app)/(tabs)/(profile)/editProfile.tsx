@@ -16,10 +16,10 @@ export default function editProfile() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      const [userData, setUserData] = useState({
-          lastname: user?.user.user.user_metadata.lastname,
-          firstname: user?.user.user.user_metadata.firstname,
-          username: user?.user.user.user_metadata.username,
-          avatar: user?.user.user.user_metadata.avatar_url || "",
+          lastname: profile?.lastname || "",
+          firstname: profile?.firstname || "",
+          username: profile?.username || "",
+          avatar: profile?.avatar || "",
      })
 
      const handleAvatarChange = async () => {

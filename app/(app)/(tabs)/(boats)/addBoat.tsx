@@ -71,10 +71,7 @@ export default function AddBoat() {
      }
 
      const createBoat = async () => {
-          const currentUser = await getCurrentUserUseCase()
-
           const boatToInsert = {
-               profile_id: currentUser?.user.user.id,
                boatName: boat.boatName,
                boatDescription: boat.boatDescription,
                boatCapacity: boat.boatCapacity,

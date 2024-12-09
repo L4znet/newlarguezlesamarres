@@ -7,12 +7,11 @@ export const createBoatUseCase = async (boatName: string, boatDescription: strin
 
           const newBoat = await BoatRepositorySupabase.createBoat(boatName, boatDescription, boatCapacity, boatType)
 
-          console.log(newBoat)
-
           // await BoatRepositorySupabase.uploadAndInsertImages(boatId, images)
 
           return newBoat as Boat
      } catch (error) {
+          console.log("error", error)
           throw new Error((error as Error).message)
      }
 }
