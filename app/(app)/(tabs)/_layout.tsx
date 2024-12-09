@@ -6,12 +6,14 @@ import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Layout() {
-     const { user } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     useEffect(() => {
-          if (!user) router.replace("/(app)/(auth)")
-     }, [user])
+
+     const { session } = useAuth()
+
+     if (!session) {
+          router.replace("/(app)/(auth)/signin")
+     }
      return (
           <Tabs
                tabBar={(props) => <TabBar {...props} />}

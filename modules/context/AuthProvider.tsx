@@ -4,15 +4,19 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
-import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
-import { subscribeToAuthChangesUseCase } from "@/modules/application/auth/subscribeToAuthChangeUseCase"
 import { router } from "expo-router"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import supabase from "@/supabaseClient"
+type Session = {
+     userId: string
+}
 
 type AuthContextType = {
-     user: AuthEntity | null
      signUp: (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => Promise<void>
      signIn: (email: string, password: string) => Promise<void>
      signOut: () => Promise<void>
+     setSession: (session: Session | null) => void
+     session: Session | null
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -20,21 +24,7 @@ const AuthContext = createContext<AuthContextType | null>(null)
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const [user, setUser] = useState<AuthEntity | null>(null)
      const { showTranslatedFlashMessage } = useFlashMessage()
-
-     const fetchCurrentUser = async () => {
-          try {
-               const currentUser = await getCurrentUserUseCase()
-               if (currentUser) {
-                    setUser(currentUser)
-               } else {
-                    setUser(null)
-                    console.log("Aucun utilisateur connecté.")
-               }
-          } catch (error: any) {
-               console.error("Erreur lors de la récupération de l'utilisateur actuel :", error)
-               showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "Erreur lors de la récupération de l'utilisateur. Réessayez plus tard." })
-          }
-     }
+     const [session, setSession] = useState<Session | null>(null)
 
      const signUp = async (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => {
           try {
@@ -52,8 +42,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           try {
                const loggedInUser = await loginUseCase({ email, password }, showTranslatedFlashMessage)
                if (loggedInUser) {
+                    setSession({
+                         userId: loggedInUser.user.user.id,
+                    })
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged in successfully" })
-                    setUser(loggedInUser)
                }
           } catch (error: any) {
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
@@ -63,53 +55,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const signOut = async () => {
           try {
                await logoutUseCase()
-               setUser(null)
+               setSession(null)
                showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
           }
      }
 
+     const loadSession = async () => {
+          try {
+               const savedSession = await AsyncStorage.getItem("session")
+               if (savedSession) {
+                    const parsedSession = JSON.parse(savedSession)
+                    setSession(parsedSession)
+               }
+          } catch (error) {
+               console.error("Failed to load session:", error)
+          }
+     }
+
+     const saveSession = async (session: Session | null) => {
+          if (session) {
+               await AsyncStorage.setItem("session", JSON.stringify(session))
+          } else {
+               await AsyncStorage.removeItem("session")
+          }
+     }
+
      useEffect(() => {
-          const fetchCurrentUser = async () => {
-               try {
-                    const currentUser = await getCurrentUserUseCase()
+          loadSession()
 
-                    if (currentUser) {
-                         setUser(currentUser)
-                    } else {
-                         setUser(null)
-                         console.log("Aucun utilisateur connecté.")
-                    }
-               } catch (error: any) {
-                    console.error("Erreur lors de la récupération de l'utilisateur actuel :", error)
-                    showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "Erreur lors de la récupération de l'utilisateur. Réessayez plus tard." })
-               }
-          }
-
-          const initialCheck = async () => {
-               const isConnected = await getCurrentUserUseCase()
-               if (isConnected) {
-                    fetchCurrentUser()
-               }
-          }
-
-          initialCheck()
-
-          const unsubscribe = subscribeToAuthChangesUseCase((user) => {
-               if (user) {
-                    fetchCurrentUser()
-               } else {
-                    setUser(null)
-               }
+          const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+               const updatedSession = session?.user.id ? { userId: session.user.id } : null
+               setSession(updatedSession)
+               saveSession(updatedSession)
           })
 
           return () => {
-               unsubscribe()
+               subscription.subscription?.unsubscribe()
           }
      }, [])
 
-     return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>
+     return <AuthContext.Provider value={{ signUp, signIn, signOut, session, setSession }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

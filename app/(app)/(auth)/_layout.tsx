@@ -6,14 +6,10 @@ import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Layout() {
-     const { user } = useAuth()
-
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     useEffect(() => {
-          if (user) router.replace("/(app)/(tabs)/(home)")
-     }, [user])
+     const { session } = useAuth()
 
      interface Route {
           key: string
@@ -30,6 +26,10 @@ export default function Layout() {
           descriptors: any
           navigation: any
           insets: any
+     }
+
+     if (session) {
+          router.replace("/(app)/(tabs)/(home)")
      }
 
      return (

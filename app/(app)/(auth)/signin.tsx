@@ -36,7 +36,7 @@ export default function Signin() {
                     <Text variant="titleLarge" style={styles.noAccount}>
                          {t("login_noaccount")}
                     </Text>
-                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/(app)/(auth)/signin")}>
+                    <Button style={styles.button} mode="outlined" onPress={() => router.replace("/signup")}>
                          {t("login_signup_btn")}
                     </Button>
                </View>

@@ -7,10 +7,11 @@ import { router, Tabs } from "expo-router"
 import TabBar from "@/modules/components/TabBar"
 
 export default function Layout() {
-     const { user } = useAuth()
-     useEffect(() => {
-          if (!user) router.replace("/(app)/(auth)")
-     }, [user])
+     const { session } = useAuth()
+
+     if (!session) {
+          router.replace("/(app)/(auth)/signin")
+     }
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>

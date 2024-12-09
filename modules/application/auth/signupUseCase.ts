@@ -37,10 +37,10 @@ export const signupUseCase = async (
           return
      }
 
-     const { email, password, firstname, lastname, username, avatar_url } = parsedData.data
+     const { email, password, firstname, lastname, username } = parsedData.data
 
      try {
-          const { user, error } = await AuthRepositorySupabase.signUp(email, password, lastname, firstname, username, avatar_url)
+          const { user, error } = await AuthRepositorySupabase.signUp(email, password, lastname, firstname, username)
 
           if (error) {
                showTranslatedFlashMessage("danger", {
@@ -60,6 +60,7 @@ export const signupUseCase = async (
           if (error instanceof Error) {
                errorMessage = error.message
           }
+          console.log("error", error)
 
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",

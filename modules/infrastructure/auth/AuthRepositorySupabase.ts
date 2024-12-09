@@ -29,6 +29,7 @@ class AuthRepositorySupabase implements AuthRepository {
                return { user, error }
           } catch (error: unknown) {
                if (error instanceof Error) {
+                    console.log("error", error)
                     throw error
                } else {
                     throw new Error("Une erreur inattendue est survenue.")
@@ -63,7 +64,7 @@ class AuthRepositorySupabase implements AuthRepository {
                error,
           } = await supabase.auth.getUser()
           if (error) {
-               throw new Error("Erreur lors de la récupération de l'utilisateur courant." + error.message)
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
           }
           if (!user) {
                throw new Error("Aucun utilisateur n'est connecté.")
@@ -76,22 +77,15 @@ class AuthRepositorySupabase implements AuthRepository {
                data: { user },
                error,
           } = await supabase.auth.getUser()
-
-          if (error) {
-               throw new Error("Erreur lors de la récupération de l'utilisateur courant." + error.message)
+          if (error || !user) {
+               throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
           }
-          if (!user) {
-               throw new Error("Aucun utilisateur n'est connecté.")
-          }
-
-          const { email, user_metadata: { lastname, firstname, username, avatar_url } = {} } = user
-
           return {
-               email,
-               lastname,
-               firstname,
-               username,
-               avatar_url,
+               email: user.email,
+               lastname: user.user_metadata.lastname,
+               firstname: user.user_metadata.firstname,
+               username: user.user_metadata.username,
+               avatar_url: user.user_metadata.avatar_url,
           }
      }
 

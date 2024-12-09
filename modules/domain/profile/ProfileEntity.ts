@@ -8,6 +8,6 @@ export default class ProfileEntity {
      ) {}
 
      static fromSupabaseUser(profile: Profile): ProfileEntity {
-          return new ProfileEntity(profile.email, profile.firstname, profile.lastname, profile.username, profile.avatar_url)
+          return new ProfileEntity(profile.email, profile.firstname, profile.lastname, profile.username, profile.avatar)
      }
 }

@@ -19,11 +19,12 @@ export default function editProfile() {
           lastname: user?.user.user.user_metadata.lastname,
           firstname: user?.user.user.user_metadata.firstname,
           username: user?.user.user.user_metadata.username,
-          avatar: user?.user.user.user_metadata.avatar_url,
+          avatar: user?.user.user.user_metadata.avatar_url || "",
      })
 
      const handleAvatarChange = async () => {
           try {
+               // TODO ajouter l'avatar dans un bucket avec photo par défaut !!!!
                const result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
                     allowsEditing: true,

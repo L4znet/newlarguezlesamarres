@@ -3,11 +3,14 @@ import { StyleSheet, View, Image, ScrollView, SafeAreaView, KeyboardAvoidingView
 import { Button, TextInput, useTheme } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
-import { useBoatTypeOptions } from "@/constants/BoatTypes"
+import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
 import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
+import Boat from "@/modules/domain/boats/BoatEntity"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -21,17 +24,25 @@ export default function AddBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
+     console.log(boatTypeOptions)
 
-     const [boat, setBoat] = useState<Boat>({
-          boat_name: "Mon super bateau",
-          boat_description: "La description de mon bateau",
-          boat_capacity: "10",
-          boat_type: 1,
-          boat_images: [
-               {
-                    uri: "",
-                    caption: "",
-               },
+     const [boat, setBoat] = useState<{
+          boatName: string
+          boatDescription: string
+          boatCapacity: string
+          boatType: number
+          boatImages: { uri: string; caption: string }[]
+     }>({
+          boatName: "Mon super bateau",
+          boatDescription: "fsdfdskojmqksljlm",
+          boatCapacity: "10",
+          boatType: 1,
+          boatImages: [
+               { uri: "https://picsum.photos/200/300", caption: "Image 1" },
+               { uri: "https://picsum.photos/200/300", caption: "Image 2" },
+               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
+               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
+               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
           ],
      })
 
@@ -48,7 +59,7 @@ export default function AddBoat() {
      const theme = useTheme()
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
-          const thumbnails = [] as BoatThumbnail[]
+          const thumbnails = [] as { uri: string; caption: string | null | undefined }[]
 
           result.assets.map((asset) => {
                thumbnails.push({ uri: asset.uri, caption: asset.fileName })
@@ -56,16 +67,22 @@ export default function AddBoat() {
 
           console.log(thumbnails)
 
-          setBoat({ ...boat, boat_images: thumbnails })
+          setBoat({ ...boat, boatImages: thumbnails })
      }
 
      const createBoat = async () => {
-          if (!types.id) {
-               setType({ ...types, error: "Please select a value." })
-               return
+          const currentUser = await getCurrentUserUseCase()
+
+          const boatToInsert = {
+               profile_id: currentUser?.user.user.id,
+               boatName: boat.boatName,
+               boatDescription: boat.boatDescription,
+               boatCapacity: boat.boatCapacity,
+               boatType: types.id,
+               boatImages: boat.boatImages,
           }
 
-          await createBoatUseCase(boat.boat_name, boat.boat_description, boat.boat_capacity, types.id, boat.boat_images)
+          await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages)
      }
 
      const handleThumbnailChange = async () => {
@@ -90,9 +107,9 @@ export default function AddBoat() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boat_name} onChangeText={(boat_name) => setBoat({ ...boat, boat_name })} />
-                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boat_description} onChangeText={(boat_description) => setBoat({ ...boat, boat_description })} />
-                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boat_capacity} keyboardType="decimal-pad" onChangeText={(boat_capacity) => setBoat({ ...boat, boat_capacity })} />
+                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(boatName) => setBoat({ ...boat, boatName })} />
+                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(boatDescription) => setBoat({ ...boat, boatDescription })} />
+                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(boatCapacity) => setBoat({ ...boat, boatCapacity })} />
 
                          <View style={styles.selector}>
                               <PaperSelect
@@ -117,7 +134,7 @@ export default function AddBoat() {
                               />
                          </View>
 
-                         <Slideshow images={boat.boat_images} />
+                         <Slideshow images={boat.boatImages} />
 
                          <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                               {t("change_thumbnail_btn")}

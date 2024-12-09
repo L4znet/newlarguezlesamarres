@@ -9,12 +9,12 @@ import { useTheme } from "react-native-paper"
 import { Appbar } from "react-native-paper"
 
 export default function Layout() {
-     const { user } = useAuth()
-     useEffect(() => {
-          if (!user) router.replace("/(app)/(auth)")
-     }, [user])
-
      const theme = useTheme()
+     const { session } = useAuth()
+
+     if (!session) {
+          router.replace("/(app)/(auth)/signin")
+     }
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>
