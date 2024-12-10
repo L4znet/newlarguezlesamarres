@@ -29,6 +29,13 @@ export default function Layout() {
                     <Drawer.Screen
                          name="editBoat"
                          options={{
+                              title: "Modifier un bateau",
+                              drawerItemStyle: { display: "none" },
+                         }}
+                    />
+                    <Drawer.Screen
+                         name="boatDetails"
+                         options={{
                               drawerItemStyle: { display: "none" },
                          }}
                     />

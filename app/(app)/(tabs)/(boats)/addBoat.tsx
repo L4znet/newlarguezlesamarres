@@ -44,7 +44,7 @@ export default function AddBoat() {
           result.assets.map((asset) => {
                if (asset.base64) {
                     thumbnails.push({
-                         uri: asset.uri,
+                         url: asset.uri,
                          caption: asset.fileName,
                          contentType: asset.type,
                          base64: asset.base64,

@@ -5,12 +5,12 @@ export default class BoatEntity {
           public readonly boatDescription: string,
           public readonly boatCapacity: string,
           public readonly boatType: number,
-          public readonly boatId?: string
+          public readonly boatId?: string,
+          public readonly boatImages?: Boat["boatImages"]
      ) {}
 
-     // Transformation des données reçues de Supabase
-     static fromSupabaseData(data: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number; id?: string }): BoatEntity {
-          return new BoatEntity(data.profile_id, data.boat_name, data.boat_description, data.boat_capacity, data.boat_type, data.id)
+     static fromSupabaseData(data: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number; id?: string; boat_images: Boat["boatImages"] }): BoatEntity {
+          return new BoatEntity(data.profile_id, data.boat_name, data.boat_description, data.boat_capacity, data.boat_type, data.id, data.boat_images)
      }
 
      toSupabaseData(): {

@@ -4,13 +4,10 @@ interface Boat {
      boatCapacity: string
      boatType: number
      boatImages: {
-          uri: string
+          url: string
           caption: string | undefined | null
-          contentType: string | undefined
-          base64: string
-          dimensions: { width: number; height: number }
-          size: number | undefined
-          mimeType: string | undefined
-          fileName: string | undefined | null
+          isDefault: boolean
+          boatId: string | undefined
+          id: string
      }[]
 }

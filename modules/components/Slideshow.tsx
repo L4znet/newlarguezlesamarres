@@ -4,7 +4,7 @@ import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, FlatList }
 const { width } = Dimensions.get("window")
 
 interface SlideshowProps {
-     images: { uri: string }[]
+     images: { url: string }[]
 }
 
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
@@ -31,7 +31,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item }) => (
                          <View style={styles.imageContainer}>
-                              <Image source={{ uri: item.uri }} style={styles.image} />
+                              <Image source={{ uri: item.url }} style={styles.image} />
                          </View>
                     )}
                     keyExtractor={(_, index) => index.toString()}

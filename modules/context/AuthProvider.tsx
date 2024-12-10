@@ -3,19 +3,17 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { signupUseCase } from "@/modules/application/auth/signupUseCase"
 import { loginUseCase } from "@/modules/application/auth/loginUseCase"
 import { logoutUseCase } from "@/modules/application/auth/logoutUseCase"
-import { useSession } from "@/modules/context/SessionProvider"
 import { router } from "expo-router"
 import supabase from "@/supabaseClient"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Session, UserMetadata } from "@supabase/supabase-js"
-import { User } from "@supabase/auth-js"
 
 type AuthContextType = {
      signUp: (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => Promise<void>
      signIn: (email: string, password: string) => Promise<void>
      signOut: () => Promise<void>
      session: Session | null
-     user: User | null
+     user: UserMetadata | null
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)

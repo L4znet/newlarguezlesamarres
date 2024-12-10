@@ -24,7 +24,7 @@ export const createBoatUseCase = async (
 
           const newBoat = await BoatRepositorySupabase.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
 
-          await BoatRepositorySupabase.uploadAndInsertImages(newBoat?.boatId, boatImages)
+          await BoatRepositorySupabase.uploadAndUpsertImages(newBoat?.boatId, boatImages)
 
           return newBoat as Boat
      } catch (error) {

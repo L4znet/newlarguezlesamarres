@@ -1,65 +1,58 @@
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { AnimatedFAB, Button, Card, FAB, Text } from "react-native-paper"
-import { useState } from "react"
+import React, { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react"
 import { router } from "expo-router"
+import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
+import Slideshow from "@/modules/components/Slideshow"
 
 export default function index() {
-     const [isExtended, setIsExtended] = useState(false)
-     const [visible, setVisible] = useState(true)
+     const [boats, setBoats] = useState({})
+     const [isLoading, setIsLoading] = useState(true)
+
+     useEffect(() => {
+          const fetchBoats = async () => {
+               try {
+                    const fetchedBoats = await getBoatsUseCase()
+                    setBoats(fetchedBoats)
+               } catch (error) {
+                    console.error("Erreur lors de la récupération des bateaux :", error)
+               } finally {
+                    setIsLoading(false)
+               }
+          }
+
+          fetchBoats()
+     }, [boats])
+
+     if (isLoading) {
+          return (
+               <View style={styles.container}>
+                    <Text>Chargement des bateaux...</Text>
+               </View>
+          )
+     }
+
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <Card style={styles.card}>
-                              <Card.Content>
-                                   <Text variant="titleLarge">Card title</Text>
-                                   <Text variant="bodyMedium">Card content</Text>
-                              </Card.Content>
-                              <Card.Actions>
-                                   <Button>Cancel</Button>
-                                   <Button>Ok</Button>
-                              </Card.Actions>
-                         </Card>
-                         <Card style={styles.card}>
-                              <Card.Content>
-                                   <Text variant="titleLarge">Card title</Text>
-                                   <Text variant="bodyMedium">Card content</Text>
-                              </Card.Content>
-                              <Card.Actions>
-                                   <Button>Cancel</Button>
-                                   <Button>Ok</Button>
-                              </Card.Actions>
-                         </Card>
-                         <Card style={styles.card}>
-                              <Card.Content>
-                                   <Text variant="titleLarge">Card title</Text>
-                                   <Text variant="bodyMedium">Card content</Text>
-                              </Card.Content>
-                              <Card.Actions>
-                                   <Button>Cancel</Button>
-                                   <Button>Ok</Button>
-                              </Card.Actions>
-                         </Card>
-                         <Card style={styles.card}>
-                              <Card.Content>
-                                   <Text variant="titleLarge">Card title</Text>
-                                   <Text variant="bodyMedium">Card content</Text>
-                              </Card.Content>
-                              <Card.Actions>
-                                   <Button>Cancel</Button>
-                                   <Button>Ok</Button>
-                              </Card.Actions>
-                         </Card>
-                         <Card style={styles.card}>
-                              <Card.Content>
-                                   <Text variant="titleLarge">Card title</Text>
-                                   <Text variant="bodyMedium">Card content</Text>
-                              </Card.Content>
-                              <Card.Actions>
-                                   <Button>Cancel</Button>
-                                   <Button>Ok</Button>
-                              </Card.Actions>
-                         </Card>
+                         {boats.map((boat: { boatId: string; boatName: string | number | boolean; boatDescription: string | number | boolean; boatCapacity: string | number | boolean; boatType: string | number | boolean }) => {
+                              return (
+                                   <Card key={boat.boatId} style={styles.card}>
+                                        <Slideshow images={boat.boatImages} />
+                                        <Card.Title title={boat.boatName} subtitle={boat.boatDescription} />
+                                        <Card.Content>
+                                             <Text>ID : {boat.boatId}</Text>
+                                             <Text>Capacité : {boat.boatCapacity}</Text>
+                                             <Text>Type : {boat.boatType}</Text>
+                                        </Card.Content>
+                                        <Card.Actions>
+                                             <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: boat.boatId } })}>Modifier</Button>
+                                             <Button onPress={() => router.navigate({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: boat.boatId } })}>Supprimer</Button>
+                                        </Card.Actions>
+                                   </Card>
+                              )
+                         })}
                     </ScrollView>
                </SafeAreaView>
                <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(boats)/addBoat")} />
@@ -72,13 +65,6 @@ const styles = StyleSheet.create({
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-     },
-     title: {
-          fontSize: 24,
-          fontWeight: "bold",
-     },
-     text: {
-          fontSize: 16,
      },
      scrollViewBoats: {
           width: "90%",
