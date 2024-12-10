@@ -1,31 +1,27 @@
-import React, { useEffect, useRef, useState } from "react"
-import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
-import { Button, TextInput, useTheme } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { PaperSelect } from "react-native-paper-select"
-import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
-import * as ImagePicker from "expo-image-picker"
-import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
-import Slideshow from "@/modules/components/Slideshow"
-import { editBoatUseCase } from "@/modules/application/boats/editBoatUseCase"
-import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
-import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
+import { useBoatTypeOptions } from "@/constants/BoatTypes"
+import { useEffect, useState } from "react"
 import { useLocalSearchParams } from "expo-router"
-
-export const selectValidator = (value: any) => {
-     if (!value || value.length <= 0) {
-          return "Please select a value."
-     }
-
-     return ""
-}
+import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
+import { updateBoatUseCase } from "@/modules/application/boats/updateBoatUseCase"
+import * as ImagePicker from "expo-image-picker"
+import { PaperSelect } from "react-native-paper-select"
+import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platform } from "react-native"
+import { Button, TextInput } from "react-native-paper"
+import Slideshow from "@/modules/components/Slideshow"
 
 export default function EditBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
 
-     const [boat, setBoat] = useState({})
+     const [boat, setBoat] = useState({
+          boatName: "",
+          boatDescription: "",
+          boatCapacity: "",
+          boatType: 0,
+          boatImages: [],
+     })
 
      const [types, setType] = useState({
           value: boatTypeOptions[1].value,
@@ -39,50 +35,30 @@ export default function EditBoat() {
      const boatId = params.boatId
 
      useEffect(() => {
-          const fetchBoats = async () => {
+          const loadBoat = async () => {
                try {
-                    const fetchedBoats = await getSingleBoatUseCase(boatId)
+                    const fetchedBoat = await getSingleBoatUseCase(boatId)
+                    const boatType = boatTypeOptions.find((type) => type.id === fetchedBoat.boatType)
 
-                    const boatType = boatTypeOptions.find((type) => type.id === fetchedBoats.boatType)
-                    const selectedList = boatType ? [boatType] : []
+                    setBoat({
+                         boatName: fetchedBoat.boatName,
+                         boatDescription: fetchedBoat.boatDescription,
+                         boatCapacity: fetchedBoat.boatCapacity,
+                         boatType: fetchedBoat.boatType,
+                         boatImages: fetchedBoat.boatImages,
+                    })
 
-                    setBoat(fetchedBoats)
+                    setType((prev) => ({
+                         ...prev,
+                         selectedList: boatType ? [boatType] : [],
+                    }))
                } catch (error) {
                     console.error("Erreur lors de la récupération des bateaux :", error)
-               } finally {
-                    //   setIsLoading(false)
                }
           }
 
-          fetchBoats()
-     }, [boat])
-
-     const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
-          const thumbnails = [] as unknown as Boat["boatImages"]
-
-          result.assets.map((asset) => {
-               if (asset.uri) {
-                    thumbnails.push({
-                         url: asset.uri,
-                         caption: asset.fileName,
-                         isDefault: false,
-                         boatId: boatId,
-                    })
-               } else {
-                    throw new Error("Error while selecting image: base64 is undefined")
-               }
-          })
-
-          setBoat({ ...boat, boatImages: thumbnails })
-     }
-
-     const editBoat = async () => {
-          try {
-               const result = await editBoatUseCase(boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages)
-          } catch (error) {
-               console.error("Error while editing boat:", error)
-          }
-     }
+          loadBoat()
+     }, [boatId])
 
      const handleThumbnailChange = async () => {
           try {
@@ -96,10 +72,27 @@ export default function EditBoat() {
                     base64: true,
                })
                if (!result.canceled) {
-                    handleMultiplePicture(result)
+                    const thumbnails = result.assets.map((asset) => ({
+                         url: asset.uri,
+                         caption: asset.fileName || "",
+                         isDefault: false,
+                         boatId: boatId,
+                    }))
+                    setBoat((prev) => ({ ...prev, boatImages: thumbnails }))
                }
           } catch (error) {
                console.error("Error while selecting image:", error)
+          }
+     }
+
+     const editBoat = async () => {
+          console.log("Boat state before editing:", boat)
+          console.log("Types state before editing:", types)
+          try {
+               const result = await updateBoatUseCase(boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages)
+               console.log("Bateau modifié :", result)
+          } catch (error) {
+               console.error("Error while editing boat:", error)
           }
      }
 
@@ -107,22 +100,23 @@ export default function EditBoat() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(boatName) => setBoat({ ...boat, boatName })} />
-                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(boatDescription) => setBoat({ ...boat, boatDescription })} />
-                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(boatCapacity) => setBoat({ ...boat, boatCapacity })} />
+                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(text) => setBoat((prev) => ({ ...prev, boatName: text }))} />
+                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(text) => setBoat((prev) => ({ ...prev, boatDescription: text }))} />
+                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(text) => setBoat((prev) => ({ ...prev, boatCapacity: text }))} />
 
                          <View style={styles.selector}>
                               <PaperSelect
                                    label={t("boat_type_placeholder")}
                                    value={types.value}
-                                   onSelection={(value: any) => {
-                                        setType({
-                                             ...types,
+                                   onSelection={(value) => {
+                                        setType((prev) => ({
+                                             ...prev,
                                              value: value.text,
                                              selectedList: value.selectedList,
                                              error: "",
                                              id: value.selectedList[0]._id,
-                                        })
+                                        }))
+                                        setBoat((prev) => ({ ...prev, boatType: value.selectedList[0].id }))
                                    }}
                                    arrayList={[...types.list]}
                                    selectedArrayList={types.selectedList}
@@ -140,7 +134,7 @@ export default function EditBoat() {
                               {t("change_thumbnail_btn")}
                          </Button>
 
-                         <Button mode="contained" style={styles.button} onPress={() => editBoat()}>
+                         <Button mode="contained" style={styles.button} onPress={editBoat}>
                               {t("edit_boat_button")}
                          </Button>
                     </ScrollView>

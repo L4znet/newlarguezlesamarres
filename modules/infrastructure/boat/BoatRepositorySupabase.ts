@@ -31,8 +31,11 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async editBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
+     async updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
           try {
+               // Convertit boatId en chaîne si c'est un tableau
+               const boatIdString = Array.isArray(boatId) ? boatId[0] : boatId
+
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
                     .update({
@@ -42,18 +45,21 @@ class BoatRepositorySupabase implements BoatRepository {
                          boat_description: boatDescription,
                          boat_capacity: boatCapacity,
                     })
-                    .eq("id", boatId)
+                    .eq("id", boatIdString)
                     .select()
 
-               if (boatData) {
+               if (boatError) {
+                    console.error("boatError:", boatError)
+                    throw new Error(`Error updating boat: ${boatError.message}`)
+               }
+
+               if (boatData && boatData.length > 0) {
                     return new BoatEntity(boatData[0].profile_id, boatData[0].boat_name, boatData[0].boat_description, boatData[0].boat_capacity, boatData[0].boat_type, boatData[0].id)
                }
 
-               if (boatError) {
-                    console.log("boatError", boatError)
-                    throw new Error(`Error updating boat: ${boatError.message}`)
-               }
+               throw new Error("No data returned from boat update.")
           } catch (error) {
+               console.error("Error in BoatRepositorySupabase.updateBoat:", error)
                throw new Error((error as Error).message)
           }
      }
