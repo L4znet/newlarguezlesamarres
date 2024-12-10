@@ -19,8 +19,6 @@ export const createBoatUseCase = async (
      }[]
 ) => {
      try {
-          const uploadedImageUrls = []
-
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
 

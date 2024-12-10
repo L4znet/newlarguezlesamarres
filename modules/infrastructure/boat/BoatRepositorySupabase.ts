@@ -30,19 +30,7 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async uploadAndInsertImages(
-          boatId: string | undefined,
-          images: {
-               uri: string
-               caption: string | undefined | null
-               contentType: string | undefined
-               base64: string
-               dimensions: { width: number; height: number }
-               size: number | undefined
-               mimeType: string | undefined
-               fileName: string | undefined | null
-          }[]
-     ): Promise<void> {
+     async uploadAndInsertImages(boatId: string | undefined, images: Boat["boatImages"]): Promise<void> {
           try {
                const uploadedImages = [] as { id: string; fullPath: string; path: string; caption: string }[]
 

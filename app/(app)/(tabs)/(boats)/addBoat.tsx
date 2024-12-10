@@ -42,16 +42,20 @@ export default function AddBoat() {
           const thumbnails = [] as unknown as Boat["boatImages"]
 
           result.assets.map((asset) => {
-               thumbnails.push({
-                    uri: asset.uri,
-                    caption: asset.fileName,
-                    contentType: asset.type,
-                    base64: asset.base64,
-                    dimensions: { width: asset.width, height: asset.height },
-                    size: asset.fileSize,
-                    mimeType: asset.mimeType,
-                    fileName: asset.fileName,
-               })
+               if (asset.base64) {
+                    thumbnails.push({
+                         uri: asset.uri,
+                         caption: asset.fileName,
+                         contentType: asset.type,
+                         base64: asset.base64,
+                         dimensions: { width: asset.width, height: asset.height },
+                         size: asset.fileSize,
+                         mimeType: asset.mimeType,
+                         fileName: asset.fileName,
+                    })
+               } else {
+                    throw new Error("Error while selecting image: base64 is undefined")
+               }
           })
 
           setBoat({ ...boat, boatImages: thumbnails })
