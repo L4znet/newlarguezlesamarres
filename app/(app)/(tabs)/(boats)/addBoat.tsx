@@ -24,7 +24,6 @@ export default function AddBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
-     console.log(boatTypeOptions)
 
      const [boat, setBoat] = useState<{
           boatName: string
@@ -64,8 +63,6 @@ export default function AddBoat() {
           result.assets.map((asset) => {
                thumbnails.push({ uri: asset.uri, caption: asset.fileName })
           })
-
-          console.log(thumbnails)
 
           setBoat({ ...boat, boatImages: thumbnails })
      }

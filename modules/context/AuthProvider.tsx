@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                if (newSession) {
                     await AsyncStorage.setItem("supabase_session", JSON.stringify(newSession))
                     setSession(newSession)
-                    console.log(newSession.user)
+
                     setUser(newSession.user.user_metadata)
                } else {
                     await AsyncStorage.removeItem("supabase_session")

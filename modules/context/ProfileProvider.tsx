@@ -43,7 +43,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
                const updatedUser = await updateProfileUseCase({ firstname, lastname, username }, showTranslatedFlashMessage)
                const user = updatedUser as unknown as Profile
                if (updatedUser) {
-                    console.log("Modifié avec succès")
                     showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User profile updated" })
                     setProfile(user)
                     router.push("/(app)/(tabs)/(profile)")
@@ -84,7 +83,6 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
      useEffect(() => {
           const initializeProfile = async () => {
                const isConnected = await checkIfUserIsConnected()
-               console.log("isConnected", isConnected)
                if (isConnected) {
                     await refreshProfile()
                }

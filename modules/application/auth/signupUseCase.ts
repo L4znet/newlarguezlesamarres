@@ -60,7 +60,6 @@ export const signupUseCase = async (
           if (error instanceof Error) {
                errorMessage = error.message
           }
-          console.log("error", error)
 
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",

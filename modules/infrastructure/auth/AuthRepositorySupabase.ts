@@ -26,7 +26,6 @@ class AuthRepositorySupabase implements AuthRepository {
                return { user, error }
           } catch (error: unknown) {
                if (error instanceof Error) {
-                    console.log("error", error)
                     throw error
                } else {
                     throw new Error("Une erreur inattendue est survenue.")

@@ -14,7 +14,6 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 })
 
 AppState.addEventListener("change", async (state) => {
-     console.log("AppState", state)
      if (state === "active") {
           await supabase.auth.startAutoRefresh()
      } else {

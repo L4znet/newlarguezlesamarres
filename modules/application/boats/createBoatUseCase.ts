@@ -11,7 +11,6 @@ export const createBoatUseCase = async (boatName: string, boatDescription: strin
 
           return newBoat as Boat
      } catch (error) {
-          console.log("error", error)
           throw new Error((error as Error).message)
      }
 }
