@@ -1,15 +1,16 @@
-type Boat = {
+interface Boat {
      boatName: string
      boatDescription: string
      boatCapacity: string
      boatType: number
-     boatImages: { uri: string; caption: string }[]
-}
-
-type SupabaseBoat = {
-     boat_name: string
-     boat_description: string
-     boat_capacity: string
-     boat_type: number
-     boat_images: { uri: string; caption: string }[]
+     boatImages: {
+          uri: string
+          caption: string | undefined | null
+          contentType: string | undefined
+          base64: string | undefined | null
+          dimensions: { width: number; height: number }
+          size: number | undefined
+          mimeType: string | undefined
+          fileName: string | undefined | null
+     }[]
 }

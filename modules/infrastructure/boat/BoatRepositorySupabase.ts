@@ -1,30 +1,28 @@
 import BoatRepository from "@/modules/domain/boats/BoatRepository"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
-import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { decode } from "base64-arraybuffer"
 
 class BoatRepositorySupabase implements BoatRepository {
-     async createBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity> {
-          const session = await getCurrentSessionUseCase()
-
-          console.warn({
-               profile_id: session.data.session?.user.id,
-               boat_name: boatName,
-               boat_type: boatType,
-               boat_description: boatDescription,
-               boat_capacity: boatCapacity,
-          })
-
+     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
           try {
-               const { data: boatData, error: boatError } = await supabase.from("boats").insert({
-                    profile_id: session.data.session?.user.id,
-                    boat_name: boatName,
-                    boat_type: boatType.toString(),
-                    boat_description: boatDescription,
-                    boat_capacity: boatCapacity,
-               })
+               const { data: boatData, error: boatError } = await supabase
+                    .from("boats")
+                    .insert({
+                         profile_id: profile_id,
+                         boat_name: boatName,
+                         boat_type: boatType,
+                         boat_description: boatDescription,
+                         boat_capacity: boatCapacity,
+                    })
+                    .select()
+
+               if (boatData) {
+                    return new BoatEntity(boatData[0].profile_id, boatData[0].id, boatData[0].boat_name, boatData[0].boat_description, boatData[0].boat_capacity, boatData[0].boat_type)
+               }
 
                if (boatError) {
+                    console.log("boatError", boatError)
                     throw new Error(`Error adding boat: ${boatError.message}`)
                }
           } catch (error) {
@@ -32,34 +30,64 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async uploadAndInsertImages(boatId: string, images: [{ uri: string }]) {
+     async uploadAndInsertImages(
+          boatId: string | undefined,
+          images: {
+               uri: string
+               caption: string | undefined | null
+               contentType: string | undefined
+               base64: string
+               dimensions: { width: number; height: number }
+               size: number | undefined
+               mimeType: string | undefined
+               fileName: string | undefined | null
+          }[]
+     ): Promise<void> {
           try {
-               const uploadedImages = []
-               const randomName = Math.random().toString(36).substring(7)
-               for (const [index, image] of images.entries()) {
-                    const { data, error } = await supabase.storage.from("boats-images").upload(`${randomName}-${index}.jpg`, image.uri)
+               const uploadedImages = [] as { id: string; fullPath: string; path: string; caption: string }[]
+
+               for (const image of images) {
+                    const randomName = Math.random().toString(36).substring(7)
+                    const fileName = randomName + "-" + image.fileName?.toLowerCase().split("_").join("-")
+                    const { data, error } = await supabase.storage.from("boats-images").upload("thumbnails/" + fileName, decode(image.base64), {
+                         contentType: "image/png",
+                    })
 
                     if (error) {
                          throw new Error(`Error uploading image: ${error.message}`)
                     }
 
-                    // Get the public URL of the uploaded image
-                    const publicUrl = supabase.storage.from("boats-images").getPublicUrl(data.path).data.publicUrl
+                    try {
+                         if (data && fileName) {
+                              uploadedImages.push({
+                                   id: data?.id,
+                                   fullPath: data.fullPath,
+                                   path: data?.path,
+                                   caption: fileName,
+                              })
+                              console.log("uploadedImages", uploadedImages.length)
+                         }
+                    } catch (error) {
+                         console.error("Error uploading image:", error)
+                    }
+               }
 
-                    // Insert image record into boat_images table
-                    const { error: insertError } = await supabase.from("boat_images").insert({
+               for (const [index, image] of uploadedImages.entries()) {
+                    const publicUrl = supabase.storage.from("boats-images").getPublicUrl(image.path).data.publicUrl
+                    let isDefault = false
+
+                    console.log(index)
+
+                    if (index === 0) {
+                         isDefault = true
+                    }
+                    const { data, error: insertError } = await supabase.from("boat_images").insert({
                          boat_id: boatId,
                          url: publicUrl,
-                         is_default: index === 0,
+                         caption: image.caption,
+                         is_default: isDefault,
                     })
-
-                    if (insertError) {
-                         throw new Error(`Error inserting boat image: ${insertError.message}`)
-                    }
-
-                    uploadedImages.push({ url: publicUrl, is_default: index === 0 })
                }
-               return uploadedImages
           } catch (error) {
                throw new Error((error as Error).message)
           }

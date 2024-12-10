@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react"
-import { StyleSheet, View, Image, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
+import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, useTheme } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
@@ -8,9 +8,6 @@ import * as ImagePicker from "expo-image-picker"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
 import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
-import Boat from "@/modules/domain/boats/BoatEntity"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import { getCurrentUserUseCase } from "@/modules/application/auth/getCurrentUserUseCase"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -25,24 +22,12 @@ export default function AddBoat() {
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
 
-     const [boat, setBoat] = useState<{
-          boatName: string
-          boatDescription: string
-          boatCapacity: string
-          boatType: number
-          boatImages: { uri: string; caption: string }[]
-     }>({
+     const [boat, setBoat] = useState<Boat>({
           boatName: "Mon super bateau",
           boatDescription: "fsdfdskojmqksljlm",
           boatCapacity: "10",
           boatType: 1,
-          boatImages: [
-               { uri: "https://picsum.photos/200/300", caption: "Image 1" },
-               { uri: "https://picsum.photos/200/300", caption: "Image 2" },
-               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
-               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
-               { uri: "https://picsum.photos/200/300", caption: "Image 3" },
-          ],
+          boatImages: [],
      })
 
      const [types, setType] = useState({
@@ -53,15 +38,20 @@ export default function AddBoat() {
           id: 1,
      })
 
-     const singleSelectRef = useRef(null)
-
-     const theme = useTheme()
-
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
-          const thumbnails = [] as { uri: string; caption: string | null | undefined }[]
+          const thumbnails = [] as unknown as Boat["boatImages"]
 
           result.assets.map((asset) => {
-               thumbnails.push({ uri: asset.uri, caption: asset.fileName })
+               thumbnails.push({
+                    uri: asset.uri,
+                    caption: asset.fileName,
+                    contentType: asset.type,
+                    base64: asset.base64,
+                    dimensions: { width: asset.width, height: asset.height },
+                    size: asset.fileSize,
+                    mimeType: asset.mimeType,
+                    fileName: asset.fileName,
+               })
           })
 
           setBoat({ ...boat, boatImages: thumbnails })
@@ -82,12 +72,13 @@ export default function AddBoat() {
      const handleThumbnailChange = async () => {
           try {
                let result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    mediaTypes: "images",
                     allowsMultipleSelection: true,
                     aspect: [1, 1],
                     quality: 1,
                     orderedSelection: true,
                     selectionLimit: 5,
+                    base64: true,
                })
                if (!result.canceled) {
                     handleMultiplePicture(result)

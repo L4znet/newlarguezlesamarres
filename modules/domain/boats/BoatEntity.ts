@@ -1,13 +1,32 @@
 export default class BoatEntity {
      constructor(
+          public readonly profile_id: string,
+          public readonly boatId?: string,
           public readonly boatName: string,
           public readonly boatDescription: string,
           public readonly boatCapacity: string,
-          public readonly boatType: number,
-          public readonly boatImages: { uri: string; caption: string }[]
+          public readonly boatType: number
      ) {}
 
-     static fromSupabaseUser(obj: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: { uri: string; caption: string }[] }): BoatEntity {
-          return new BoatEntity(obj.boatName, obj.boatDescription, obj.boatCapacity, obj.boatType, obj.boatImages)
+     static fromSupabaseData(data: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number; id?: string }): BoatEntity {
+          return new BoatEntity(data.profile_id, data.id, data.boat_name, data.boat_description, data.boat_capacity, data.boat_type)
+     }
+
+     toSupabaseData(): {
+          profile_id: string
+          boat_id?: string
+          boat_name: string
+          boat_description: string
+          boat_capacity: string
+          boat_type: number
+     } {
+          return {
+               profile_id: this.profile_id,
+               boat_id: this.boatId,
+               boat_name: this.boatName,
+               boat_description: this.boatDescription,
+               boat_capacity: this.boatCapacity,
+               boat_type: this.boatType,
+          }
      }
 }
