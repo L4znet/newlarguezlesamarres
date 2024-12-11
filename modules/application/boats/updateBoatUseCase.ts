@@ -3,13 +3,13 @@ import Boat from "@/modules/domain/boats/BoatEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
 export const updateBoatUseCase = async (
-     boatId: string,
+     boatId: string | string[],
      boatName: string,
      boatDescription: string,
      boatCapacity: string,
      boatType: number,
      boatImages: {
-          uri: string
+          url: string
           caption: string | undefined | null
           contentType: string | undefined
           base64: string | undefined | null
@@ -17,6 +17,7 @@ export const updateBoatUseCase = async (
           size: number | undefined
           mimeType: string | undefined
           fileName: string | undefined | null
+          isDefault: boolean
      }[]
 ) => {
      const normalizeImages = (images: any[]) => {
@@ -30,6 +31,7 @@ export const updateBoatUseCase = async (
                     size: image.size,
                     mimeType: image.mimeType,
                     fileName: image.fileName,
+                    isDefault: image.isDefault,
                }
           })
      }
@@ -42,14 +44,11 @@ export const updateBoatUseCase = async (
                throw new Error("User session not found.")
           }
 
-          // Met à jour le bateau
           const newBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
 
-          console.log("newBoat", newBoat)
-
-          // Upload et upsert des images
           if (newBoat?.boatId && boatImages.length > 0) {
                const normalizedImages = normalizeImages(boatImages)
+
                await BoatRepositorySupabase.uploadAndUpsertImages(newBoat?.boatId, normalizedImages)
           }
 

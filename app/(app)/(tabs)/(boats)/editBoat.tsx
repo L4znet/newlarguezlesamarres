@@ -86,11 +86,8 @@ export default function EditBoat() {
      }
 
      const editBoat = async () => {
-          console.log("Boat state before editing:", boat)
-          console.log("Types state before editing:", types)
           try {
-               const result = await updateBoatUseCase(boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages)
-               console.log("Bateau modifié :", result)
+               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages)
           } catch (error) {
                console.error("Error while editing boat:", error)
           }

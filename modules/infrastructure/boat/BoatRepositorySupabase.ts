@@ -2,44 +2,16 @@ import BoatRepository from "@/modules/domain/boats/BoatRepository"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
-import { Boat } from "@/modules/domain/boats/schemas/BoatSchema"
 
 class BoatRepositorySupabase implements BoatRepository {
-     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
-          try {
-               const { data: boatData, error: boatError } = await supabase
-                    .from("boats")
-                    .insert({
-                         profile_id: profile_id,
-                         boat_name: boatName,
-                         boat_type: boatType,
-                         boat_description: boatDescription,
-                         boat_capacity: boatCapacity,
-                    })
-                    .select()
-
-               if (boatData) {
-                    return new BoatEntity(boatData[0].profile_id, boatData[0].boat_name, boatData[0].boat_description, boatData[0].boat_capacity, boatData[0].boat_type, boatData[0].id)
-               }
-
-               if (boatError) {
-                    console.log("boatError", boatError)
-                    throw new Error(`Error adding boat: ${boatError.message}`)
-               }
-          } catch (error) {
-               throw new Error((error as Error).message)
-          }
-     }
-
      async updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
           try {
-               // Convertit boatId en chaîne si c'est un tableau
                const boatIdString = Array.isArray(boatId) ? boatId[0] : boatId
 
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
                     .update({
-                         profile_id: profile_id,
+                         profile_id,
                          boat_name: boatName,
                          boat_type: boatType,
                          boat_description: boatDescription,
@@ -53,8 +25,8 @@ class BoatRepositorySupabase implements BoatRepository {
                     throw new Error(`Error updating boat: ${boatError.message}`)
                }
 
-               if (boatData && boatData.length > 0) {
-                    return new BoatEntity(boatData[0].profile_id, boatData[0].boat_name, boatData[0].boat_description, boatData[0].boat_capacity, boatData[0].boat_type, boatData[0].id)
+               if (boatData) {
+                    return BoatEntity.fromSupabaseData(boatData[0])
                }
 
                throw new Error("No data returned from boat update.")
@@ -64,39 +36,50 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async getSingleBoat(boatId: string | string[]): Promise<BoatEntity | undefined> {
+     async getSingleBoat(boatId: string | string[]): Promise<BoatEntity> {
           try {
+               const boatIdString = Array.isArray(boatId) ? boatId[0] : boatId
+
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
                     .select(
                          `
-                   id,
-                   profile_id,
-                   boat_name,
-                   boat_description,
-                   boat_capacity,
-                   boat_type,
-                   boat_images (
-                       id,
-                       url,
-                       boat_id,
-                       is_default,
-                       caption
-                     )
-                       `
+                    id,
+                    profile_id,
+                    boat_name,
+                    boat_description,
+                    boat_capacity,
+                    boat_type,
+                    boat_images (
+                        id,
+                        url,
+                        boat_id,
+                        is_default,
+                        caption,
+                        content_type,
+                        base64,
+                        dimensions,
+                        size,
+                        mime_type,
+                        file_name
                     )
-                    .eq("id", boatId)
+                `
+                    )
+                    .eq("id", boatIdString)
                     .single()
 
-               if (boatData) {
-                    return new BoatEntity(boatData.profile_id, boatData.boat_name, boatData.boat_description, boatData.boat_capacity, boatData.boat_type, boatData.id, boatData.boat_images)
-               }
-
                if (boatError) {
-                    console.log("boatError", boatError)
+                    console.error("boatError", boatError)
                     throw new Error(`Error getting boat: ${boatError.message}`)
                }
+
+               if (boatData) {
+                    return BoatEntity.fromSupabaseData(boatData)
+               }
+
+               throw new Error("No data returned from boat query.")
           } catch (error) {
+               console.error("Error in BoatRepositorySupabase.getSingleBoat:", error)
                throw new Error((error as Error).message)
           }
      }
@@ -107,85 +90,160 @@ class BoatRepositorySupabase implements BoatRepository {
                     .from("boats")
                     .select(
                          `
-                id,
-                profile_id,
-                boat_name,
-                boat_description,
-                boat_capacity,
-                boat_type,
-                boat_images (
                     id,
-                    url,
-                    boat_id,
-                    is_default,
-                    caption
-                )
-            `
+                    profile_id,
+                    boat_name,
+                    boat_description,
+                    boat_capacity,
+                    boat_type,
+                    boat_images (
+                        id,
+                        url,
+                        boat_id,
+                        is_default,
+                        caption,
+                        content_type,
+                        base64,
+                        dimensions,
+                        size,
+                        mime_type,
+                        file_name
+                    )
+                `
                     )
                     .eq("profile_id", profile_id)
 
                if (boatError) {
-                    console.log("boatError", boatError)
+                    console.error("boatError", boatError)
                     throw new Error(`Error getting boats: ${boatError.message}`)
                }
 
                if (boatData) {
-                    const boats = boatData.map((boat: any) => BoatEntity.fromSupabaseData(boat))
-                    return boats
+                    return boatData.map((boat: any) => BoatEntity.fromSupabaseData(boat))
                }
           } catch (error) {
+               console.error("Error in BoatRepositorySupabase.getBoats:", error)
                throw new Error((error as Error).message)
           }
      }
 
-     async uploadAndUpsertImages(boatId: string | undefined, images: Boat["boatImages"]): Promise<void> {
+     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
           try {
-               const uploadedImages = [] as { id: string; fullPath: string; path: string; caption: string }[]
-
-               for (const image of images) {
-                    const randomName = Math.random().toString(36).substring(7)
-                    const fileName = randomName + "-" + image.fileName?.toLowerCase().split("_").join("-")
-                    const { data, error } = await supabase.storage.from("boats-images").upload("thumbnails/" + fileName, decode(image.base64), {
-                         contentType: "image/png",
-                         upsert: true,
+               const { data: boatData, error: boatError } = await supabase
+                    .from("boats")
+                    .insert({
+                         profile_id,
+                         boat_name: boatName,
+                         boat_type: boatType,
+                         boat_description: boatDescription,
+                         boat_capacity: boatCapacity,
                     })
+                    .select()
 
-                    if (error) {
-                         throw new Error(`Error uploading image: ${error.message}`)
-                    }
-
-                    try {
-                         if (data && fileName) {
-                              uploadedImages.push({
-                                   id: data?.id,
-                                   fullPath: data.fullPath,
-                                   path: data?.path,
-                                   caption: fileName,
-                              })
-                              console.log("uploadedImages", uploadedImages.length)
-                         }
-                    } catch (error) {
-                         console.error("Error uploading image:", error)
-                    }
+               if (boatError) {
+                    console.error("boatError", boatError)
+                    throw new Error(`Error adding boat: ${boatError.message}`)
                }
 
-               for (const [index, image] of uploadedImages.entries()) {
-                    const publicUrl = supabase.storage.from("boats-images").getPublicUrl(image.path).data.publicUrl
-                    let isDefault = false
+               if (boatData) {
+                    return BoatEntity.fromSupabaseData(boatData[0])
+               }
 
-                    if (index === 0) {
-                         isDefault = true
+               throw new Error("No data returned from boat creation.")
+          } catch (error) {
+               console.error("Error in BoatRepositorySupabase.createBoat:", error)
+               throw new Error((error as Error).message)
+          }
+     }
+
+     async uploadImages(
+          boatId: string | undefined,
+          images: {
+               uri: string
+               caption: string | undefined | null
+               contentType: string | undefined
+               base64: string | undefined | null
+               dimensions: { width: number; height: number }
+               size: number | undefined
+               mimeType: string | undefined
+               fileName: string | undefined | null
+          }[]
+     ): Promise<void> {
+          try {
+               for (const image of images) {
+                    const randomName = Math.random().toString(36).substring(7)
+                    const fileName = `${randomName}-${(image.fileName || "").toLowerCase().replace(/_/g, "-")}`
+
+                    if (image.base64 != null) {
+                         const { data: uploadData, error: uploadError } = await supabase.storage.from("boats-images").upload(`thumbnails/${fileName}`, decode(image.base64), {
+                              contentType: image.mimeType,
+                              upsert: true,
+                         })
+
+                         if (uploadError) {
+                              console.error("Upload error:", uploadError)
+                              throw new Error(`Error uploading image: ${uploadError.message}`)
+                         }
+
+                         if (uploadData) {
+                              const publicUrl = await this.getPublicUrl(uploadData)
+
+                              if (publicUrl) {
+                                   await this.insertImage(boatId, image, publicUrl)
+                              }
+                         }
                     }
-                    const { data, error: insertError } = await supabase.from("boat_images").upsert({
+               }
+          } catch (error) {
+               console.error("Error in uploadImage:", error)
+               throw new Error((error as Error).message)
+          }
+     }
+
+     async getPublicUrl(image: any): Promise<string | undefined> {
+          try {
+               const publicUrl = supabase.storage.from("boats-images").getPublicUrl(image.path).data.publicUrl
+
+               if (!publicUrl) {
+                    throw new Error("Error getting public URL for uploaded image.")
+               }
+
+               if (publicUrl) {
+                    return publicUrl
+               }
+          } catch (error) {
+               console.error("Error in uploadAndUpsertImages:", error)
+               throw new Error((error as Error).message)
+          }
+     }
+
+     async insertImage(boatId: string | undefined, image: any, publicUrl: string | undefined): Promise<void> {
+          try {
+               const { data: imageData, error: imageError } = await supabase.from("boat_images").insert([
+                    {
                          boat_id: boatId,
                          url: publicUrl,
                          caption: image.caption,
-                         is_default: isDefault,
-                    })
-                    console.log("insertError", insertError)
-                    console.log("data", data)
+                         content_type: image.contentType,
+                         base64: image.base64,
+                         dimensions: image.dimensions,
+                         size: image.size,
+                         mime_type: image.mimeType,
+                         file_name: image.fileName,
+                         is_default: image.isDefault,
+                    },
+               ])
+
+               if (imageError) {
+                    console.error("imageError:", imageError)
+                    throw new Error(`Error inserting image: ${imageError.message}`)
+               }
+
+               if (imageData) {
+                    console.log("IMAGE INSÉRÉE AVEC SUCCÈS")
                }
           } catch (error) {
+               console.error("Error in uploadAndUpsertImages:", error)
                throw new Error((error as Error).message)
           }
      }

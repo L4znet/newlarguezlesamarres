@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, FlatList } from "react-native"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 const { width } = Dimensions.get("window")
 
 interface SlideshowProps {
-     images: { url: string }[]
+     images: BoatEntity["boatImages"]
 }
 
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
@@ -29,11 +30,13 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
-                    renderItem={({ item }) => (
-                         <View style={styles.imageContainer}>
-                              <Image source={{ uri: item.url }} style={styles.image} />
-                         </View>
-                    )}
+                    renderItem={({ item }) => {
+                         return (
+                              <View style={styles.imageContainer}>
+                                   <Image source={{ uri: item.url }} style={styles.image} />
+                              </View>
+                         )
+                    }}
                     keyExtractor={(_, index) => index.toString()}
                     onScroll={(event) => {
                          const newIndex = Math.round(event.nativeEvent.contentOffset.x / width)

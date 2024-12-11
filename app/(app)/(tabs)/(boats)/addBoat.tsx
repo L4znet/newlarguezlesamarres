@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
 import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
+import { undefined } from "zod"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -44,6 +45,9 @@ export default function AddBoat() {
           result.assets.map((asset) => {
                if (asset.base64) {
                     thumbnails.push({
+                         boatId: undefined,
+                         id: "",
+                         isDefault: false,
                          url: asset.uri,
                          caption: asset.fileName,
                          contentType: asset.type,
