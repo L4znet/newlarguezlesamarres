@@ -24,10 +24,10 @@ export default function AddBoat() {
      const boatTypeOptions = useBoatTypeOptions()
 
      const [boat, setBoat] = useState<Boat>({
-          boatName: "Mon super bateau",
-          boatDescription: "fsdfdskojmqksljlm",
-          boatCapacity: "10",
-          boatType: 1,
+          boatName: "",
+          boatDescription: "",
+          boatCapacity: "",
+          boatType: 0,
           boatImages: [],
      })
 
@@ -42,12 +42,23 @@ export default function AddBoat() {
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
           const thumbnails = [] as unknown as Boat["boatImages"]
 
-          result.assets.map((asset) => {
+          result.assets.forEach((asset, index) => {
+               if (result.assets.length > 5) {
+                    throw new Error("Error while selecting image: selection limit is 5")
+               }
+
+               let isDefault = false
+               console.log("index", index)
+
+               if (index === 0) {
+                    isDefault = true
+               }
+
                if (asset.base64) {
                     thumbnails.push({
-                         boatId: undefined,
+                         boatId: "",
                          id: "",
-                         isDefault: false,
+                         isDefault: isDefault,
                          url: asset.uri,
                          caption: asset.fileName,
                          contentType: asset.type,
@@ -74,7 +85,8 @@ export default function AddBoat() {
                boatImages: boat.boatImages,
           }
 
-          await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages)
+          const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages)
+          console.log(newBoat)
      }
 
      const handleThumbnailChange = async () => {

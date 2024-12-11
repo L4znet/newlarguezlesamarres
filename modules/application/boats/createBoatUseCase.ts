@@ -1,6 +1,7 @@
 import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
 import Boat from "@/modules/domain/boats/BoatEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 export const createBoatUseCase = async (
      boatName: string,
@@ -8,16 +9,19 @@ export const createBoatUseCase = async (
      boatCapacity: string,
      boatType: number,
      boatImages: {
-          uri: string
-          caption: string | undefined | null
+          id: string
+          url: string
+          boatId: string
+          isDefault: boolean
+          caption: string | null | undefined
           contentType: string | undefined
-          base64: string | undefined | null
+          base64: string | undefined
           dimensions: { width: number; height: number }
           size: number | undefined
           mimeType: string | undefined
           fileName: string | undefined | null
      }[]
-) => {
+): Promise<BoatEntity> => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id

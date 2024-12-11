@@ -9,7 +9,7 @@ export default class BoatEntity {
           public readonly boatImages: {
                id: string
                url: string
-               caption: string
+               caption: string | null | undefined
                contentType: string
                base64: string | null
                dimensions: { width: number; height: number }

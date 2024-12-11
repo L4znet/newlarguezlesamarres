@@ -127,11 +127,11 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
+     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string | string[]): Promise<BoatEntity | undefined> {
           try {
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
-                    .insert({
+                    .upsert({
                          profile_id,
                          boat_name: boatName,
                          boat_type: boatType,
@@ -159,15 +159,18 @@ class BoatRepositorySupabase implements BoatRepository {
      async uploadImages(
           boatId: string | undefined,
           images: {
-               uri: string
-               caption: string | undefined | null
+               id: string
+               url: string
+               boatId: string | undefined
+               isDefault: boolean
+               caption: string
                contentType: string | undefined
-               base64: string | undefined | null
+               base64: string | undefined
                dimensions: { width: number; height: number }
                size: number | undefined
                mimeType: string | undefined
-               fileName: string | undefined | null
-          }[]
+               fileName: string | undefined
+          }
      ): Promise<void> {
           try {
                for (const image of images) {
@@ -189,7 +192,7 @@ class BoatRepositorySupabase implements BoatRepository {
                               const publicUrl = await this.getPublicUrl(uploadData)
 
                               if (publicUrl) {
-                                   await this.insertImage(boatId, image, publicUrl)
+                                   await this.upsertImage(boatId, image, publicUrl)
                               }
                          }
                     }
@@ -217,9 +220,9 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async insertImage(boatId: string | undefined, image: any, publicUrl: string | undefined): Promise<void> {
+     async upsertImage(boatId: string | undefined, image: any, publicUrl: string | undefined): Promise<void> {
           try {
-               const { data: imageData, error: imageError } = await supabase.from("boat_images").insert([
+               const { data: imageData, error: imageError } = await supabase.from("boat_images").upsert([
                     {
                          boat_id: boatId,
                          url: publicUrl,

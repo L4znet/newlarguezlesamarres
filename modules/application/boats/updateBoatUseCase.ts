@@ -49,7 +49,9 @@ export const updateBoatUseCase = async (
           if (newBoat?.boatId && boatImages.length > 0) {
                const normalizedImages = normalizeImages(boatImages)
 
-               await BoatRepositorySupabase.uploadAndUpsertImages(newBoat?.boatId, normalizedImages)
+               console.log("normalizedImages", normalizedImages)
+
+               await BoatRepositorySupabase.uploadImages(newBoat?.boatId, normalizedImages)
           }
 
           return newBoat as Boat
