@@ -9,11 +9,14 @@ import { PaperSelect } from "react-native-paper-select"
 import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platform } from "react-native"
 import { Button, TextInput } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export default function EditBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
+     const [isLoading, setIsLoading] = useState(false)
+     const ShowTranslatedFlashMessage = useFlashMessage()
 
      const [boat, setBoat] = useState({
           boatName: "",
@@ -87,7 +90,7 @@ export default function EditBoat() {
 
      const editBoat = async () => {
           try {
-               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages)
+               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, ShowTranslatedFlashMessage)
           } catch (error) {
                console.error("Error while editing boat:", error)
           }
@@ -131,8 +134,8 @@ export default function EditBoat() {
                               {t("change_thumbnail_btn")}
                          </Button>
 
-                         <Button mode="contained" style={styles.button} onPress={editBoat}>
-                              {t("edit_boat_button")}
+                         <Button mode="contained" style={styles.button} onPress={() => editBoat()} loading={isLoading} disabled={isLoading}>
+                              {isLoading ? t("loading_button_text") : t("edit_boat_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>

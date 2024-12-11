@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react"
-import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
-import { Button, TextInput, useTheme } from "react-native-paper"
+import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native"
+import { Button, TextInput, useTheme, Text } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
 import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
@@ -9,6 +9,7 @@ import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-
 import Slideshow from "@/modules/components/Slideshow"
 import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
 import { undefined } from "zod"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -19,9 +20,12 @@ export const selectValidator = (value: any) => {
 }
 
 export default function AddBoat() {
+     const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
+     const [isLoading, setIsLoading] = useState(false)
+     const colors = useTheme().colors
 
      const [boat, setBoat] = useState<Boat>({
           boatName: "",
@@ -48,7 +52,6 @@ export default function AddBoat() {
                }
 
                let isDefault = false
-               console.log("index", index)
 
                if (index === 0) {
                     isDefault = true
@@ -85,8 +88,7 @@ export default function AddBoat() {
                boatImages: boat.boatImages,
           }
 
-          const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages)
-          console.log(newBoat)
+          const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
      }
 
      const handleThumbnailChange = async () => {
@@ -108,50 +110,63 @@ export default function AddBoat() {
           }
      }
 
-     return (
-          <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-               <SafeAreaView style={styles.safeView}>
-                    <ScrollView style={styles.scrollViewBoats}>
-                         <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(boatName) => setBoat({ ...boat, boatName })} />
-                         <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(boatDescription) => setBoat({ ...boat, boatDescription })} />
-                         <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(boatCapacity) => setBoat({ ...boat, boatCapacity })} />
+     const form = () => {
+          return (
+               <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                    <SafeAreaView style={styles.safeView}>
+                         <ScrollView style={styles.scrollViewBoats}>
+                              <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(boatName) => setBoat({ ...boat, boatName })} />
+                              <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(boatDescription) => setBoat({ ...boat, boatDescription })} />
+                              <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(boatCapacity) => setBoat({ ...boat, boatCapacity })} />
 
-                         <View style={styles.selector}>
-                              <PaperSelect
-                                   label={t("boat_type_placeholder")}
-                                   value={types.value}
-                                   onSelection={(value: any) => {
-                                        setType({
-                                             ...types,
-                                             value: value.text,
-                                             selectedList: value.selectedList,
-                                             error: "",
-                                             id: value.selectedList[0]._id,
-                                        })
-                                   }}
-                                   arrayList={[...types.list]}
-                                   selectedArrayList={types.selectedList}
-                                   errorText={types.error}
-                                   multiEnable={false}
-                                   dialogTitleStyle={{ color: "white" }}
-                                   dialogCloseButtonText={t("close_btn")}
-                                   dialogDoneButtonText={t("done_btn")}
-                              />
-                         </View>
+                              <View style={styles.selector}>
+                                   <PaperSelect
+                                        label={t("boat_type_placeholder")}
+                                        value={types.value}
+                                        onSelection={(value: any) => {
+                                             setType({
+                                                  ...types,
+                                                  value: value.text,
+                                                  selectedList: value.selectedList,
+                                                  error: "",
+                                                  id: value.selectedList[0]._id,
+                                             })
+                                        }}
+                                        arrayList={[...types.list]}
+                                        selectedArrayList={types.selectedList}
+                                        errorText={types.error}
+                                        multiEnable={false}
+                                        dialogTitleStyle={{ color: "white" }}
+                                        dialogCloseButtonText={t("close_btn")}
+                                        dialogDoneButtonText={t("done_btn")}
+                                   />
+                              </View>
 
-                         <Slideshow images={boat.boatImages} />
+                              <Slideshow images={boat.boatImages} />
 
-                         <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
-                              {t("change_thumbnail_btn")}
-                         </Button>
+                              <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
+                                   {t("change_thumbnail_btn")}
+                              </Button>
 
-                         <Button mode="contained" style={styles.button} onPress={() => createBoat()}>
-                              {t("add_boat_button")}
-                         </Button>
-                    </ScrollView>
-               </SafeAreaView>
-          </KeyboardAvoidingView>
-     )
+                              <Button mode="contained" style={styles.button} onPress={() => createBoat()} loading={isLoading} disabled={isLoading}>
+                                   {isLoading ? t("loading_button_text") : t("add_boat_button")}
+                              </Button>
+                         </ScrollView>
+                    </SafeAreaView>
+               </KeyboardAvoidingView>
+          )
+     }
+
+     const loader = () => {
+          return (
+               <View style={styles.container}>
+                    <Text variant={"titleLarge"}>{t("loading_title")}</Text>
+                    <ActivityIndicator size="large" color={colors.primary} />
+               </View>
+          )
+     }
+
+     return isLoading ? loader() : form()
 }
 
 const styles = StyleSheet.create({

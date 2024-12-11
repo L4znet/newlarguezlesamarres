@@ -4,18 +4,16 @@ interface BoatRepository {
      uploadImages(
           boatId: string | undefined,
           images: {
-               id: string
-               url: string
-               boatId: string | undefined
-               isDefault: boolean
-               caption: string
-               contentType: string | undefined
-               base64: string | undefined
-               dimensions: { width: number; height: number }
-               size: number | undefined
-               mimeType: string | undefined
-               fileName: string | undefined
-          }
+               fileName: any
+               isDefault: any
+               size: any
+               base64: any
+               caption: any
+               mimeType: any
+               contentType: any
+               url: any
+               dimensions: any
+          }[]
      ): Promise<void>
      createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string): Promise<BoatEntity | undefined>
      updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>

@@ -1,41 +1,26 @@
 import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import Boat from "@/modules/domain/boats/BoatEntity"
+import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { router } from "expo-router"
 
 export const updateBoatUseCase = async (
-     boatId: string | string[],
+     boatId: string,
      boatName: string,
      boatDescription: string,
      boatCapacity: string,
      boatType: number,
-     boatImages: {
-          url: string
-          caption: string | undefined | null
-          contentType: string | undefined
-          base64: string | undefined | null
-          dimensions: { width: number; height: number }
-          size: number | undefined
-          mimeType: string | undefined
-          fileName: string | undefined | null
-          isDefault: boolean
-     }[]
+     boatImages: any[],
+     setLoader: (value: boolean) => void,
+     showTranslatedFlashMessage: (
+          type: MessageType,
+          message: {
+               title: string
+               description: string
+          },
+          locale?: string
+     ) => void
 ) => {
-     const normalizeImages = (images: any[]) => {
-          return images.map((image) => {
-               return {
-                    url: image.uri,
-                    caption: image.caption,
-                    contentType: image.contentType,
-                    base64: image.base64,
-                    dimensions: image.dimensions,
-                    size: image.size,
-                    mimeType: image.mimeType,
-                    fileName: image.fileName,
-                    isDefault: image.isDefault,
-               }
-          })
-     }
-
+     setLoader(true)
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -44,19 +29,25 @@ export const updateBoatUseCase = async (
                throw new Error("User session not found.")
           }
 
-          const newBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
-
-          if (newBoat?.boatId && boatImages.length > 0) {
-               const normalizedImages = normalizeImages(boatImages)
-
-               console.log("normalizedImages", normalizedImages)
-
-               await BoatRepositorySupabase.uploadImages(newBoat?.boatId, normalizedImages)
+          const updatedBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
+          if (!updatedBoat?.boatId) {
+               throw new Error("Failed to update boat.")
           }
 
-          return newBoat as Boat
+          await BoatRepositorySupabase.uploadImages(updatedBoat.boatId, boatImages)
+
+          showTranslatedFlashMessage("success", {
+               title: "flash_title_success",
+               description: "Boat updated successfully!",
+          })
+
+          router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          console.error("Error in updateBoatUseCase:", error)
-          throw new Error((error as Error).message)
+          showTranslatedFlashMessage("danger", {
+               title: "flash_title_danger",
+               description: (error as Error).message,
+          })
+     } finally {
+          setLoader(false)
      }
 }

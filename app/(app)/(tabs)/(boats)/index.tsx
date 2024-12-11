@@ -64,6 +64,7 @@ export default function Index() {
      }, [])
 
      const renderItem = ({ item }: { item: BoatEntity }) => {
+          console.log(item.boatImages)
           return (
                <Card key={item.boatId} style={styles.card}>
                     <Slideshow images={item.boatImages} />

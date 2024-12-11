@@ -1,37 +1,52 @@
 import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import Boat from "@/modules/domain/boats/BoatEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { router } from "expo-router"
+import { MessageType } from "react-native-flash-message"
 
 export const createBoatUseCase = async (
      boatName: string,
      boatDescription: string,
      boatCapacity: string,
      boatType: number,
-     boatImages: {
-          id: string
-          url: string
-          boatId: string
-          isDefault: boolean
-          caption: string | null | undefined
-          contentType: string | undefined
-          base64: string | undefined
-          dimensions: { width: number; height: number }
-          size: number | undefined
-          mimeType: string | undefined
-          fileName: string | undefined | null
-     }[]
-): Promise<BoatEntity> => {
+     boatImages: any[],
+     setLoader: (value: boolean) => void,
+     showTranslatedFlashMessage: (
+          type: MessageType,
+          message: {
+               title: string
+               description: string
+          },
+          locale?: string
+     ) => void
+) => {
+     setLoader(true)
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
 
+          if (!profileId) {
+               throw new Error("User session not found.")
+          }
+
           const newBoat = await BoatRepositorySupabase.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
+          if (!newBoat?.boatId) {
+               throw new Error("Failed to create boat.")
+          }
 
-          await BoatRepositorySupabase.uploadImages(newBoat?.boatId, boatImages)
+          await BoatRepositorySupabase.uploadImages(newBoat.boatId, boatImages)
 
-          return newBoat as Boat
+          showTranslatedFlashMessage("success", {
+               title: "flash_title_success",
+               description: "Boat added successfully!",
+          })
+
+          router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          throw new Error((error as Error).message)
+          showTranslatedFlashMessage("danger", {
+               title: "flash_title_danger",
+               description: (error as Error).message,
+          })
+     } finally {
+          setLoader(false)
      }
 }

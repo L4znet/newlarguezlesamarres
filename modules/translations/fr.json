@@ -95,6 +95,7 @@
      "validation_lastname_required": "Le nom de famille est requis.",
      "validation_username_required": "Le nom d'utilisateur est requis.",
      "validation_passwords_do_not_match": "Les mots de passe ne correspondent pas.",
+     "loading_title": "Un peu de patience, on s'en occupe !",
 
      "auth_api_error_rate_limit_exceeded": {
           "supabase_message": "Email rate limit exceeded",
