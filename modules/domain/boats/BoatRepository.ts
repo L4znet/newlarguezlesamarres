@@ -1,20 +1,6 @@
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 interface BoatRepository {
-     uploadImages(
-          boatId: string | undefined,
-          images: {
-               fileName: any
-               isDefault: any
-               size: any
-               base64: any
-               caption: any
-               mimeType: any
-               contentType: any
-               url: any
-               dimensions: any
-          }[]
-     ): Promise<void>
      createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string): Promise<BoatEntity | undefined>
      updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
 
@@ -35,6 +21,10 @@ interface BoatRepository {
                isDefault: boolean
           }[]
      ): Promise<void>
+     deleteBoat(profile_id: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
+     deleteBoatImages(boatId: string | undefined, images: string[]): Promise<void>
+     getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
+     getBoats(profile_id: string | undefined): Promise<BoatEntity[] | undefined>
 }
 
 export default BoatRepository

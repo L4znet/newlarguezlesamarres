@@ -5,7 +5,7 @@ export default class BoatEntity {
           public readonly boatDescription: string,
           public readonly boatCapacity: string,
           public readonly boatType: number,
-          public readonly boatId: string | undefined = undefined,
+          public readonly boatId: string,
           public readonly boatImages: {
                id: string
                url: string

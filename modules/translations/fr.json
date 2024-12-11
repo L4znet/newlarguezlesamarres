@@ -166,6 +166,10 @@
           "supabase_message": "User logged in successfully",
           "translation": "Vous êtes maintenant connecté"
      },
+     "supabase_boat_success_deleted_boat": {
+          "supabase_message": "Boat deleted successfully!",
+          "translation": "Suppression du bateau réussie !"
+     },
 
      "drawer_setting_btn": "Paramètres",
      "drawer_settings_change_language": "Changer la langue",

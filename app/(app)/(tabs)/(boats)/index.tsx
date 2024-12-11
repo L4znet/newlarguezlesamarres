@@ -7,10 +7,13 @@ import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import Slideshow from "@/modules/components/Slideshow"
 import { Card, Button } from "react-native-paper"
+import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export default function Index() {
      const [boats, setBoats] = useState<BoatEntity[]>([])
      const [isLoading, setIsLoading] = useState(true)
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const fetchBoats = async () => {
           try {
@@ -64,7 +67,6 @@ export default function Index() {
      }, [])
 
      const renderItem = ({ item }: { item: BoatEntity }) => {
-          console.log(item.boatImages)
           return (
                <Card key={item.boatId} style={styles.card}>
                     <Slideshow images={item.boatImages} />
@@ -76,6 +78,7 @@ export default function Index() {
                     </Card.Content>
                     <Card.Actions>
                          <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.boatId } })}>Modifier</Button>
+                         <Button onPress={async () => await deleteBoatUseCase(item.boatId, showTranslatedFlashMessage)}>Supprimer</Button>
                     </Card.Actions>
                </Card>
           )
@@ -87,6 +90,19 @@ export default function Index() {
                     <Text>Chargement des bateaux...</Text>
                </View>
           )
+     }
+
+     if (boats.length === 0) {
+          return (
+               <View style={styles.container}>
+                    <Text>Rien à afficher pour le moment</Text>
+                    <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(boats)/addBoat")} />
+               </View>
+          )
+     }
+
+     const boatsList = () => {
+          return <FlatList data={boats} renderItem={renderItem} keyExtractor={(item) => item.boatId} />
      }
 
      return (
