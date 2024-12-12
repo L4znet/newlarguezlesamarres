@@ -96,8 +96,6 @@ class BoatRepositorySupabase implements BoatRepository {
           }
 
           if (oldImages) {
-               console.log("oldImages", oldImages)
-
                if (oldImages?.length > 0) {
                     const imagePaths = oldImages.map((image) => `thumbnails/${image.url.split("/").pop()}`)
                     await supabase.storage.from("boats-images").remove(imagePaths)

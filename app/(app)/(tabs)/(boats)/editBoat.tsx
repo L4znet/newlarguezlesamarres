@@ -1,13 +1,13 @@
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useBoatTypeOptions } from "@/constants/BoatTypes"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useLocalSearchParams } from "expo-router"
 import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
 import { updateBoatUseCase } from "@/modules/application/boats/updateBoatUseCase"
 import * as ImagePicker from "expo-image-picker"
 import { PaperSelect } from "react-native-paper-select"
-import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platform } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platform, ActivityIndicator } from "react-native"
+import { Button, TextInput, Text, useTheme } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
@@ -17,6 +17,7 @@ export default function EditBoat() {
      const boatTypeOptions = useBoatTypeOptions()
      const [isLoading, setIsLoading] = useState(false)
      const { showTranslatedFlashMessage } = useFlashMessage()
+     const colors = useTheme().colors
 
      const [boat, setBoat] = useState({
           boatName: "",
@@ -24,6 +25,7 @@ export default function EditBoat() {
           boatCapacity: "",
           boatType: 0,
           boatImages: [],
+          imageSelected: false,
      })
 
      const [types, setType] = useState({
@@ -90,7 +92,8 @@ export default function EditBoat() {
                          mimeType: asset.mimeType,
                          fileName: asset.fileName,
                     }))
-                    setBoat((prev) => ({ ...prev, boatImages: thumbnails }))
+
+                    setBoat((prev) => ({ ...prev, boatImages: thumbnails, imageSelected: true }))
                }
           } catch (error) {
                console.error("Error while selecting image:", error)
@@ -99,10 +102,21 @@ export default function EditBoat() {
 
      const editBoat = async () => {
           try {
-               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, showTranslatedFlashMessage)
+               const result = await updateBoatUseCase(boat.imageSelected, boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, showTranslatedFlashMessage)
           } catch (error) {
                console.error("Error while editing boat:", error)
           }
+     }
+
+     if (isLoading) {
+          return (
+               <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                    <SafeAreaView style={styles.safeView}>
+                         <ActivityIndicator size="large" color={colors.primary} />
+                         <Text>{t("edit_boat_loading")}</Text>
+                    </SafeAreaView>
+               </KeyboardAvoidingView>
+          )
      }
 
      return (
@@ -144,7 +158,7 @@ export default function EditBoat() {
                          </Button>
 
                          <Button mode="contained" style={styles.button} onPress={() => editBoat()} loading={isLoading} disabled={isLoading}>
-                              {isLoading ? t("loading_button_text") : t("edit_boat_button")}
+                              {t("edit_boat_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>

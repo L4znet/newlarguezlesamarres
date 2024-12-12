@@ -89,6 +89,23 @@ export default function AddBoat() {
           }
 
           const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
+
+          if (newBoat) {
+               setBoat({
+                    boatName: "",
+                    boatDescription: "",
+                    boatCapacity: "",
+                    boatType: 0,
+                    boatImages: [],
+               })
+               setType({
+                    value: boatTypeOptions[1].value,
+                    list: boatTypeOptions,
+                    selectedList: [boatTypeOptions[1]],
+                    error: "",
+                    id: 1,
+               })
+          }
      }
 
      const handleThumbnailChange = async () => {

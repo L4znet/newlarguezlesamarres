@@ -2,6 +2,7 @@ import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepository
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 export const createBoatUseCase = async (
      boatName: string,
@@ -17,7 +18,7 @@ export const createBoatUseCase = async (
                description: string
           },
           locale?: string
-     ) => void
+     ) => BoatEntity
 ) => {
      setLoader(true)
      try {
@@ -39,8 +40,8 @@ export const createBoatUseCase = async (
                title: "flash_title_success",
                description: "Boat added successfully!",
           })
-
           router.push("/(app)/(tabs)/(boats)")
+          return newBoat
      } catch (error) {
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",

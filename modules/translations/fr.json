@@ -81,6 +81,7 @@
      "close_btn": "Fermer",
      "done_btn": "Terminé",
      "change_thumbnail_btn": "Sélectionner des photos",
+     "loading_button_text": "Chargement...",
 
      "flash_title_danger": "Erreur",
      "flash_title_success": "Succès",
@@ -96,6 +97,7 @@
      "validation_username_required": "Le nom d'utilisateur est requis.",
      "validation_passwords_do_not_match": "Les mots de passe ne correspondent pas.",
      "loading_title": "Un peu de patience, on s'en occupe !",
+     "edit_boat_loading": "Le chantier naval s'en occupe, ce sera bientôt prêt !",
 
      "auth_api_error_rate_limit_exceeded": {
           "supabase_message": "Email rate limit exceeded",
@@ -170,6 +172,15 @@
           "supabase_message": "Boat deleted successfully!",
           "translation": "Suppression du bateau réussie !"
      },
+     "supabase_boat_success_added_boat": {
+          "supabase_message": "Boat added successfully!",
+          "translation": "Bateau ajouté avec succès !"
+     },
+     "supabase_boat_success_updated_boat": {
+          "supabase_message": "Boat updated successfully!",
+          "translation": "Bateau mis à jour avec succès !"
+     },
+     "validation_avatar_required": "Une photo de profil est requise.",
 
      "drawer_setting_btn": "Paramètres",
      "drawer_settings_change_language": "Changer la langue",
