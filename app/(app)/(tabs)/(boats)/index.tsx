@@ -60,7 +60,7 @@ export default function Index() {
           return (
                <View style={styles.container}>
                     <Text>Rien à afficher pour le moment</Text>
-                    <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(boats)/addBoat")} />
+                    <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(boats)/createBoat")} />
                </View>
           )
      }

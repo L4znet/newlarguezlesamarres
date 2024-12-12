@@ -19,7 +19,7 @@ export const selectValidator = (value: any) => {
      return ""
 }
 
-export default function AddBoat() {
+export default function createBoat() {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)

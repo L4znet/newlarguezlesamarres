@@ -20,7 +20,7 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name="addBoat"
+                         name="createBoat"
                          options={{
                               title: "Ajouter un bateau",
                          }}

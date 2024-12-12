@@ -19,6 +19,26 @@ export default function Layout() {
                               title: "Accueil",
                          }}
                     />
+                    <Drawer.Screen
+                         name="createOffer"
+                         options={{
+                              title: "Ajouter une annonce",
+                         }}
+                    />
+
+                    <Drawer.Screen
+                         name="editOffer"
+                         options={{
+                              title: "Modifier une annonce",
+                              drawerItemStyle: { display: "none" },
+                         }}
+                    />
+                    <Drawer.Screen
+                         name="offerDetail"
+                         options={{
+                              drawerItemStyle: { display: "none" },
+                         }}
+                    />
                </Drawer>
           </GestureHandlerRootView>
      )
