@@ -28,10 +28,10 @@ export default function AddBoat() {
      const colors = useTheme().colors
 
      const [boat, setBoat] = useState<Boat>({
-          boatName: "",
-          boatDescription: "",
-          boatCapacity: "",
-          boatType: 0,
+          boatName: "Mon super bateau",
+          boatDescription: "sdfqfdsqdsfdljkmfdqslmfdsqjfdsqklfdsqkljfqsd",
+          boatCapacity: "10",
+          boatType: 1,
           boatImages: [],
      })
 

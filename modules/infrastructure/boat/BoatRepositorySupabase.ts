@@ -56,17 +56,6 @@ class BoatRepositorySupabase implements BoatRepository {
 
      async uploadImages(boatId: string | undefined, images: any[]): Promise<void> {
           try {
-               const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
-               if (fetchError) throw new Error(`Error fetching old images: ${fetchError.message}`)
-
-               if (oldImages) {
-                    for (const image of oldImages) {
-                         const path = "thumbnails/" + image.url.split("/").pop()
-                         await supabase.storage.from("boats-images").remove(path)
-                    }
-                    await supabase.from("boat_images").delete().eq("boat_id", boatId)
-               }
-
                for (const [index, image] of images.entries()) {
                     const randomName = Math.random().toString(36).substring(7)
                     const fileName = `${randomName}-${(image.fileName || "default").toLowerCase().replace(/_/g, "-")}`
@@ -79,7 +68,7 @@ class BoatRepositorySupabase implements BoatRepository {
 
                     const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
 
-                    await supabase.from("boat_images").insert({
+                    const { data, error } = await supabase.from("boat_images").insert({
                          boat_id: boatId,
                          url: publicUrl,
                          caption: image.caption,
@@ -89,7 +78,10 @@ class BoatRepositorySupabase implements BoatRepository {
                          mime_type: image.mimeType,
                          file_name: fileName,
                          is_default: index === 0,
+                         base64: image.base64,
                     })
+
+                    console.log(data, error)
                }
           } catch (error) {
                throw new Error(`Error in uploadImages: ${(error as Error).message}`)
@@ -110,60 +102,6 @@ class BoatRepositorySupabase implements BoatRepository {
           }
 
           throw new Error("No data returned from boat deletion.")
-     }
-
-     async uploadImages(
-          boatId: string | undefined,
-          images: {
-               fileName: string | undefined | null
-               isDefault: boolean
-               size: number
-               base64: string
-               caption: string
-               mimeType: string
-               contentType: string
-               dimensions: { width: number; height: number }
-          }[]
-     ): Promise<void> {
-          try {
-               const uploadedImages = await Promise.all(
-                    images.map(async (image, index) => {
-                         const randomName = Math.random().toString(36).substring(7)
-
-                         const fileName = (randomName + " - " + image.fileName).toLowerCase()
-
-                         console.log("fileName", fileName)
-
-                         // const fileName = `${randomName}-${(image.fileName || "default").toLowerCase().replace(/_/g, "-")}`
-
-                         const { data: uploadData, error: uploadError } = await supabase.storage.from("boats-images").upload(`thumbnails/${fileName}`, decode(image.base64), {
-                              contentType: image.mimeType,
-                         })
-
-                         if (uploadError) {
-                              throw new Error(`Error uploading image: ${uploadError.message}`)
-                         }
-
-                         const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
-
-                         return {
-                              boat_id: boatId,
-                              url: publicUrl,
-                              caption: image.caption,
-                              content_type: image.contentType,
-                              dimensions: image.dimensions,
-                              size: image.size,
-                              mime_type: image.mimeType,
-                              file_name: fileName,
-                              is_default: index === 0,
-                         }
-                    })
-               )
-
-               await supabase.from("boat_images").insert(uploadedImages)
-          } catch (error) {
-               throw new Error(`Error in uploadImages: ${(error as Error).message}`)
-          }
      }
 
      async updateImages(

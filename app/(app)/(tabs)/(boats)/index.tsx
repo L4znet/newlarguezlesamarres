@@ -26,45 +26,9 @@ export default function Index() {
           }
      }
 
-     const handleRealtimeChanges = (payload: any) => {
-          const { eventType, new: newBoat, old: oldBoat } = payload
-
-          setBoats((prev) => {
-               switch (eventType) {
-                    case "INSERT":
-                         return prev.some((boat) => boat.boatId === newBoat.id) ? prev : [...prev, BoatEntity.fromSupabaseData(newBoat)]
-                    case "UPDATE":
-                         return prev.map((boat) => (boat.boatId === newBoat.id ? BoatEntity.fromSupabaseData(newBoat) : boat))
-                    case "DELETE":
-                         return prev.filter((boat) => boat.boatId !== oldBoat.id)
-                    default:
-                         return prev
-               }
-          })
-     }
-
      useEffect(() => {
           fetchBoats()
-
-          const subscription = supabase
-               .channel("boats-changes")
-               .on(
-                    "postgres_changes",
-                    {
-                         event: "*",
-                         schema: "public",
-                         table: "boats",
-                    },
-                    (payload) => {
-                         handleRealtimeChanges(payload)
-                    }
-               )
-               .subscribe()
-
-          return () => {
-               supabase.removeChannel(subscription)
-          }
-     }, [])
+     }, [boats])
 
      const renderItem = ({ item }: { item: BoatEntity }) => {
           return (
