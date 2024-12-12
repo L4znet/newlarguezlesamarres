@@ -88,6 +88,56 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
+     async uploadUpdateImages(boatId: string | undefined, newImages: any[]): Promise<void> {
+          const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
+
+          if (fetchError) {
+               throw new Error(`Error fetching old images: ${fetchError.message}`)
+          }
+
+          if (oldImages) {
+               console.log("oldImages", oldImages)
+
+               if (oldImages?.length > 0) {
+                    const imagePaths = oldImages.map((image) => `thumbnails/${image.url.split("/").pop()}`)
+                    await supabase.storage.from("boats-images").remove(imagePaths)
+                    await supabase.from("boat_images").delete().eq("boat_id", boatId)
+               }
+          }
+
+          try {
+               for (const image of newImages) {
+                    const randomName = Math.random().toString(36).substring(7)
+                    const fileName = `${randomName}-${(image.fileName || "default").toLowerCase().replace(/_/g, "-")}`
+
+                    const { data: uploadData, error: uploadError } = await supabase.storage.from("boats-images").upload(`thumbnails/${fileName}`, decode(image.base64), {
+                         contentType: image.mimeType,
+                    })
+
+                    if (uploadError) throw new Error(`Error uploading image: ${uploadError.message}`)
+
+                    const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
+
+                    const { data, error } = await supabase.from("boat_images").insert({
+                         boat_id: boatId,
+                         url: publicUrl,
+                         caption: image.caption,
+                         content_type: image.contentType,
+                         dimensions: image.dimensions,
+                         size: image.size,
+                         mime_type: image.mimeType,
+                         file_name: fileName,
+                         is_default: image.isDefault,
+                         base64: image.base64,
+                    })
+
+                    console.log(data, error)
+               }
+          } catch (error) {
+               throw new Error(`Error in uploadImages: ${(error as Error).message}`)
+          }
+     }
+
      async deleteBoat(profile_id: string | undefined, boatId: string): Promise<BoatEntity | undefined> {
           const boatIdString = boatId
 
@@ -122,24 +172,6 @@ class BoatRepositorySupabase implements BoatRepository {
                await this.uploadImages(boatId, images)
           } catch (error) {
                throw new Error(`Error in updateImages: ${(error as Error).message}`)
-          }
-     }
-
-     async deleteBoatImages(boatId: string | undefined): Promise<void> {
-          try {
-               const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
-
-               if (fetchError) {
-                    throw new Error(`Error fetching old images: ${fetchError.message}`)
-               }
-
-               if (oldImages?.length > 0) {
-                    const imagePaths = oldImages.map((image) => `thumbnails/${image.url.split("/").pop()}`)
-                    await supabase.storage.from("boats-images").remove(imagePaths)
-                    await supabase.from("boat_images").delete().eq("boat_id", boatId)
-               }
-          } catch (error) {
-               throw new Error(`Error in deleteBoatImages: ${(error as Error).message}`)
           }
      }
 

@@ -3,23 +3,7 @@ import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { router } from "expo-router"
 
-export const updateBoatUseCase = async (
-     boatId: string,
-     boatName: string,
-     boatDescription: string,
-     boatCapacity: string,
-     boatType: number,
-     boatImages: any[],
-     setLoader: (value: boolean) => void,
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
-          locale?: string
-     ) => void
-) => {
+export const updateBoatUseCase = async (boatId: string | string[], boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatImages: any[], setLoader: (value: boolean) => void, showTranslatedFlashMessage: FlashMessageContextType) => {
      setLoader(true)
      try {
           const session = await getCurrentSessionUseCase()
@@ -34,7 +18,7 @@ export const updateBoatUseCase = async (
                throw new Error("Failed to update boat.")
           }
 
-          await BoatRepositorySupabase.uploadImages(updatedBoat.boatId, boatImages)
+          await BoatRepositorySupabase.uploadUpdateImages(updatedBoat.boatId, boatImages)
 
           showTranslatedFlashMessage("success", {
                title: "flash_title_success",

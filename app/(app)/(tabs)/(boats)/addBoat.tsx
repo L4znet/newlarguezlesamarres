@@ -160,8 +160,8 @@ export default function AddBoat() {
      const loader = () => {
           return (
                <View style={styles.container}>
-                    <Text variant={"titleLarge"}>{t("loading_title")}</Text>
                     <ActivityIndicator size="large" color={colors.primary} />
+                    <Text>{t("loading_title")}</Text>
                </View>
           )
      }

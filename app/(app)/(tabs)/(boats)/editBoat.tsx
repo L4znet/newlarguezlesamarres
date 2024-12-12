@@ -16,7 +16,7 @@ export default function EditBoat() {
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
      const [isLoading, setIsLoading] = useState(false)
-     const ShowTranslatedFlashMessage = useFlashMessage()
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const [boat, setBoat] = useState({
           boatName: "",
@@ -80,6 +80,15 @@ export default function EditBoat() {
                          caption: asset.fileName || "",
                          isDefault: false,
                          boatId: boatId,
+                         base64: asset.base64,
+                         contentType: asset.type,
+                         dimensions: {
+                              width: asset.width,
+                              height: asset.height,
+                         },
+                         size: asset.fileSize,
+                         mimeType: asset.mimeType,
+                         fileName: asset.fileName,
                     }))
                     setBoat((prev) => ({ ...prev, boatImages: thumbnails }))
                }
@@ -90,7 +99,7 @@ export default function EditBoat() {
 
      const editBoat = async () => {
           try {
-               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, ShowTranslatedFlashMessage)
+               const result = await updateBoatUseCase(boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, showTranslatedFlashMessage)
           } catch (error) {
                console.error("Error while editing boat:", error)
           }
