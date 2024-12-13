@@ -1,8 +1,7 @@
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { MessageType } from "react-native-flash-message"
 
-export const createOfferUseCase = async (
+export const updateOfferUseCase = async (
      setLoader: (value: boolean) => void,
      showTranslatedFlashMessage: (
           type: MessageType,
@@ -11,5 +10,5 @@ export const createOfferUseCase = async (
                description: string
           },
           locale?: string
-     ) => OfferEntity
+     ) => void
 ) => {}

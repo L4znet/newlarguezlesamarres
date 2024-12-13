@@ -114,3 +114,5 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer deletion.")
      }
 }
+
+export default new OfferRepositorySupabase()
