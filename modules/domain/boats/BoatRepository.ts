@@ -1,11 +1,11 @@
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 interface BoatRepository {
-     createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string): Promise<BoatEntity | undefined>
-     updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
+     createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string): Promise<BoatEntity | undefined>
+     updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
 
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
-     getBoats(profile_id: string | undefined): Promise<BoatEntity[] | undefined>
+     getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
 
      uploadImages(
           boatId: string | undefined,
@@ -21,10 +21,11 @@ interface BoatRepository {
                isDefault: boolean
           }[]
      ): Promise<void>
-     deleteBoat(profile_id: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
+     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
      deleteBoatImages(boatId: string | undefined, images: string[]): Promise<void>
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
-     getBoats(profile_id: string | undefined): Promise<BoatEntity[] | undefined>
+     getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
+     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
 }
 
 export default BoatRepository

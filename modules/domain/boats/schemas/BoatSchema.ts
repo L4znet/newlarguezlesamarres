@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const BoatSchema = z
      .object({
-          profile_id: z.string().uuid(),
+          profileId: z.string().uuid(),
           boatId: z.string().uuid().optional(),
           boatName: z.string().min(5, "Boat name must be at least 5 characters long"),
           boatDescription: z.string().min(10, "Boat description must be at least 10 characters long"),
@@ -10,7 +10,7 @@ export const BoatSchema = z
           boatType: z.number(),
      })
      .transform((data) => ({
-          profile_id: data.profile_id,
+          profile_id: data.profileId,
           boat_id: data.boatId,
           boat_name: data.boatName,
           boat_description: data.boatDescription,

@@ -3,13 +3,15 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
 import { undefined } from "zod"
+import { Is } from "@sinclair/typebox/value/is"
+import Array = Is.Array
 
 class BoatRepositorySupabase implements BoatRepository {
-     async createBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
+     async createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
           const { data: boatData, error: boatError } = await supabase
                .from("boats")
                .insert({
-                    profile_id,
+                    profile_id: profileId,
                     boat_name: boatName,
                     boat_description: boatDescription,
                     boat_capacity: boatCapacity,
@@ -28,13 +30,13 @@ class BoatRepositorySupabase implements BoatRepository {
           throw new Error("No data returned from boat creation.")
      }
 
-     async updateBoat(profile_id: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
+     async updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
           const boatIdString = boatId
 
           const { data: boatData, error: boatError } = await supabase
                .from("boats")
                .update({
-                    profile_id,
+                    profile_id: profileId,
                     boat_name: boatName,
                     boat_description: boatDescription,
                     boat_capacity: boatCapacity,
@@ -136,10 +138,10 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async deleteBoat(profile_id: string | undefined, boatId: string): Promise<BoatEntity | undefined> {
+     async deleteBoat(profileId: string | undefined, boatId: string): Promise<BoatEntity | undefined> {
           const boatIdString = boatId
 
-          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatIdString).eq("profile_id", profile_id).select()
+          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatIdString).eq("profile_id", profileId).select()
 
           if (boatError) {
                throw new Error(`Error deleting boat: ${boatError.message}`)
@@ -152,28 +154,7 @@ class BoatRepositorySupabase implements BoatRepository {
           throw new Error("No data returned from boat deletion.")
      }
 
-     async updateImages(
-          boatId: string | undefined,
-          images: {
-               fileName: string | undefined | null
-               isDefault: boolean
-               size: number
-               base64: string
-               caption: string
-               mimeType: string
-               contentType: string
-               dimensions: { width: number; height: number }
-          }[]
-     ): Promise<void> {
-          try {
-               await this.deleteBoatImages(boatId)
-               await this.uploadImages(boatId, images)
-          } catch (error) {
-               throw new Error(`Error in updateImages: ${(error as Error).message}`)
-          }
-     }
-
-     async getBoats(profile_id: string | undefined): Promise<BoatEntity[] | undefined> {
+     async getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined> {
           try {
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
@@ -200,7 +181,7 @@ class BoatRepositorySupabase implements BoatRepository {
                     )
                 `
                     )
-                    .eq("profile_id", profile_id)
+                    .eq("profile_id", profileId)
 
                if (boatError) {
                     throw new Error(`Error getting boats: ${boatError.message}`)
@@ -260,6 +241,10 @@ class BoatRepositorySupabase implements BoatRepository {
           } catch (error) {
                throw new Error(`Error in getSingleBoat: ${(error as Error).message}`)
           }
+     }
+
+     deleteBoatImages(boatId: string | undefined, images: string[]): Promise<void> {
+          return Promise.resolve(undefined)
      }
 }
 
