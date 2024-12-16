@@ -21,12 +21,12 @@ export default class BoatEntity {
 
      static fromSupabaseData(data: any): BoatEntity {
           return new BoatEntity(
+               data.id,
                data.profile_id,
                data.boat_name,
                data.boat_description,
                data.boat_capacity,
                data.boat_type,
-               data.id,
                data.boat_images
                     ? data.boat_images.map((img: any) => ({
                            id: img.id,

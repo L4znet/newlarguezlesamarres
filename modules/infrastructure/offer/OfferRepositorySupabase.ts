@@ -1,6 +1,10 @@
 import supabase from "@/supabaseClient"
 import OfferRepository from "@/modules/domain/offers/OfferRepository"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
+import BoatRepository from "@/modules/domain/boats/BoatRepository"
+import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
+import { undefined } from "zod"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 class OfferRepositorySupabase implements OfferRepository {
      async createOffer(profileId: string | undefined, title: string, description: string, price: number, isAvailable: boolean, frequency: number, equipments: any[], isSkipperAvailable: boolean, isTeamAvailable: boolean, rentalPeriod: any[], location: any, isArchived: boolean, deletedAt: Date | undefined): Promise<OfferEntity | undefined> {
@@ -112,6 +116,14 @@ class OfferRepositorySupabase implements OfferRepository {
           }
 
           throw new Error("No data returned from offer deletion.")
+     }
+
+     async selectBoats(profileId: string | undefined): Promise<BoatEntity | undefined> {
+          const boats = BoatRepositorySupabase.getBoats(profileId)
+
+          if (boats) {
+               return BoatEntity.fromSupabaseData(boats)
+          }
      }
 }
 

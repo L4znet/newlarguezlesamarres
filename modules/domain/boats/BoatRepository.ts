@@ -5,7 +5,6 @@ interface BoatRepository {
      updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
 
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
-     getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
 
      uploadImages(
           boatId: string | undefined,

@@ -30,7 +30,6 @@ export const OfferSchema = z
                zipCode: z.string(),
                address: z.string(),
           }),
-          isArchived: z.boolean(),
           deletedAt: z.date().optional(),
      })
      .transform((data) => ({
@@ -46,7 +45,6 @@ export const OfferSchema = z
           is_team_available: data.isTeamAvailable,
           rental_period: data.rentalPeriod,
           location: data.location,
-          is_archived: data.isArchived,
           deleted_at: data.deletedAt,
      }))
 

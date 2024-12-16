@@ -76,7 +76,8 @@
      "edit_profile_btn": "Modifier le profil",
      "edit_btn": "Enregistrer les changements",
      "delete_btn": "Confirmer la suppression",
-     "add_boat_button": "Ajouter un bateau",
+     "create_boat_button": "Ajouter un bateau",
+     "create_offer_button": "Ajouter une offre",
      "edit_boat_button": "Modifier le bateau",
      "close_btn": "Fermer",
      "done_btn": "Terminé",
@@ -196,5 +197,29 @@
      "motorboat": "Bateau à moteur",
      "catamaran": "Catamaran",
      "trimaran": "Trimaran",
-     "yacht": "Yacht"
+     "yacht": "Yacht",
+
+     "offer_title_label": "Titre de l'offre",
+     "offer_description_label": "Description de l'offre",
+     "offer_price_label": "Prix de l'offre",
+     "offer_frequency_label": "Fréquence de la location",
+     "offer_city_label": "Ville",
+     "offer_country_label": "Pays",
+
+     "offer_title_placeholder": "Titre de l'offre",
+     "offer_description_placeholder": "Description de l'offre",
+     "offer_price_placeholder": "Prix de la location par",
+     "offer_frequency_placeholder": "Fréquence de la location",
+     "offer_city_placeholder": "Ville",
+     "offer_country_placeholder": "Pays",
+
+     "offer_price_per_hour": "heure",
+     "offer_price_per_day": "jour",
+     "offer_price_per_week": "semaine",
+     "offer_price_per_month": "mois",
+     "offer_price_per_year": "an",
+     "offer_create_title": "Créer une offre",
+
+     "select_boat_title": "Sélectionnez un bateau pour l'associer à l'offre",
+     "select_boat_button": "Sélectionnez le bateau"
 }

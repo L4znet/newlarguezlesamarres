@@ -89,23 +89,6 @@ export default function createBoat() {
           }
 
           const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
-
-          if (newBoat) {
-               setBoat({
-                    boatName: "",
-                    boatDescription: "",
-                    boatCapacity: "",
-                    boatType: 0,
-                    boatImages: [],
-               })
-               setType({
-                    value: boatTypeOptions[1].value,
-                    list: boatTypeOptions,
-                    selectedList: [boatTypeOptions[1]],
-                    error: "",
-                    id: 1,
-               })
-          }
      }
 
      const handleThumbnailChange = async () => {
@@ -166,7 +149,7 @@ export default function createBoat() {
                               </Button>
 
                               <Button mode="contained" style={styles.button} onPress={() => createBoat()} loading={isLoading} disabled={isLoading}>
-                                   {isLoading ? t("loading_button_text") : t("add_boat_button")}
+                                   {isLoading ? t("loading_button_text") : t("create_boat_button")}
                               </Button>
                          </ScrollView>
                     </SafeAreaView>

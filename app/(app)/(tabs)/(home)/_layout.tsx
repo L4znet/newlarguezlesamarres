@@ -20,7 +20,7 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name="createOffer"
+                         name="(createOffer)"
                          options={{
                               title: "Ajouter une annonce",
                          }}

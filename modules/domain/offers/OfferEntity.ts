@@ -1,35 +1,34 @@
 export default class OfferEntity {
      constructor(
-          offerId: string,
-          profileId: string,
-          title: string,
-          description: string,
-          price: number,
-          is_available: boolean,
-          frequency: number,
-          equipments: [
+          public readonly offerId: string,
+          public readonly profileId: string,
+          public readonly title: string,
+          public readonly description: string,
+          public readonly price: number,
+          public readonly is_available: boolean,
+          public readonly frequency: number,
+          public readonly equipments: [
                {
                     id: string
                     name: string
                     description: string
                },
           ],
-          is_skipper_available: boolean,
-          is_team_available: boolean,
-          rental_period: [
+          public readonly is_skipper_available: boolean,
+          public readonly is_team_available: boolean,
+          public readonly rental_period: [
                {
                     from: Date
                     to: Date
                },
           ],
-          location: {
+          public readonly location: {
                city: string
                country: string
                zip_code: string
                address: string
           },
-          is_archived: boolean,
-          deleted_at: Date
+          public readonly deleted_at: Date
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
@@ -69,7 +68,6 @@ export default class OfferEntity {
                            zip_code: "",
                            address: "",
                       },
-               data.is_archived,
                data.deleted_at
           )
      }

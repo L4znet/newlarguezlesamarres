@@ -13,12 +13,14 @@ export const createBoatUseCase = async (
      setLoader: (value: boolean) => void,
      showTranslatedFlashMessage: (
           type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
+          messageOrMessages:
+               | { title: string; description: string }
+               | Array<{
+                      title: string
+                      description: string
+                 }>,
           locale?: string
-     ) => BoatEntity
+     ) => void
 ) => {
      setLoader(true)
      try {
@@ -30,6 +32,7 @@ export const createBoatUseCase = async (
           }
 
           const newBoat = await BoatRepositorySupabase.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
+
           if (!newBoat?.boatId) {
                throw new Error("Failed to create boat.")
           }
