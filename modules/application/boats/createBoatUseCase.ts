@@ -4,25 +4,7 @@ import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
-export const createBoatUseCase = async (
-     boatName: string,
-     boatDescription: string,
-     boatCapacity: string,
-     boatType: number,
-     boatImages: any[],
-     setLoader: (value: boolean) => void,
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          messageOrMessages:
-               | { title: string; description: string }
-               | Array<{
-                      title: string
-                      description: string
-                 }>,
-          locale?: string
-     ) => void
-) => {
-     setLoader(true)
+export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages, showTranslatedFlashMessage }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[]; setLoader: (value: boolean) => void; showTranslatedFlashMessage: (type: string, message: { title: string; description: string }) => void }) => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -39,10 +21,6 @@ export const createBoatUseCase = async (
 
           await BoatRepositorySupabase.uploadImages(newBoat.boatId, boatImages)
 
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Boat added successfully!",
-          })
           router.push("/(app)/(tabs)/(boats)")
           return newBoat
      } catch (error) {
@@ -51,6 +29,6 @@ export const createBoatUseCase = async (
                description: (error as Error).message,
           })
      } finally {
-          setLoader(false)
+          console.log("finally")
      }
 }

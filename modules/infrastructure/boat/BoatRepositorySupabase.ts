@@ -3,8 +3,6 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
 import { undefined } from "zod"
-import { Is } from "@sinclair/typebox/value/is"
-import Array = Is.Array
 
 class BoatRepositorySupabase implements BoatRepository {
      async createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
@@ -171,13 +169,7 @@ class BoatRepositorySupabase implements BoatRepository {
                         url,
                         boat_id,
                         is_default,
-                        caption,
-                        content_type,
-                        base64,
-                        dimensions,
-                        size,
-                        mime_type,
-                        file_name
+                        caption
                     )
                 `
                     )

@@ -7,9 +7,8 @@ import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
 import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
-import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
-import { undefined } from "zod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useCreateBoat } from "@/modules/hooks/boats/useCreateBoat"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -24,8 +23,8 @@ export default function createBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
-     const [isLoading, setIsLoading] = useState(false)
      const colors = useTheme().colors
+     const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
 
      const [boat, setBoat] = useState<Boat>({
           boatName: "Mon super bateau",
@@ -79,7 +78,7 @@ export default function createBoat() {
           setBoat({ ...boat, boatImages: thumbnails })
      }
 
-     const createBoat = async () => {
+     const handleSubmit = async () => {
           const boatToInsert = {
                boatName: boat.boatName,
                boatDescription: boat.boatDescription,
@@ -88,7 +87,17 @@ export default function createBoat() {
                boatImages: boat.boatImages,
           }
 
-          const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
+          createBoat({
+               boatName: boatToInsert.boatName,
+               boatDescription: boatToInsert.boatDescription,
+               boatCapacity: boatToInsert.boatCapacity,
+               boatType: boatToInsert.boatType,
+               boatImages: boatToInsert.boatImages,
+               setLoader: isPending,
+               showTranslatedFlashMessage: showTranslatedFlashMessage,
+          })
+
+          //   const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
      }
 
      const handleThumbnailChange = async () => {
@@ -148,8 +157,8 @@ export default function createBoat() {
                                    {t("change_thumbnail_btn")}
                               </Button>
 
-                              <Button mode="contained" style={styles.button} onPress={() => createBoat()} loading={isLoading} disabled={isLoading}>
-                                   {isLoading ? t("loading_button_text") : t("create_boat_button")}
+                              <Button mode="contained" style={styles.button} onPress={() => handleSubmit()} loading={isPending} disabled={isPending}>
+                                   {isPending ? t("loading_button_text") : t("create_boat_button")}
                               </Button>
                          </ScrollView>
                     </SafeAreaView>
@@ -166,7 +175,7 @@ export default function createBoat() {
           )
      }
 
-     return isLoading ? loader() : form()
+     return isPending ? loader() : form()
 }
 
 const styles = StyleSheet.create({

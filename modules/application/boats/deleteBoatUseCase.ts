@@ -3,18 +3,7 @@ import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentS
 import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
 
-export const deleteBoatUseCase = async (
-     boatId: string,
-
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
-          locale?: string
-     ) => void
-) => {
+export const deleteBoatUseCase = async (boatId: string) => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -28,16 +17,8 @@ export const deleteBoatUseCase = async (
                throw new Error("Failed to delete boat.")
           }
 
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Boat deleted successfully!",
-          })
-
           router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          showTranslatedFlashMessage("danger", {
-               title: "flash_title_danger",
-               description: (error as Error).message,
-          })
+          throw new Error((error as Error).message)
      }
 }

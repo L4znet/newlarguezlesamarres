@@ -1,7 +1,7 @@
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 interface BoatRepository {
-     createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId?: string): Promise<BoatEntity | undefined>
+     createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined>
      updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
 
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>

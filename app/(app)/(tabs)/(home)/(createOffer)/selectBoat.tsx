@@ -8,27 +8,20 @@ import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase
 import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useBoatStore, useRealtimeBoats } from "@/modules/stores/boatStore"
 
 export default function SelectBoat() {
-     const [boats, setBoatsToSelect] = useState<BoatEntity[]>([])
-     const [isLoading, setIsLoading] = useState(true)
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     const fetchBoats = async () => {
-          try {
-               const fetchedBoats = await getBoatsUseCase()
-               console.log(fetchedBoats)
-               setBoatsToSelect(fetchedBoats)
-          } catch (error) {
-               console.error("Erreur lors de la récupération des bateaux :", error)
-          } finally {
-               setIsLoading(false)
-          }
-     }
+     console.log("RENDER SELECT BOAT")
+
+     const { boats, fetchBoats, isLoading, error } = useBoatStore()
+
+     useRealtimeBoats()
 
      useEffect(() => {
           fetchBoats()
-     }, [boats])
+     }, [fetchBoats])
 
      const renderItem = ({ item }: { item: BoatEntity }) => {
           return (

@@ -4,11 +4,12 @@ import { useColorScheme } from "react-native"
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper"
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from "@react-navigation/native"
 import merge from "deepmerge"
-import { Colors } from "@/constants/Colors"
 import { AuthProvider } from "@/modules/context/AuthProvider"
 import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 import { TranslationProvider } from "@/modules/context/TranslationContext"
 import { ProfileProvider } from "@/modules/context/ProfileProvider"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "@/queryClient"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -43,27 +44,28 @@ const CombinedDarkTheme = merge(DarkTheme, customDarkTheme)
 export default function RootLayout() {
      const colorScheme = useColorScheme()
      const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
-
      return (
-          <TranslationProvider>
-               <PaperProvider theme={paperTheme}>
-                    <ThemeProvider value={paperTheme}>
-                         <FlashMessageProvider>
-                              <ProfileProvider>
-                                   <AuthProvider>
-                                        <Stack
-                                             screenOptions={{
-                                                  headerShown: false,
-                                             }}
-                                        >
-                                             <Stack.Screen name="(auth)" />
-                                             <Stack.Screen name="(tabs)" />
-                                        </Stack>
-                                   </AuthProvider>
-                              </ProfileProvider>
-                         </FlashMessageProvider>
-                    </ThemeProvider>
-               </PaperProvider>
-          </TranslationProvider>
+          <QueryClientProvider client={queryClient}>
+               <TranslationProvider>
+                    <PaperProvider theme={paperTheme}>
+                         <ThemeProvider value={paperTheme}>
+                              <FlashMessageProvider>
+                                   <ProfileProvider>
+                                        <AuthProvider>
+                                             <Stack
+                                                  screenOptions={{
+                                                       headerShown: false,
+                                                  }}
+                                             >
+                                                  <Stack.Screen name="(auth)" />
+                                                  <Stack.Screen name="(tabs)" />
+                                             </Stack>
+                                        </AuthProvider>
+                                   </ProfileProvider>
+                              </FlashMessageProvider>
+                         </ThemeProvider>
+                    </PaperProvider>
+               </TranslationProvider>
+          </QueryClientProvider>
      )
 }
