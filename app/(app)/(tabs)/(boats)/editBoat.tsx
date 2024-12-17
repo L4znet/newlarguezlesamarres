@@ -10,14 +10,15 @@ import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platf
 import { Button, TextInput, Text, useTheme } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useUpdateBoat } from "@/modules/hooks/boats/useUpdateBoat"
 
 export default function EditBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
-     const [isLoading, setIsLoading] = useState(false)
      const { showTranslatedFlashMessage } = useFlashMessage()
      const colors = useTheme().colors
+     const updateBoat = useUpdateBoat()
 
      const [boat, setBoat] = useState({
           boatName: "",
@@ -102,13 +103,25 @@ export default function EditBoat() {
 
      const editBoat = async () => {
           try {
-               const result = await updateBoatUseCase(boat.imageSelected, boatId, boat.boatName, boat.boatDescription, boat.boatCapacity, types.id, boat.boatImages, setIsLoading, showTranslatedFlashMessage)
+               console.log(typeof boat.boatCapacity)
+
+               updateBoat.mutate({
+                    boatId: boatId,
+                    updatedData: {
+                         boatName: boat.boatName,
+                         boatDescription: boat.boatDescription,
+                         boatCapacity: boat.boatCapacity,
+                         boatType: types.id,
+                         boatImages: boat.boatImages,
+                    },
+                    imageSelected: boat.imageSelected,
+               })
           } catch (error) {
                console.error("Error while editing boat:", error)
           }
      }
 
-     if (isLoading) {
+     if (updateBoat.isPending) {
           return (
                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <SafeAreaView style={styles.safeView}>
@@ -153,11 +166,11 @@ export default function EditBoat() {
 
                          <Slideshow images={boat.boatImages} />
 
-                         <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
+                         <Button mode="text" loading={updateBoat.isPending} disabled={updateBoat.isPending} onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                               {t("change_thumbnail_btn")}
                          </Button>
 
-                         <Button mode="contained" style={styles.button} onPress={() => editBoat()} loading={isLoading} disabled={isLoading}>
+                         <Button mode="contained" style={styles.button} onPress={() => editBoat()} loading={updateBoat.isPending} disabled={updateBoat.isPending}>
                               {t("edit_boat_button")}
                          </Button>
                     </ScrollView>

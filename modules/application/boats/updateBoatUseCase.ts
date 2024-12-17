@@ -1,10 +1,18 @@
 import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { router } from "expo-router"
 
-export const updateBoatUseCase = async (imageSelected: boolean, boatId: string | string[], boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatImages: any[], setLoader: (value: boolean) => void, showTranslatedFlashMessage: FlashMessageContextType) => {
-     setLoader(true)
+export const updateBoatUseCase = async (
+     boatId: string | string[],
+     boat: {
+          boatName: string
+          boatDescription: string
+          boatCapacity: string
+          boatType: number
+          boatImages: string[]
+     },
+     boatDescription: boolean
+) => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -13,27 +21,19 @@ export const updateBoatUseCase = async (imageSelected: boolean, boatId: string |
                throw new Error("User session not found.")
           }
 
+          const { boatName, boatDescription, boatCapacity, boatType, boatImages } = boat
+
           const updatedBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
           if (!updatedBoat?.boatId) {
                throw new Error("Failed to update boat.")
           }
 
-          if (imageSelected) {
+          if (boatDescription) {
                await BoatRepositorySupabase.uploadUpdateImages(updatedBoat.boatId, boatImages)
           }
 
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Boat updated successfully!",
-          })
-
           router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          showTranslatedFlashMessage("danger", {
-               title: "flash_title_danger",
-               description: (error as Error).message,
-          })
-     } finally {
-          setLoader(false)
+          throw new Error((error as Error).message)
      }
 }

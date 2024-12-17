@@ -50,7 +50,7 @@ const BoatList = () => {
           )
      }
 
-     return <FlatList data={boats} ListEmptyComponent={EmptyList} keyExtractor={(item) => item.id} renderItem={renderItem} />
+     return <FlatList data={boats} ListEmptyComponent={EmptyList} keyExtractor={(item) => item.boatId} renderItem={renderItem} />
 }
 
 const styles = StyleSheet.create({
