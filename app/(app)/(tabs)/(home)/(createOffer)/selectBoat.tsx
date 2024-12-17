@@ -1,62 +1,82 @@
-import { FlatList, SafeAreaView, StyleSheet, View } from "react-native"
-import { Button, Card, Text } from "react-native-paper"
-import React, { useEffect, useState } from "react"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import Slideshow from "@/modules/components/Slideshow"
-import { router } from "expo-router"
-import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase"
-import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { useBoatStore, useRealtimeBoats } from "@/modules/stores/boatStore"
+import React from "react"
+import { View, StyleSheet, FlatList, TouchableOpacity, Text } from "react-native"
+import { ActivityIndicator, Card, RadioButton, useTheme } from "react-native-paper"
+import { useBoats } from "@/modules/hooks/boats/useBoats"
 
-export default function SelectBoat() {
-     const { showTranslatedFlashMessage } = useFlashMessage()
+export default function SelectBoat({ onSelect }: { onSelect: (boatId: string) => void }) {
+     const { data: boats, isLoading, error } = useBoats()
+     const [selectedBoatId, setSelectedBoatId] = React.useState<string | null>(null)
+     const theme = useTheme()
 
-     console.log("RENDER SELECT BOAT")
-
-     const { boats, fetchBoats, isLoading, error } = useBoatStore()
-
-     useRealtimeBoats()
-
-     useEffect(() => {
-          fetchBoats()
-     }, [fetchBoats])
-
-     const renderItem = ({ item }: { item: BoatEntity }) => {
+     if (isLoading) {
           return (
-               <Card key={item.boatId} style={styles.card}>
-                    <Slideshow images={item.boatImages} />
-                    <Card.Title title={item.boatName} subtitle={item.boatDescription} />
-                    <Card.Actions>
-                         <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.boatId } })}>Modifier</Button>
-                         <Button onPress={async () => await deleteBoatUseCase(item.boatId, showTranslatedFlashMessage)}>Supprimer</Button>
-                    </Card.Actions>
-               </Card>
+               <View style={styles.loader}>
+                    <ActivityIndicator animating={true} size="large" />
+               </View>
           )
      }
 
-     return (
-          <View style={styles.container}>
-               <Text variant={"titleLarge"}>Modal screen</Text>
-               <SafeAreaView style={styles.safeView}>
-                    <FlatList data={boats} renderItem={renderItem} keyExtractor={(item) => item.boatId} />
-               </SafeAreaView>
-          </View>
-     )
+     if (error) {
+          return (
+               <View style={styles.error}>
+                    <Text>Erreur lors de la récupération des bateaux</Text>
+               </View>
+          )
+     }
+
+     const render = ({
+          item,
+     }: {
+          item: {
+               boatId: string
+               boatName: string
+               boatDescription: string
+          }
+     }) => {
+          return (
+               <TouchableOpacity
+                    onPress={() => {
+                         setSelectedBoatId(item.boatId)
+                         onSelect(item.boatId)
+                    }}
+                    style={[styles.cardContainer, selectedBoatId === item.boatId && styles.selectedCard]}
+               >
+                    <Card style={styles.card} theme={theme}>
+                         <Card.Title title={item.boatName} subtitle={item.boatDescription} />
+                    </Card>
+               </TouchableOpacity>
+          )
+     }
+
+     return <FlatList data={boats} keyExtractor={(item) => item.boatId} renderItem={render} style={styles.container} />
 }
 
 const styles = StyleSheet.create({
-     container: {
+     loader: {
           flex: 1,
-          alignItems: "center",
           justifyContent: "center",
+          alignItems: "center",
      },
-     safeView: {
-          width: "100%",
+     container: {
+          height: "80%",
+          borderWidth: 3,
+          borderColor: "blue",
+     },
+     error: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+     },
+     cardContainer: {
+          padding: 10,
+          backgroundColor: "red",
+     },
+     selectedCard: {
+          borderWidth: 2,
+          borderColor: "blue",
+          borderRadius: 8,
      },
      card: {
-          width: "100%",
-          marginBottom: 20,
+          padding: 10,
      },
 })

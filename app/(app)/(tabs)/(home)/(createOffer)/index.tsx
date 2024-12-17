@@ -1,21 +1,18 @@
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
-import { Button, Modal, Text, TextInput, useTheme } from "react-native-paper"
-import { PaperSelect } from "react-native-paper-select"
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native"
+import { Button, Portal, Text, TextInput, useTheme, Modal, Card, ActivityIndicator, Icon } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
-import React, { useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { useBoatTypeOptions } from "@/constants/BoatTypes"
 
 import { Offer } from "@/interfaces/Offer"
-import { Link, router } from "expo-router"
+import { useBoats } from "@/modules/hooks/boats/useBoats"
 
 export default function index() {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const [isLoading, setIsLoading] = useState(false)
-     const colors = useTheme().colors
      const [offer, setOffer] = useState<Offer>({
           boatId: "",
           profileId: "",
@@ -39,9 +36,32 @@ export default function index() {
           deletedAt: undefined,
      })
 
-     const [modalVisible, setModalVisible] = React.useState(false)
+     const [visible, setVisible] = React.useState(false)
+
+     const theme = useTheme()
+
+     const showModal = () => setVisible(true)
+     const hideModal = () => setVisible(false)
 
      const createOffer = () => {}
+
+     const handleSelect = (boatId: string) => {
+          setCurrentSelection(boatId)
+          hideModal()
+          console.log("boatId", boatId)
+     }
+
+     const { data: boats, isPending, error } = useBoats()
+     const [currentSelection, setCurrentSelection] = useState<string | null>(null)
+
+     const colors = useTheme().colors
+
+     const renderItem = ({ item }: any) => (
+          <TouchableOpacity onPress={() => handleSelect(item.boatId)} style={[styles.cardContainer, currentSelection === item.boatId && styles.selectedCard]}>
+               <Text style={[styles.cardText, currentSelection === item.boatId && styles.selectedBoatText]}>{item.boatName}</Text>
+               {currentSelection === item.boatId && <Icon source="check" size={24} color="#4aace1" />}
+          </TouchableOpacity>
+     )
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -60,9 +80,17 @@ export default function index() {
                                    {t("select_boat_title")}
                               </Text>
 
-                              <Button mode="contained" style={styles.selectBoatBtn} onPress={() => router.navigate("/selectBoat")}>
+                              <Button mode="contained" onPress={() => showModal()} style={styles.selectBoatBtn}>
                                    {t("select_boat_button")}
                               </Button>
+
+                              <Portal theme={theme}>
+                                   <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
+                                        {isLoading && <ActivityIndicator size="large" />}
+                                        {error && <Text>Erreur lors de la récupération des bateaux</Text>}
+                                        {boats && <FlatList style={styles.modal} data={boats} keyExtractor={(item) => item.boatId} renderItem={renderItem} />}
+                                   </Modal>
+                              </Portal>
                          </View>
 
                          <Button mode="contained" style={styles.button} onPress={() => createOffer()} loading={isLoading} disabled={isLoading}>
@@ -75,16 +103,15 @@ export default function index() {
 }
 
 const styles = StyleSheet.create({
-     screenContainer: {
+     modal: {
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative",
+          marginTop: 10,
      },
      container: {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
+          position: "relative",
      },
      title: {
           fontSize: 24,
@@ -101,9 +128,8 @@ const styles = StyleSheet.create({
      safeView: {
           width: "90%",
           rowGap: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
+          justifyContent: "flex-end",
+          alignItems: "flex-end",
      },
      fab: {
           position: "absolute",
@@ -123,21 +149,10 @@ const styles = StyleSheet.create({
           width: "100%",
           marginVertical: 10,
      },
-     selector: {
-          width: "100%",
-          marginVertical: 10,
-     },
-     boatImage: {
-          width: "100%",
-          height: 250,
-     },
-     slideShow: {
-          width: "100%",
-          height: 250,
-          marginVertical: 30,
-     },
      selectBoatBtn: {
           marginVertical: 10,
+          marginBottom: 30,
+          marginHorizontal: 20,
      },
      step_title: {
           fontWeight: "bold",
@@ -152,5 +167,48 @@ const styles = StyleSheet.create({
      boatSelect: {
           width: "100%",
           marginVertical: 20,
+     },
+
+     modalContainer: {
+          borderRadius: 20,
+          height: "60%",
+          width: "100%",
+          borderWidth: 7,
+          borderStyle: "solid",
+          backgroundColor: "white",
+          bottom: 0,
+          position: "absolute",
+     },
+
+     selectedBoatText: {
+          color: "#4aace1",
+     },
+     cardContainer: {
+          marginVertical: 5,
+          marginHorizontal: 10,
+          backgroundColor: "#262626",
+          padding: 20,
+          borderRadius: 10,
+          borderColor: "#262626",
+          borderWidth: 6,
+          height: 100,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+     },
+     selectedCard: {
+          borderRadius: 10,
+          borderColor: "#4aace1",
+          borderWidth: 6,
+     },
+     checkIcon: {
+          position: "absolute",
+          right: 10,
+          top: 10,
+     },
+     cardText: {
+          color: "#fff",
+          fontSize: 16,
      },
 })

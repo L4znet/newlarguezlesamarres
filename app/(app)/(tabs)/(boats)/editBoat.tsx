@@ -3,7 +3,6 @@ import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import React, { useEffect, useState } from "react"
 import { useLocalSearchParams } from "expo-router"
 import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
-import { updateBoatUseCase } from "@/modules/application/boats/updateBoatUseCase"
 import * as ImagePicker from "expo-image-picker"
 import { PaperSelect } from "react-native-paper-select"
 import { KeyboardAvoidingView, SafeAreaView, ScrollView, View, StyleSheet, Platform, ActivityIndicator } from "react-native"
@@ -47,6 +46,7 @@ export default function EditBoat() {
                     const boatType = boatTypeOptions.find((type) => type.id === fetchedBoat.boatType)
 
                     setBoat({
+                         imageSelected: false,
                          boatName: fetchedBoat.boatName,
                          boatDescription: fetchedBoat.boatDescription,
                          boatCapacity: fetchedBoat.boatCapacity,

@@ -1,9 +1,6 @@
 import React, { useEffect } from "react"
-import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { Drawer } from "expo-router/drawer"
-import { useAuth } from "@/modules/context/AuthProvider"
-import { router } from "expo-router"
 
 export default function Layout() {
      return (

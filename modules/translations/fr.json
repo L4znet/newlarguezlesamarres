@@ -221,5 +221,7 @@
      "offer_create_title": "Créer une offre",
 
      "select_boat_title": "Sélectionnez un bateau pour l'associer à l'offre",
-     "select_boat_button": "Sélectionnez le bateau"
+     "select_boat_button": "Sélectionnez le bateau",
+
+     "close_modal_button": "Fermer"
 }

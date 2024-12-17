@@ -1,6 +1,6 @@
-import React from "react"
+import React, { useCallback, useRef } from "react"
 import { Redirect, Stack } from "expo-router"
-import { useColorScheme } from "react-native"
+import { useColorScheme, StyleSheet } from "react-native"
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper"
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from "@react-navigation/native"
 import merge from "deepmerge"
@@ -10,6 +10,8 @@ import { TranslationProvider } from "@/modules/context/TranslationContext"
 import { ProfileProvider } from "@/modules/context/ProfileProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/queryClient"
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -44,28 +46,33 @@ const CombinedDarkTheme = merge(DarkTheme, customDarkTheme)
 export default function RootLayout() {
      const colorScheme = useColorScheme()
      const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
+
      return (
-          <QueryClientProvider client={queryClient}>
-               <TranslationProvider>
-                    <PaperProvider theme={paperTheme}>
-                         <ThemeProvider value={paperTheme}>
-                              <FlashMessageProvider>
-                                   <ProfileProvider>
-                                        <AuthProvider>
-                                             <Stack
-                                                  screenOptions={{
-                                                       headerShown: false,
-                                                  }}
-                                             >
-                                                  <Stack.Screen name="(auth)" />
-                                                  <Stack.Screen name="(tabs)" />
-                                             </Stack>
-                                        </AuthProvider>
-                                   </ProfileProvider>
-                              </FlashMessageProvider>
-                         </ThemeProvider>
-                    </PaperProvider>
-               </TranslationProvider>
-          </QueryClientProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+               <BottomSheetModalProvider>
+                    <QueryClientProvider client={queryClient}>
+                         <TranslationProvider>
+                              <PaperProvider theme={paperTheme}>
+                                   <ThemeProvider value={paperTheme}>
+                                        <FlashMessageProvider>
+                                             <ProfileProvider>
+                                                  <AuthProvider>
+                                                       <Stack
+                                                            screenOptions={{
+                                                                 headerShown: false,
+                                                            }}
+                                                       >
+                                                            <Stack.Screen name="(auth)" />
+                                                            <Stack.Screen name="(tabs)" />
+                                                       </Stack>
+                                                  </AuthProvider>
+                                             </ProfileProvider>
+                                        </FlashMessageProvider>
+                                   </ThemeProvider>
+                              </PaperProvider>
+                         </TranslationProvider>
+                    </QueryClientProvider>
+               </BottomSheetModalProvider>
+          </GestureHandlerRootView>
      )
 }
