@@ -3,7 +3,6 @@ import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import BoatList from "@/modules/components/BoatList"
-import { useBoatStore, useRealtimeBoats } from "@/modules/stores/boatStore"
 
 export default function index() {
      return (

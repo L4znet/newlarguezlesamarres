@@ -1,13 +1,15 @@
-const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY || ""
+export const fetchLocations = async (query: string = ""): Promise<any[]> => {
+     const TOMTOM_API_KEY = process.env.EXPO_PUBLIC_TOMTOM_API_KEY || ""
 
-export const fetchLocations = async (query: string): Promise<any[]> => {
-     const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${TOMTOM_API_KEY}&limit=10&countrySet=FR`
+     if (!TOMTOM_API_KEY) {
+          throw new Error("Clé API TomTom manquante")
+     }
+
+     const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(query)}.json?storeResult=false&limit=10&countrySet=FR&key=${TOMTOM_API_KEY}`
 
      const response = await fetch(url)
 
-     if (!response.ok) {
-          throw new Error("Erreur lors de la recherche de l'adresse")
-     }
+     console.log(response)
 
      const data = await response.json()
      return data.results

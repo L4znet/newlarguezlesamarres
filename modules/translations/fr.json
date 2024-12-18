@@ -181,6 +181,16 @@
           "supabase_message": "Boat updated successfully!",
           "translation": "Bateau mis à jour avec succès !"
      },
+
+     "location_selected_success": {
+          "supabase_message": "Location selected successfully",
+          "translation": "Localisation sélectionnée avec succès."
+     },
+     "location_selected_error": {
+          "supabase_message": "An error occurred while searching for locations",
+          "translation": "Erreur lors de la sélection de la localisation."
+     },
+
      "validation_avatar_required": "Une photo de profil est requise.",
 
      "drawer_setting_btn": "Paramètres",
@@ -234,9 +244,9 @@
      "is_available_label": "Offre disponible dès sa publication",
      "is_skipper_available_label": "Le skipper est-il inclus ?",
      "is_team_available_label": "Une équipe est-elle incluse ?",
-     "select_rental_period_title": "Sélectionnez les périodes de location",
-     "select_rental_period_button": "Sélectionnez les périodes",
-     "rental_period_title": "Périodes de location",
+     "select_rental_period_title": "Sélectionnez la périodes de location",
+     "select_rental_period_button": "Sélectionnez la périodes",
+     "rental_period_title": "Période de location",
      "select_dates_button": "Sélectionnez les dates",
      "start_date_label": "Date de début",
      "end_date_label": "Date de fin",
@@ -262,5 +272,10 @@
      "october": "Octoctobre",
      "november": "Novembre",
      "december": "Décembre",
-     "confirm_dates_button": "Confirmer la sélection"
+     "confirm_button": "Confirmer",
+     "select_location_button": "Sélectionnez la localisation",
+     "select_equipment_button": "Définissez les équipements",
+     "cancel_button": "Annuler",
+     "start_date_required": "Vous devez sélectionner une période de location.",
+     "end_date_required": "La date de fin est requise."
 }

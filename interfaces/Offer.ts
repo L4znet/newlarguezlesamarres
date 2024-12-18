@@ -2,23 +2,26 @@ export interface Offer {
      boatId: string
      profileId: string
      title: string
-     description?: string
+     description: string
      price: number
      isAvailable: boolean
      frequency: number
-     equipments?: string[]
+     equipments: Equipment[] | []
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
-     rentalPeriods?: RentalPeriod[]
+     rentalPeriod: RentalPeriod
      location: Location
-     createdAt: string
-     updatedAt: string
-     deletedAt?: string
+     deletedAt: Date | null
+}
+
+export interface Equipment {
+     name: string
+     quantity: string
 }
 
 export interface RentalPeriod {
-     from: string
-     to: string
+     start: string
+     end: string
 }
 
 export interface Location {

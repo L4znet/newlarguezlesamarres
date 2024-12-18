@@ -39,6 +39,4 @@ describe("Login Use Case", () => {
           expect(error).toBeDefined()
           expect(signUpError).toBeNull()
      })
-
-     // @TODO add a test that check if user account is activated, if not I can't login and we must show a message to the user
 })

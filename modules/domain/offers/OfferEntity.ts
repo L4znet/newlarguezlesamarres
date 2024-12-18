@@ -1,34 +1,18 @@
 export default class OfferEntity {
      constructor(
-          public readonly offerId: string,
           public readonly profileId: string,
           public readonly title: string,
           public readonly description: string,
           public readonly price: number,
           public readonly is_available: boolean,
           public readonly frequency: number,
-          public readonly equipments: [
-               {
-                    id: string
-                    name: string
-                    description: string
-               },
-          ],
+          public readonly equipments: [{ name: string; quantity: number }],
           public readonly is_skipper_available: boolean,
           public readonly is_team_available: boolean,
-          public readonly rental_period: [
-               {
-                    from: Date
-                    to: Date
-               },
-          ],
-          public readonly location: {
-               city: string
-               country: string
-               zip_code: string
-               address: string
-          },
-          public readonly deleted_at: Date
+          public readonly rental_period: { start: Date; end: Date },
+          public readonly location: { city: string; country: string; zip_code: string; address: string },
+          public readonly deleted_at: { country: any; address: any; city: any; zip_code: any },
+          public readonly offerId?: string | undefined
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
@@ -42,19 +26,13 @@ export default class OfferEntity {
                data.frequency,
                data.equipments
                     ? data.equipments.map((equip: any) => ({
-                           id: equip.id,
                            name: equip.name,
-                           description: equip.description,
+                           quantity: equip.quantity,
                       }))
                     : [],
                data.is_skipper_available,
                data.is_team_available,
-               data.rental_period
-                    ? data.rental_period.map((period: any) => ({
-                           from: period.from,
-                           to: period.to,
-                      }))
-                    : [],
+               data.rental_period,
                data.location
                     ? {
                            city: data.location.city,

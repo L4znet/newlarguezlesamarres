@@ -1,18 +1,24 @@
 import React, { useState } from "react"
-import { View, TextInput, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
+import { View, TextInput, FlatList, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native"
 import { Button, Text } from "react-native-paper"
+import { Equipment } from "@/interfaces/Offer"
 
-export default function EquipmentList({ initialList, onUpdate }: { initialList: string[]; onUpdate: (list: string[]) => void }) {
-     const [equipment, setEquipment] = useState<string>("")
-     const [equipmentList, setEquipmentList] = useState<string[]>(initialList)
+export default function EquipmentList({ initialList, onUpdate }: { initialList: Equipment[]; onUpdate: (list: Equipment[]) => void }) {
+     const [equipment, setEquipment] = useState<Equipment>({
+          name: "",
+          quantity: "1",
+     })
+     const [equipmentList, setEquipmentList] = useState<Equipment[]>(initialList)
 
      const addEquipment = () => {
-          if (equipment.trim() !== "") {
-               const updatedList = [...equipmentList, equipment.trim()]
-               setEquipmentList(updatedList)
-               onUpdate(updatedList)
-               setEquipment("")
-          }
+          if (!equipment.name) return
+          const updatedList = [...equipmentList, equipment]
+          setEquipmentList(updatedList)
+          onUpdate(updatedList)
+          setEquipment({
+               name: "",
+               quantity: "1",
+          })
      }
 
      const removeEquipment = (index: number) => {
@@ -25,25 +31,28 @@ export default function EquipmentList({ initialList, onUpdate }: { initialList: 
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <Text style={styles.title}>Ajouter un équipement</Text>
                <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Entrez un équipement" value={equipment} onChangeText={(text) => setEquipment(text)} onSubmitEditing={addEquipment} returnKeyType="done" />
+                    <TextInput style={styles.input} value={equipment.name} onChangeText={(text) => setEquipment({ ...equipment, name: text })} placeholder="Nom de l'équipement" placeholderTextColor="white" />
+                    <TextInput style={styles.input} value={equipment.quantity} onChangeText={(text) => setEquipment({ ...equipment, quantity: text })} placeholder="Quantité" placeholderTextColor="white" />
+
                     <Button mode="contained" onPress={addEquipment} style={styles.addButton}>
                          Ajouter
                     </Button>
                </View>
-
-               <FlatList
-                    data={equipmentList}
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={styles.listContainer}
-                    renderItem={({ item, index }) => (
-                         <View style={styles.listItem}>
-                              <Text style={styles.listText}>{item}</Text>
-                              <Button mode="outlined" style={styles.removeButton} onPress={() => removeEquipment(index)}>
-                                   Supprimer
-                              </Button>
-                         </View>
-                    )}
-               />
+               <SafeAreaView style={{ flex: 1 }}>
+                    <FlatList
+                         data={equipmentList}
+                         keyExtractor={(item, index) => index.toString()}
+                         contentContainerStyle={styles.listContainer}
+                         renderItem={({ item, index }) => (
+                              <View style={styles.listItem}>
+                                   <Text style={styles.listText}>{item.quantity === "1" ? item.name : `${item.quantity} ${item.name}`}</Text>=
+                                   <Button mode="outlined" style={styles.removeButton} onPress={() => removeEquipment(index)}>
+                                        Supprimer
+                                   </Button>
+                              </View>
+                         )}
+                    />
+               </SafeAreaView>
           </KeyboardAvoidingView>
      )
 }
@@ -70,6 +79,7 @@ const styles = StyleSheet.create({
           borderRadius: 8,
           padding: 10,
           marginRight: 8,
+          color: "white",
      },
      addButton: {
           borderRadius: 8,

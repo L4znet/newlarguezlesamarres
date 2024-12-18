@@ -1,17 +1,18 @@
 import supabase from "@/supabaseClient"
 import OfferRepository from "@/modules/domain/offers/OfferRepository"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import BoatRepository from "@/modules/domain/boats/BoatRepository"
 import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
 import { undefined } from "zod"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { Equipment, Location, RentalPeriod } from "@/interfaces/Offer"
 
 class OfferRepositorySupabase implements OfferRepository {
-     async createOffer(profileId: string | undefined, title: string, description: string, price: number, isAvailable: boolean, frequency: number, equipments: any[], isSkipperAvailable: boolean, isTeamAvailable: boolean, rentalPeriod: any[], location: any, isArchived: boolean, deletedAt: Date | undefined): Promise<OfferEntity | undefined> {
+     async createOffer({ profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .insert({
                     profile_id: profileId,
+                    boat_id: boatId,
                     title: title,
                     description: description,
                     price: price,
@@ -22,25 +23,22 @@ class OfferRepositorySupabase implements OfferRepository {
                     is_team_available: isTeamAvailable,
                     rental_period: rentalPeriod,
                     location: location,
-                    is_archived: isArchived,
                     deleted_at: deletedAt,
                })
-               .select()
+               .single()
 
           if (offerError) {
                throw new Error(`Error creating offer: ${offerError.message}`)
           }
 
-          if (offerData?.length) {
-               return OfferEntity.fromSupabaseData(offerData[0])
+          if (offerData) {
+               return OfferEntity.fromSupabaseData(offerData)
           }
 
           throw new Error("No data returned from offer creation.")
      }
 
-     async updateOffer(profileId: string | undefined, title: string, description: string, price: number, isAvailable: boolean, frequency: number, equipments: any[], isSkipperAvailable: boolean, isTeamAvailable: boolean, rentalPeriod: any[], location: any, isArchived: boolean, deletedAt: Date | undefined, offerId: string | string[]): Promise<OfferEntity | undefined> {
-          const offerIdString = offerId
-
+     async updateOffer({ offerId, profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, isArchived = false, deletedAt = null }: { offerId: string; profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .update({
@@ -58,7 +56,7 @@ class OfferRepositorySupabase implements OfferRepository {
                     is_archived: isArchived,
                     deleted_at: deletedAt,
                })
-               .eq("id", offerIdString)
+               .eq("id", offerId)
                .select()
 
           if (offerError) {
@@ -72,10 +70,8 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer update.")
      }
 
-     async getSingleOffer(offerId: string | string[]): Promise<OfferEntity> {
-          const offerIdString = offerId
-
-          const { data: offerData, error: offerError } = await supabase.from("offers").select().eq("id", offerIdString)
+     async getSingleOffer({ offerId }: { offerId: string }): Promise<OfferEntity> {
+          const { data: offerData, error: offerError } = await supabase.from("offers").select().eq("id", offerId)
 
           if (offerError) {
                throw new Error(`Error fetching offer: ${offerError.message}`)
@@ -88,7 +84,7 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer fetch.")
      }
 
-     async getOffers(profileId: string | undefined): Promise<OfferEntity[] | undefined> {
+     async getOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined> {
           const { data: offerData, error: offerError } = await supabase.from("offers").select().eq("profile_id", profileId)
 
           if (offerError) {
@@ -98,11 +94,9 @@ class OfferRepositorySupabase implements OfferRepository {
           if (offerData?.length) {
                return offerData.map((offer: any) => OfferEntity.fromSupabaseData(offer))
           }
-
-          return undefined
      }
 
-     async deleteOffer(profileId: string | undefined, offerId: string): Promise<OfferEntity | undefined> {
+     async deleteOffer({ profileId, offerId }: { profileId: string; offerId: string }): Promise<OfferEntity | undefined> {
           const offerIdString = offerId
 
           const { data: offerData, error: offerError } = await supabase.from("offers").delete().eq("id", offerIdString).eq("profile_id", profileId).select()
