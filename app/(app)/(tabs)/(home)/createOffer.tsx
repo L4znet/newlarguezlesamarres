@@ -1,5 +1,5 @@
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native"
-import { Button, Portal, Text, TextInput, useTheme, Modal, Card, ActivityIndicator, Icon } from "react-native-paper"
+import { Button, Portal, Text, TextInput, useTheme, Modal, Card, ActivityIndicator, Icon, Switch } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
 import React, { useCallback, useRef, useState } from "react"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
@@ -7,8 +7,24 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 
 import { Offer } from "@/interfaces/Offer"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
+import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
+import { PaperSelect } from "react-native-paper-select"
+import EquipmentList from "@/modules/components/EquipementsList"
+import { Calendar } from "react-native-calendars"
+import CalendarModal from "@/modules/components/CalendarModal"
+import LocationPicker from "@/modules/components/LocationPicker"
 
 export default function createOffer() {
+     const rentalFrequencyOptions = useRentalFrequencyOptions()
+
+     const [frequency, setFrequency] = useState({
+          value: rentalFrequencyOptions[0].value,
+          list: rentalFrequencyOptions,
+          selectedList: [rentalFrequencyOptions[0]],
+          error: "",
+          id: parseInt(RentalFrequency.Hour),
+     })
+
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -38,6 +54,16 @@ export default function createOffer() {
 
      const [visible, setVisible] = React.useState(false)
 
+     const [equipmentList, setEquipmentList] = useState<string[]>([])
+
+     const handleUpdate = (updatedList: string[]) => {
+          setEquipmentList(updatedList)
+     }
+
+     const saveData = () => {
+          console.log("Final JSON :", JSON.stringify(equipmentList))
+     }
+
      const theme = useTheme()
 
      const showModal = () => setVisible(true)
@@ -56,6 +82,16 @@ export default function createOffer() {
 
      const colors = useTheme().colors
 
+     const [calendarVisible, setCalendarVisible] = useState(false)
+     const [selectedDates, setSelectedDates] = useState<{ start: string; end: string | null }>({ start: "", end: null })
+
+     const handleOpenCalendar = () => setCalendarVisible(true)
+     const handleCloseCalendar = () => setCalendarVisible(false)
+
+     const handleDateSelection = (startDate: string, endDate: string | null) => {
+          setSelectedDates({ start: startDate, end: endDate })
+     }
+
      const renderItem = ({ item }: any) => (
           <TouchableOpacity onPress={() => handleSelect(item.boatId)} style={[styles.cardContainer, currentSelection === item.boatId && styles.selectedCard]}>
                <Text style={[styles.cardText, currentSelection === item.boatId && styles.selectedBoatText]}>{item.boatName}</Text>
@@ -70,10 +106,62 @@ export default function createOffer() {
                          <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offer.title} onChangeText={(title) => setOffer({ ...offer, title })} />
                          <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offer.description} onChangeText={(description) => setOffer({ ...offer, description })} />
                          <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: parseFloat(price) })} />
-                         <TextInput style={styles.input} placeholder={t("offer_frequency_placeholder")} label={t("offer_frequency_label")} value={offer.frequency.toString()} onChangeText={(frequency) => setOffer({ ...offer, frequency: parseFloat(frequency) })} />
+
+                         <PaperSelect
+                              label={t("rental_frequency_placeholder")}
+                              value={frequency.value}
+                              onSelection={(value: any) => {
+                                   setFrequency({
+                                        ...frequency,
+                                        value: value.text,
+                                        selectedList: value.selectedList,
+                                        error: "",
+                                        id: parseInt(value.selectedList[0]._id),
+                                   })
+                              }}
+                              arrayList={[...frequency.list]}
+                              selectedArrayList={frequency.selectedList}
+                              errorText={frequency.error}
+                              multiEnable={false}
+                              dialogTitleStyle={{ color: "white" }}
+                              dialogCloseButtonText={t("close_btn")}
+                              dialogDoneButtonText={t("done_btn")}
+                         />
+
                          <TextInput style={styles.input} placeholder={t("offer_city_placeholder")} label={t("offer_city_label")} value={offer.location.city} onChangeText={(city) => setOffer({ ...offer, location: { ...offer.location, city } })} />
 
-                         <Slideshow images={[]} />
+                         <View style={styles.inputLine}>
+                              <Text variant={"titleSmall"}>{t("is_available_label")}</Text>
+                              <Switch value={offer.isAvailable} onValueChange={(value) => setOffer({ ...offer, isAvailable: value })} />
+                         </View>
+                         <View style={styles.inputLine}>
+                              <Text variant={"titleSmall"}>{t("is_skipper_available_label")}</Text>
+                              <Switch value={offer.isSkipperAvailable} onValueChange={(value) => setOffer({ ...offer, isSkipperAvailable: value })} />
+                         </View>
+                         <View style={styles.inputLine}>
+                              <Text variant={"titleSmall"}>{t("is_team_available_label")}</Text>
+                              <Switch value={offer.isTeamAvailable} onValueChange={(value) => setOffer({ ...offer, isTeamAvailable: value })} />
+                         </View>
+
+                         <View style={styles.inputLine}>
+                              <Text variant={"titleSmall"}>{t("rental_period_title")}</Text>
+                              <Switch value={offer.isSkipperAvailable} onValueChange={(value) => setOffer({ ...offer, isSkipperAvailable: value })} />
+                         </View>
+
+                         <EquipmentList initialList={equipmentList} onUpdate={handleUpdate} />
+
+                         <View style={styles.inputLineColumn}>
+                              <Text variant={"titleMedium"} style={styles.step_title}>
+                                   {t("select_rental_period_title")}
+                              </Text>
+                              <Button mode="contained" onPress={handleOpenCalendar}>
+                                   {t("select_dates_button")}
+                              </Button>
+                         </View>
+
+                         <CalendarModal visible={calendarVisible} onDismiss={handleCloseCalendar} onSelect={handleDateSelection} />
+
+                         <LocationPicker />
 
                          <View style={styles.boatSelect}>
                               <Text variant={"titleMedium"} style={styles.step_title}>
@@ -152,12 +240,10 @@ const styles = StyleSheet.create({
      selectBoatBtn: {
           marginVertical: 10,
           marginBottom: 30,
-          marginHorizontal: 20,
      },
      step_title: {
           fontWeight: "bold",
           textAlign: "center",
-          padding: 10,
           width: "100%",
           height: 70,
      },
@@ -210,5 +296,21 @@ const styles = StyleSheet.create({
      cardText: {
           color: "#fff",
           fontSize: 16,
+     },
+     inputLine: {
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          marginVertical: 10,
+     },
+     inputLineColumn: {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          marginVertical: 10,
      },
 })
