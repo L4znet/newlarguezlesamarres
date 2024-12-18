@@ -1,6 +1,6 @@
 export default class BoatEntity {
      constructor(
-          public readonly boatId: string,
+          public readonly id: string,
           public readonly profileId: string,
           public readonly boatName: string,
           public readonly boatDescription: string,

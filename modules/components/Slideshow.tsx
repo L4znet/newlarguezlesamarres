@@ -5,7 +5,9 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 const { width } = Dimensions.get("window")
 
 interface SlideshowProps {
-     images: BoatEntity["boatImages"]
+     images: {
+          url: string
+     }[]
 }
 
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {

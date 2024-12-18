@@ -1,9 +1,11 @@
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import OfferEntity from "@/modules/domain/offers/OfferEntity"
 
 export const getOffersUseCase = async (
-     setLoader: (value: boolean) => void,
      showTranslatedFlashMessage: (
           type: MessageType,
           message: {
@@ -13,22 +15,27 @@ export const getOffersUseCase = async (
           locale?: string
      ) => void
 ) => {
-     setLoader(true)
-
      const session = await getCurrentSessionUseCase()
      const profileId = session.data.session?.user.id
 
-     try {
-          const offers = await OfferRepositorySupabase.getOffers(profileId)
+     if (!profileId) {
+          showTranslatedFlashMessage("danger", { title: "User session not found", description: "User session not found." })
+          return
+     }
 
-          if (offers) {
-               showTranslatedFlashMessage("success", { title: "Offers loaded", description: "The offers have been successfully loaded." })
-          } else {
-               showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "An error occurred while loading the offers." })
+     try {
+          if (profileId) {
+               const offers = await OfferRepositorySupabase.getOffers({ profileId })
+
+               if (!offers) {
+                    showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "An error occurred while loading the offers." })
+               }
+
+               console.log("offerffffs", offers as OfferEntity[])
+
+               return offers as OfferEntity[]
           }
      } catch (error) {
           showTranslatedFlashMessage("danger", { title: "Error loading offers", description: (error as Error).message })
      }
-
-     setLoader(false)
 }

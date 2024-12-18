@@ -51,7 +51,6 @@ class OfferRepositorySupabase implements OfferRepository {
                     is_team_available: isTeamAvailable,
                     rental_period: rentalPeriod,
                     location: location,
-                    is_archived: isArchived,
                     deleted_at: deletedAt,
                })
                .eq("id", offerId)
@@ -83,7 +82,22 @@ class OfferRepositorySupabase implements OfferRepository {
      }
 
      async getOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined> {
-          const { data: offerData, error: offerError } = await supabase.from("offers").select().eq("profile_id", profileId)
+          const { data: offerData, error: offerError } = await supabase
+               .from("offers")
+               .select(
+                    `
+            *,
+            boats (
+                boat_name,
+                boat_images (url)
+            ),
+            profiles (
+                firstname,
+                lastname,
+                username)
+        `
+               )
+               .eq("profile_id", profileId)
 
           if (offerError) {
                throw new Error(`Error fetching offers: ${offerError.message}`)

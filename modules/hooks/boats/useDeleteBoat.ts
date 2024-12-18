@@ -8,7 +8,7 @@ export function useDeleteBoat() {
 
      return useMutation({
           mutationFn: async (boatId: string) => {
-               await deleteBoatUseCase(boatId)
+               await deleteBoatUseCase(boatId, showTranslatedFlashMessage)
           },
           onSuccess: () => {
                showTranslatedFlashMessage("success", {

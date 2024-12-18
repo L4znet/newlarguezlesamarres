@@ -1,4 +1,5 @@
 import { Equipment, RentalPeriod, Location } from "@/interfaces/Offer"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 export default class OfferEntity {
      constructor(
@@ -15,7 +16,20 @@ export default class OfferEntity {
           public readonly rental_period: RentalPeriod,
           public readonly location: Location,
           public readonly deleted_at: Date | null,
-          public readonly offer_id?: string
+          public readonly id: string,
+          public boats: {
+               boat_name: string
+               boat_images: [
+                    {
+                         url: string
+                    },
+               ]
+          },
+          public profiles: {
+               firstname: string
+               lastname: string
+               username: string
+          }
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
@@ -50,7 +64,9 @@ export default class OfferEntity {
                            address: "",
                       },
                data.deleted_at,
-               data.offer_id
+               data.id,
+               data.boats,
+               data.profiles
           )
      }
 }

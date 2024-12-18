@@ -7,7 +7,9 @@ export function useCreateBoat() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useMutation({
-          mutationFn: createBoatUseCase,
+          mutationFn: async (boat: Boat) => {
+               await createBoatUseCase(boat, showTranslatedFlashMessage)
+          },
           onSuccess: (newBoat) => {
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",

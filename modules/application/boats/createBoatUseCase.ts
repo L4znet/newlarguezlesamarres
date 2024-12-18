@@ -5,8 +5,30 @@ import { MessageType } from "react-native-flash-message"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
-export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[] }) => {
-     const { showTranslatedFlashMessage } = useFlashMessage()
+export const createBoatUseCase = async (
+     {
+          boatName,
+          boatDescription,
+          boatCapacity,
+          boatType,
+          boatImages,
+     }: {
+          boatName: string
+          boatDescription: string
+          boatCapacity: string
+          boatType: number
+          boatImages: any[]
+     },
+
+     showTranslatedFlashMessage: (
+          type: MessageType,
+          message: {
+               title: string
+               description: string
+          },
+          locale?: string
+     ) => void
+) => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id

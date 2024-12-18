@@ -8,8 +8,7 @@ export const useCreateOffer = (onSuccess?: () => void, onError?: (error: Error) 
      const { showTranslatedFlashMessage } = useFlashMessage()
      return useMutation({
           mutationFn: async (offer: Offer) => {
-               console.log("Creating offer:", offer)
-               await createOfferUseCase(offer)
+               await createOfferUseCase(offer, showTranslatedFlashMessage)
           },
           onSuccess: (data) => {
                showTranslatedFlashMessage("success", {

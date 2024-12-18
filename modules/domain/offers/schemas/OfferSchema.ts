@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const OfferSchema = z
      .object({
-          offerId: z.string().uuid(),
+          id: z.string().uuid(),
           profileId: z.string().uuid(),
           title: z.string().min(5, "Title must be at least 5 characters long"),
           description: z.string().min(10, "Description must be at least 10 characters long"),
@@ -33,7 +33,7 @@ export const OfferSchema = z
           deletedAt: z.date().optional(),
      })
      .transform((data) => ({
-          offer_id: data.offerId,
+          id: data.id,
           profile_id: data.profileId,
           title: data.title,
           description: data.description,

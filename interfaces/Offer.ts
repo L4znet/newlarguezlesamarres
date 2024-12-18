@@ -12,6 +12,7 @@ export interface Offer {
      rentalPeriod: RentalPeriod
      location: Location
      deletedAt: Date | null
+     id?: string
 }
 
 export interface Equipment {
