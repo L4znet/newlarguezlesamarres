@@ -8,7 +8,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { Offer } from "@/interfaces/Offer"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
 
-export default function index() {
+export default function createOffer() {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)

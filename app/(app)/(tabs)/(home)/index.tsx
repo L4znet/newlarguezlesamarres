@@ -54,7 +54,7 @@ export default function Index() {
           return (
                <View style={styles.container}>
                     <Text>Rien à afficher pour le moment</Text>
-                    <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/(createOffer)")} />
+                    <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/createOffer")} />
                </View>
           )
      }
@@ -64,7 +64,7 @@ export default function Index() {
                <SafeAreaView style={styles.safeView}>
                     <FlatList data={[]} renderItem={renderItem} keyExtractor={(item) => item.offerId} />
                </SafeAreaView>
-               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/(createOffer)")} />
+               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/createOffer")} />
           </View>
      )
 }

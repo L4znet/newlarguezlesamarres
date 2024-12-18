@@ -48,31 +48,27 @@ export default function RootLayout() {
      const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
 
      return (
-          <GestureHandlerRootView style={{ flex: 1 }}>
-               <BottomSheetModalProvider>
-                    <QueryClientProvider client={queryClient}>
-                         <TranslationProvider>
-                              <PaperProvider theme={paperTheme}>
-                                   <ThemeProvider value={paperTheme}>
-                                        <FlashMessageProvider>
-                                             <ProfileProvider>
-                                                  <AuthProvider>
-                                                       <Stack
-                                                            screenOptions={{
-                                                                 headerShown: false,
-                                                            }}
-                                                       >
-                                                            <Stack.Screen name="(auth)" />
-                                                            <Stack.Screen name="(tabs)" />
-                                                       </Stack>
-                                                  </AuthProvider>
-                                             </ProfileProvider>
-                                        </FlashMessageProvider>
-                                   </ThemeProvider>
-                              </PaperProvider>
-                         </TranslationProvider>
-                    </QueryClientProvider>
-               </BottomSheetModalProvider>
-          </GestureHandlerRootView>
+          <QueryClientProvider client={queryClient}>
+               <TranslationProvider>
+                    <PaperProvider theme={paperTheme}>
+                         <ThemeProvider value={paperTheme}>
+                              <FlashMessageProvider>
+                                   <ProfileProvider>
+                                        <AuthProvider>
+                                             <Stack
+                                                  screenOptions={{
+                                                       headerShown: false,
+                                                  }}
+                                             >
+                                                  <Stack.Screen name="(auth)" />
+                                                  <Stack.Screen name="(tabs)" />
+                                             </Stack>
+                                        </AuthProvider>
+                                   </ProfileProvider>
+                              </FlashMessageProvider>
+                         </ThemeProvider>
+                    </PaperProvider>
+               </TranslationProvider>
+          </QueryClientProvider>
      )
 }
