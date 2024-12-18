@@ -23,7 +23,7 @@ export const deleteBoatUseCase = async (
           }
 
           const deletedBoat = await BoatRepositorySupabase.deleteBoat(profileId, boatId)
-          if (!deletedBoat?.boatId) {
+          if (!deletedBoat?.id) {
                throw new Error("Failed to delete boat.")
           }
 

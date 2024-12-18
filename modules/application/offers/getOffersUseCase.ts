@@ -2,8 +2,8 @@ import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferReposit
 import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
+import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 export const getOffersUseCase = async (
      showTranslatedFlashMessage: (
@@ -14,28 +14,24 @@ export const getOffersUseCase = async (
           },
           locale?: string
      ) => void
-) => {
+): Promise<OfferEntity[] | []> => {
      const session = await getCurrentSessionUseCase()
-     const profileId = session.data.session?.user.id
+     const profileId = session.data.session?.user.id as string
 
      if (!profileId) {
-          showTranslatedFlashMessage("danger", { title: "User session not found", description: "User session not found." })
-          return
+          showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "Profile ID is missing" })
      }
 
      try {
-          if (profileId) {
-               const offers = await OfferRepositorySupabase.getOffers({ profileId })
-
-               if (!offers) {
-                    showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "An error occurred while loading the offers." })
-               }
-
-               console.log("offerffffs", offers as OfferEntity[])
-
-               return offers as OfferEntity[]
+          const offers = await OfferRepositorySupabase.getOffers({ profileId })
+          if (!offers || offers.length === 0) {
+               return []
           }
+
+          return offers as OfferEntity[] | []
      } catch (error) {
           showTranslatedFlashMessage("danger", { title: "Error loading offers", description: (error as Error).message })
+
+          throw error as Error
      }
 }

@@ -32,17 +32,17 @@ const BoatList = () => {
 
      const renderItem = ({ item }: { item: BoatEntity }) => {
           return (
-               <Card key={item.boatId} style={styles.card}>
+               <Card key={item.id} style={styles.card}>
                     <Slideshow images={item.boatImages} />
                     <Card.Title title={item.boatName} subtitle={item.boatDescription} />
                     <Card.Content>
-                         <Text>ID : {item.boatId}</Text>
+                         <Text>ID : {item.id}</Text>
                          <Text>Capacité : {item.boatCapacity}</Text>
                          <Text>Type : {item.boatType}</Text>
                     </Card.Content>
                     <Card.Actions>
-                         <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.boatId } })}>Modifier</Button>
-                         <Button loading={deleteBoat.isPending} onPress={async () => deleteBoat.mutate(item.boatId)}>
+                         <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.id } })}>Modifier</Button>
+                         <Button loading={deleteBoat.isPending} onPress={async () => deleteBoat.mutate(item.id)}>
                               Supprimer
                          </Button>
                     </Card.Actions>
@@ -50,7 +50,7 @@ const BoatList = () => {
           )
      }
 
-     return <FlatList data={boats} ListEmptyComponent={EmptyList} keyExtractor={(item) => item.boatId} renderItem={renderItem} />
+     return <FlatList data={boats} ListEmptyComponent={EmptyList} keyExtractor={(item) => item.id} renderItem={renderItem} />
 }
 
 const styles = StyleSheet.create({

@@ -21,7 +21,6 @@ interface BoatRepository {
           }[]
      ): Promise<void>
      deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
-     deleteBoatImages(boatId: string | undefined, images: string[]): Promise<void>
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
      getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
      deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>

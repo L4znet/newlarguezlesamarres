@@ -6,7 +6,7 @@ import Slideshow from "@/modules/components/Slideshow"
 import { Card, Button } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import OfferListScreen from "@/modules/components/OfferListScreen"
+import OfferList from "@/modules/components/OfferList"
 
 export default function Index() {
      const [isLoading, setIsLoading] = useState(false)
@@ -30,7 +30,7 @@ export default function Index() {
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
-                    <OfferListScreen />
+                    <OfferList />
                </SafeAreaView>
                <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/createOffer")} />
           </View>

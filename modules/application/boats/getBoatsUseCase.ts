@@ -24,7 +24,7 @@ export const getBoatsUseCase = async (
                showTranslatedFlashMessage("danger", { title: "Error loading boats", description: "An error occurred while loading the boats." })
           }
 
-          return boats as BoatEntity[]
+          return boats as BoatEntity[] | []
      } catch (error) {
           throw new Error((error as Error).message)
      }

@@ -7,9 +7,9 @@ export function useBoats() {
      return useQuery({
           queryKey: ["boats"],
           queryFn: () => getBoatsUseCase(showTranslatedFlashMessage),
-          refetchOnMount: false,
-          refetchOnWindowFocus: false,
-          refetchOnReconnect: false,
+          refetchOnMount: true,
+          refetchOnWindowFocus: true,
+          refetchOnReconnect: true,
           staleTime: Infinity,
      })
 }

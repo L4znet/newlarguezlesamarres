@@ -234,10 +234,6 @@ class BoatRepositorySupabase implements BoatRepository {
                throw new Error(`Error in getSingleBoat: ${(error as Error).message}`)
           }
      }
-
-     deleteBoatImages(boatId: string | undefined, images: string[]): Promise<void> {
-          return Promise.resolve(undefined)
-     }
 }
 
 export default new BoatRepositorySupabase()

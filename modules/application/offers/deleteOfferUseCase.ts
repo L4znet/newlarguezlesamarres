@@ -4,7 +4,7 @@ import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentS
 import { profile } from "@expo/fingerprint/build/utils/Profile"
 
 export const deleteOfferUseCase = async (
-     setLoader: (value: boolean) => void,
+     offerId: string,
      showTranslatedFlashMessage: (
           type: MessageType,
           message: {
@@ -12,11 +12,8 @@ export const deleteOfferUseCase = async (
                description: string
           },
           locale?: string
-     ) => void,
-     offerId: string
+     ) => void
 ) => {
-     setLoader(true)
-
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -25,13 +22,9 @@ export const deleteOfferUseCase = async (
                const deletedOffer = await OfferRepositorySupabase.deleteOffer({ profileId, offerId })
                if (deletedOffer) {
                     showTranslatedFlashMessage("success", { title: "Offer deleted", description: "The offer has been successfully deleted." })
-               } else {
-                    showTranslatedFlashMessage("danger", { title: "Error deleting offer", description: "An error occurred while deleting the offer." })
                }
           }
      } catch (error) {
           showTranslatedFlashMessage("danger", { title: "Error deleting offer", description: (error as Error).message })
      }
-
-     setLoader(false)
 }

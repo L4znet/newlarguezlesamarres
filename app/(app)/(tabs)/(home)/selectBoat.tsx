@@ -12,7 +12,7 @@ export default function SelectBoat() {
      const { selectBoat } = useOfferExternalScreenStore()
 
      const handleSelectBoat = (boat: any) => {
-          selectBoat(boat.boatId)
+          selectBoat(boat.id)
           router.replace("/(app)/(tabs)/(home)/createOffer")
      }
 
@@ -24,7 +24,7 @@ export default function SelectBoat() {
                {boats && (
                     <FlatList
                          data={boats}
-                         keyExtractor={(item) => item.boatId}
+                         keyExtractor={(item) => item.id}
                          renderItem={({ item }) => (
                               <Button mode={"outlined"} style={styles.boatItem} onPress={() => handleSelectBoat(item)}>
                                    <Text style={[styles.boatName, { color: theme.colors.text }]}>{item.boatName}</Text>
