@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react"
-import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native"
-import { Button, TextInput, useTheme, Text } from "react-native-paper"
+import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
+import { Button, TextInput, useTheme, Text, ActivityIndicator } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
 import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
@@ -94,8 +94,6 @@ export default function createBoat() {
                boatType: boatToInsert.boatType,
                boatImages: boatToInsert.boatImages,
           })
-
-          //   const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)
      }
 
      const handleThumbnailChange = async () => {

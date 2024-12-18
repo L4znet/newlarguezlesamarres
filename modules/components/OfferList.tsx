@@ -5,6 +5,9 @@ import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
 import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
+import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
+
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 const OfferList = () => {
      const router = useRouter()
@@ -12,6 +15,9 @@ const OfferList = () => {
      const { data: offers, isPending, error } = useOffers()
      const deleteOffer = useDeleteOffer()
      const theme = useTheme()
+
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      if (isPending) return <ActivityIndicator size="large" />
      if (error) {
@@ -33,15 +39,18 @@ const OfferList = () => {
                data={offers}
                keyExtractor={(item) => item.id}
                renderItem={({ item }) => {
+                    const frequency = displayRentalFrequency(getRentalFrequency(item.frequency as unknown as RentalFrequency), locale)
                     return (
-                         <Card key={item.id} style={[styles.card, { backgroundColor: theme.colors.background }]}>
+                         <Card key={item.id} style={[styles.card]}>
                               <Slideshow images={item.boats.boat_images.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
 
                               <Card.Title title={item.title} subtitle={item.description} />
 
                               <Card.Content>
                                    <Text>Publié par : {item.profiles.username}</Text>
-                                   <Text>Prix : {item.price} €</Text>
+                                   <Text>
+                                        Prix : {item.price} € / {frequency}
+                                   </Text>
                               </Card.Content>
 
                               <Card.Actions>

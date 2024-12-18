@@ -259,7 +259,7 @@
      "select_boat_button": "Sélectionnez le bateau",
 
      "close_modal_button": "Fermer",
-
+     "frequency_unknown": "Non défini",
      "frequency_hour": "Par heure",
      "frequency_day": "Par jour",
      "frequency_week": "Par semaine",

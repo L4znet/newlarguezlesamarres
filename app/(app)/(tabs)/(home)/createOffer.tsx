@@ -15,7 +15,7 @@ export default function createOffer() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     const rentalFrequencyOptions = useRentalFrequencyOptions()
+     const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
      const [frequency, setFrequency] = useState({
           value: rentalFrequencyOptions[0].value,
           list: rentalFrequencyOptions,

@@ -29,8 +29,6 @@ class BoatRepositorySupabase implements BoatRepository {
      }
 
      async updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
-          const boatIdString = boatId
-
           const { data: boatData, error: boatError } = await supabase
                .from("boats")
                .update({
@@ -40,7 +38,7 @@ class BoatRepositorySupabase implements BoatRepository {
                     boat_capacity: boatCapacity,
                     boat_type: boatType,
                })
-               .eq("id", boatIdString)
+               .eq("id", boatId)
                .select()
 
           if (boatError) {

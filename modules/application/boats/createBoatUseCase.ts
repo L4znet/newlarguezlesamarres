@@ -39,11 +39,13 @@ export const createBoatUseCase = async (
 
           const newBoat = await BoatRepositorySupabase.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
 
-          if (!newBoat?.boatId) {
+          if (!newBoat?.id) {
                throw new Error("Failed to create boat.")
           }
 
-          await BoatRepositorySupabase.uploadImages(newBoat.boatId, boatImages)
+          console.log("newBoat", newBoat.id)
+
+          await BoatRepositorySupabase.uploadImages(newBoat.id, boatImages)
 
           router.push("/(app)/(tabs)/(boats)")
           return newBoat
