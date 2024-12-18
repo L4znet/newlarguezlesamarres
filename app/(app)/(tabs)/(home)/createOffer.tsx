@@ -9,7 +9,7 @@ import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
 import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
-export default function index() {
+export default function createOffer() {
      const router = useRouter()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
@@ -24,7 +24,7 @@ export default function index() {
           id: parseInt(RentalFrequency.Hour),
      })
 
-     const { equipments, rentalPeriod, location } = useOfferExternalScreenStore()
+     const { equipments, rentalPeriod, location, selectedBoatId } = useOfferExternalScreenStore()
 
      const [offer, setOffer] = useState({
           boatId: "",
@@ -40,7 +40,7 @@ export default function index() {
                city: "",
                address: "",
                country: "",
-               zipCode: "",
+               zipcode: "",
           },
           equipments: [],
      })
@@ -61,14 +61,20 @@ export default function index() {
      )
 
      const handleSubmit = () => {
-          createOffer({
-               ...offer,
-               frequency: frequency.id,
-               deletedAt: null,
-               location: {
-                    ...offer.location,
-               },
-          })
+          if (rentalPeriod.startDate && rentalPeriod.endDate && location.city && location.address && location.country && location.zipcode && selectedBoatId) {
+               createOffer({
+                    ...offer,
+                    frequency: frequency.id,
+                    equipments,
+                    rentalPeriod: {
+                         start: rentalPeriod.startDate,
+                         end: rentalPeriod.endDate,
+                    },
+                    location,
+                    boatId: selectedBoatId,
+                    deletedAt: null,
+               })
+          }
      }
 
      const handleNavigate = (path: string, params: any) => {
@@ -77,11 +83,6 @@ export default function index() {
                params,
           })
      }
-
-     console.log({
-          equipments,
-          rentalPeriod,
-     })
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -112,6 +113,7 @@ export default function index() {
                               <Switch value={offer.isAvailable} onValueChange={(value) => setOffer({ ...offer, isAvailable: value })} />
                          </View>
                          <Button
+                              icon={equipments.length > 0 ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectEquipments", {
@@ -123,6 +125,7 @@ export default function index() {
                               {t("select_equipment_button")}
                          </Button>
                          <Button
+                              icon={rentalPeriod.startDate && rentalPeriod.endDate ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
@@ -135,6 +138,7 @@ export default function index() {
                          </Button>
 
                          <Button
+                              icon={location.city && location.address && location.country && location.zipcode ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectLocation", {
@@ -144,6 +148,19 @@ export default function index() {
                               style={styles.button}
                          >
                               {t("select_location_button")}
+                         </Button>
+
+                         <Button
+                              icon={selectedBoatId ? "check" : "plus"}
+                              mode="contained"
+                              onPress={() =>
+                                   handleNavigate("/selectBoat", {
+                                        initialBoatId: offer.boatId,
+                                   })
+                              }
+                              style={styles.button}
+                         >
+                              {t("select_boat_button")}
                          </Button>
 
                          <Button mode="contained" style={styles.submitButton} onPress={handleSubmit} loading={isPending} disabled={isPending}>

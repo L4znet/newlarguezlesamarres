@@ -19,12 +19,12 @@ export const selectValidator = (value: any) => {
 }
 
 export default function createBoat() {
-     const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions()
      const colors = useTheme().colors
      const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const [boat, setBoat] = useState<Boat>({
           boatName: "Mon super bateau",
@@ -93,8 +93,6 @@ export default function createBoat() {
                boatCapacity: boatToInsert.boatCapacity,
                boatType: boatToInsert.boatType,
                boatImages: boatToInsert.boatImages,
-               setLoader: isPending,
-               showTranslatedFlashMessage: showTranslatedFlashMessage,
           })
 
           //   const newBoat = await createBoatUseCase(boatToInsert.boatName, boatToInsert.boatDescription, boatToInsert.boatCapacity, boatToInsert.boatType, boatToInsert.boatImages, setIsLoading, showTranslatedFlashMessage)

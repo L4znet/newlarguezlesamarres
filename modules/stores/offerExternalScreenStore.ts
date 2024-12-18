@@ -5,20 +5,29 @@ interface Equipment {
      quantity: string
 }
 
+interface RentalPeriod {
+     startDate: string | null
+     endDate: string | null
+}
+
+interface Location {
+     city: string
+     country: string
+     address: string
+     zipcode: string
+}
+
 interface OfferExternalScreenStore {
      equipments: Equipment[]
-     rentalPeriod: { startDate: string | null; endDate: string | null }
-     location: {
-          city: string
-          country: string
-          address: string
-          zipCode: string
-     }
+     rentalPeriod: RentalPeriod
+     location: Location
+     selectedBoatId: string | null
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      removeEquipment: (index: number) => void
      setRentalPeriod: (startDate: string, endDate: string) => void
-     setLocation: (location: { country: string; zipCode: string; address: string; city: string }) => void
+     setLocation: (location: { zipcode: string; country: string; address: string; city: string }) => void
+     selectBoat: (boatUid: string) => void
      resetStore: () => void
 }
 
@@ -29,8 +38,9 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           city: "",
           country: "",
           address: "",
-          zipCode: "",
+          zipcode: "",
      },
+     selectedBoatId: null,
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -43,5 +53,17 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           })),
      setRentalPeriod: (startDate, endDate) => set(() => ({ rentalPeriod: { startDate, endDate } })),
      setLocation: (location) => set(() => ({ location })),
-     resetStore: () => set(() => ({ equipments: [], rentalPeriod: { startDate: null, endDate: null }, location: null })),
+     selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
+     resetStore: () =>
+          set(() => ({
+               equipments: [],
+               rentalPeriod: { startDate: null, endDate: null },
+               location: {
+                    city: "",
+                    country: "",
+                    address: "",
+                    zipcode: "",
+               },
+               selectedBoatId: null,
+          })),
 }))

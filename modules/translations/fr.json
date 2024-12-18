@@ -182,6 +182,31 @@
           "translation": "Bateau mis à jour avec succès !"
      },
 
+     "supabase_offer_success_deleted_offer": {
+          "supabase_message": "Offer deleted successfully!",
+          "translation": "Offre supprimée avec succès !"
+     },
+     "supabase_offer_success_added_offer": {
+          "supabase_message": "Offer added successfully!",
+          "translation": "Offre ajoutée avec succès !"
+     },
+     "supabase_offer_success_updated_offer": {
+          "supabase_message": "Offer updated successfully!",
+          "translation": "Offre mise à jour avec succès !"
+     },
+     "supabase_boat_error_deleted_boat": {
+          "supabase_message": "An error occurred while deleting the boat",
+          "translation": "Une erreur s'est produite lors de la suppression du bateau."
+     },
+     "supabase_boat_error_added_boat": {
+          "supabase_message": "An error occurred while adding the boat",
+          "translation": "Une erreur s'est produite lors de l'ajout du bateau."
+     },
+     "supabase_boat_error_updated_boat": {
+          "supabase_message": "An error occurred while updating the boat",
+          "translation": "Une erreur s'est produite lors de la mise à jour du bateau."
+     },
+
      "location_selected_success": {
           "supabase_message": "Location selected successfully",
           "translation": "Localisation sélectionnée avec succès."

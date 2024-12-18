@@ -27,6 +27,6 @@ export interface RentalPeriod {
 export interface Location {
      city: string
      country: string
-     zipCode: string
+     zipcode: string
      address: string
 }

@@ -21,8 +21,8 @@ export default function selectEquipments() {
           }
      }
 
-     const handleSave = () => {
-          router.replace("/")
+     const handleGetBack = () => {
+          router.replace("/(app)/(tabs)/(home)/createOffer")
      }
 
      return (
@@ -43,8 +43,8 @@ export default function selectEquipments() {
                          </TextPaper>
 
                          <View style={styles.inputContainer}>
-                              <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.name} onChangeText={(text) => setNewEquipment({ ...newEquipment, name: text })} />
-                              <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.quantity} keyboardType="numeric" onChangeText={(text) => setNewEquipment({ ...newEquipment, quantity: text })} />
+                              <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.name} onChangeText={(name) => setNewEquipment({ ...newEquipment, name: name })} />
+                              <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.quantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, quantity: quantity })} />
                               <Button mode="contained" onPress={handleAddEquipment} style={styles.addButton}>
                                    Ajouter
                               </Button>
@@ -65,8 +65,11 @@ export default function selectEquipments() {
                               />
                          </View>
 
-                         <Button mode="contained" onPress={handleSave} style={styles.saveButton}>
+                         <Button mode="contained" onPress={handleGetBack} style={styles.saveButton}>
                               Enregistrer
+                         </Button>
+                         <Button mode="outlined" onPress={handleGetBack} style={styles.cancelButton}>
+                              Annuler
                          </Button>
                     </ScrollView>
                </SafeAreaView>
@@ -134,12 +137,14 @@ const styles = StyleSheet.create({
      },
      addButton: {
           borderRadius: 8,
-          paddingHorizontal: 16,
           marginTop: 30,
      },
      saveButton: {
           borderRadius: 8,
-          paddingHorizontal: 16,
           marginTop: 30,
+     },
+     cancelButton: {
+          borderRadius: 8,
+          marginTop: 10,
      },
 })

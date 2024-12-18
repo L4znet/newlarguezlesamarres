@@ -25,8 +25,9 @@ export default function selectLocation() {
      ): {
           city: string
           country: string
-          zipCode: string
+          zipcode: string
           address: string
+          status: string
      } => {
           const { address } = location
 
@@ -42,31 +43,43 @@ export default function selectLocation() {
                })
 
                setValidationError("La localisation sélectionnée est incomplète. Assurez-vous que la ville, le pays, le code postal et l'adresse sont disponibles.")
-               return false
+
+               return {
+                    city: "",
+                    country: "",
+                    zipcode: "",
+                    address: "",
+                    status: "INVALID",
+               }
           }
 
           location = {
                city: address.city || address.municipality || address.localName,
                country: address.country,
-               zipCode: address.postalCode,
+               zipcode: address.postalCode,
                address: `${address.streetNumber || ""} ${address.streetName || ""}`,
                status: "VALIDATED",
+          }
+
+          if (location.status !== "INVALID") {
+               setValidationError(null)
+               return location
           }
 
           return location
      }
 
      const handleSelectLocation = (location: any) => {
-          const { city, country, zipCode, address, status } = validateLocation(location)
+          const { city, country, zipcode, address, status } = validateLocation(location)
 
           if (status === "VALIDATED") {
                setLocation({
                     city,
                     country,
-                    zipCode,
+                    zipcode,
                     address,
                })
-               router.replace("/")
+               router.replace("/(app)/(tabs)/(home)/createOffer")
           }
      }
 

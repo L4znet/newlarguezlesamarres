@@ -34,8 +34,6 @@ class OfferRepositorySupabase implements OfferRepository {
           if (offerData) {
                return OfferEntity.fromSupabaseData(offerData)
           }
-
-          throw new Error("No data returned from offer creation.")
      }
 
      async updateOffer({ offerId, profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, isArchived = false, deletedAt = null }: { offerId: string; profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean; deletedAt: Date | null }): Promise<OfferEntity | undefined> {

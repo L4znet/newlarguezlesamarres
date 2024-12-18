@@ -3,8 +3,10 @@ import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentS
 import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
-export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages, showTranslatedFlashMessage }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[]; setLoader: (value: boolean) => void; showTranslatedFlashMessage: (type: string, message: { title: string; description: string }) => void }) => {
+export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[] }) => {
+     const { showTranslatedFlashMessage } = useFlashMessage()
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id

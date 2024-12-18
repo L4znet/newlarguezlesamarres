@@ -2,8 +2,9 @@ import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferReposit
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { Equipment, RentalPeriod, Location } from "@/interfaces/Offer"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { router } from "expo-router"
 
-export const createOfferUseCase = async ({ profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, isArchived = false, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean; deletedAt: Date | null }): Promise<OfferEntity | undefined> => {
+export const createOfferUseCase = async ({ boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> => {
      try {
           if (!title) {
                throw new Error("Le titre est requis.")
@@ -19,7 +20,7 @@ export const createOfferUseCase = async ({ profileId, boatId, title, description
                throw new Error("User session not found.")
           }
 
-          return await OfferRepositorySupabase.createOffer({
+          await OfferRepositorySupabase.createOffer({
                profileId,
                boatId,
                title,
@@ -34,6 +35,11 @@ export const createOfferUseCase = async ({ profileId, boatId, title, description
                location,
                deletedAt,
           })
+
+          console.log("Offer created successfully.")
+
+          router.push("/(app)/(tabs)/(home)")
+          return new OfferEntity(profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt)
      } catch (error: any) {
           console.error("Error in createOfferUseCase:", error.message)
           throw new Error(error.message)
