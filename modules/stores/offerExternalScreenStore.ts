@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { Offer } from "@/interfaces/Offer"
 
 interface Equipment {
      name: string
@@ -29,6 +30,10 @@ interface OfferExternalScreenStore {
      setLocation: (location: { zipcode: string; country: string; address: string; city: string }) => void
      selectBoat: (boatUid: string) => void
      resetStore: () => void
+     currentOffer: Offer | null
+     setCurrentOffer: (offer: Offer) => void
+     updateCurrentOffer: (updatedData: Partial<Offer>) => void
+     clearCurrentOffer: () => void
 }
 
 export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set) => ({
@@ -41,6 +46,7 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           zipcode: "",
      },
      selectedBoatId: null,
+     currentOffer: null,
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -66,4 +72,11 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
                },
                selectedBoatId: null,
           })),
+     setCurrentOffer: (offer) => set(() => ({ currentOffer: offer })),
+     updateCurrentOffer: (updatedData) =>
+          set((state) => ({
+               currentOffer: state.currentOffer ? { ...state.currentOffer, ...updatedData } : null,
+          })),
+
+     clearCurrentOffer: () => set(() => ({ currentOffer: null })),
 }))
