@@ -48,8 +48,6 @@ class BoatRepositorySupabase implements BoatRepository {
           if (boatData?.length) {
                return BoatEntity.fromSupabaseData(boatData[0])
           }
-
-          throw new Error("No data returned from boat update.")
      }
 
      async uploadImages(boatId: string | undefined, images: any[]): Promise<void> {

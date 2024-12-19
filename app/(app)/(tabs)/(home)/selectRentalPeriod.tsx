@@ -31,8 +31,6 @@ export default function selectRentalPeriod() {
           fr: fr,
      }
 
-     console.log("rentalPeriod", rentalPeriod)
-
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
                setEndDate(date)

@@ -50,14 +50,6 @@ export default function EditOffer() {
           error: "",
           id: parseInt(RentalFrequency.Hour),
      })
-
-     console.log(fetchedOffer?.rentalPeriod)
-
-     console.log("fff", {
-          start: fetchedOffer?.rentalPeriod.start,
-          end: fetchedOffer?.rentalPeriod.end,
-     })
-
      useEffect(() => {
           if (fetchedOffer) {
                setOffer({
@@ -130,7 +122,7 @@ export default function EditOffer() {
                     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
                          <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offer.title} onChangeText={(title) => setOffer({ ...offer, title })} />
                          <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offer.description} onChangeText={(description) => setOffer({ ...offer, description })} />
-                         <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: parseFloat(price) })} />
+                         <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: price })} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
                               value={frequency.value}

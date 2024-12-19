@@ -34,8 +34,6 @@ export const updateBoatUseCase = async (
 
           const updatedBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
 
-          console.log(updatedBoat)
-
           if (!updatedBoat?.id) {
                throw new Error("Failed to update boat.")
           }

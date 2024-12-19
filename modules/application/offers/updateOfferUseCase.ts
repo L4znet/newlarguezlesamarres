@@ -1,6 +1,7 @@
 import { MessageType } from "react-native-flash-message"
 import { Offer, RentalPeriod } from "@/interfaces/Offer"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
+import { router } from "expo-router"
 
 export const updateOfferUseCase = async (
      {
@@ -36,27 +37,30 @@ export const updateOfferUseCase = async (
      },
      showTranslatedFlashMessage: (type: MessageType, message: { title: string; description: string }) => void
 ): Promise<void> => {
-     const response = await OfferRepositorySupabase.updateOffer({
-          id: id,
-          profileId: profileId,
-          boatId: boatId,
-          title: title,
-          description: description,
-          price: price,
-          isAvailable: isAvailable,
-          frequency: frequency,
-          equipments: equipments,
-          isSkipperAvailable: isSkipperAvailable,
-          isTeamAvailable: isTeamAvailable,
-          rentalPeriod: rentalPeriod,
-          location: location,
-          deletedAt: deletedAt,
-     })
-
-     console.log("aaaaaaa", response)
-
-     showTranslatedFlashMessage("success", {
-          title: "Succès",
-          description: "L'offre a été mise à jour avec succès.",
-     })
+     try {
+          const updatedBoat = await OfferRepositorySupabase.updateOffer({
+               offerId: id,
+               profileId: profileId,
+               boatId: boatId,
+               title: title,
+               description: description,
+               price: price,
+               isAvailable: isAvailable,
+               frequency: frequency,
+               equipments: equipments,
+               isSkipperAvailable: isSkipperAvailable,
+               isTeamAvailable: isTeamAvailable,
+               rentalPeriod: rentalPeriod,
+               location: location,
+               deletedAt: deletedAt,
+          })
+          showTranslatedFlashMessage("success", {
+               title: "Succès",
+               description: "L'offre a été mise à jour avec succès.",
+          })
+          router.push("/(app)/(tabs)/(home)")
+     } catch (error) {
+          console.log("aaaaa", error)
+          throw new Error((error as Error).message)
+     }
 }

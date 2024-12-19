@@ -43,7 +43,8 @@ export default function EditBoat() {
           const loadBoat = async () => {
                try {
                     const fetchedBoat = await getSingleBoatUseCase(boatId)
-                    const boatType = boatTypeOptions.find((type) => type.id === fetchedBoat.boatType)
+
+                    const boatType = boatTypeOptions.find((type) => typeof fetchedBoat.boatType === "number" && type._id === fetchedBoat.boatType)
 
                     setBoat({
                          imageSelected: false,

@@ -17,12 +17,18 @@ export default class OfferEntity {
           public readonly rentalPeriod: RentalPeriod,
           public readonly location: Location,
           public readonly deletedAt: Date | null,
-          public readonly id?: string,
+          public readonly id: string,
           public readonly boats?: BoatEntity,
           public readonly profiles?: ProfileEntity
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
+          console.log("Supabase data received in OfferEntity:", data)
+
+          const boats = data.boats ? BoatEntity.fromSupabaseData(data.boats) : undefined
+
+          const profiles = data.profiles ? ProfileEntity.fromSupabaseUser(data.profiles) : undefined
+
           return new OfferEntity(
                data.profile_id,
                data.boat_id,
@@ -55,8 +61,8 @@ export default class OfferEntity {
                       },
                data.deleted_at,
                data.id,
-               BoatEntity.fromSupabaseData(data.boats),
-               ProfileEntity.fromSupabaseUser(data.profiles)
+               boats,
+               profiles
           )
      }
 

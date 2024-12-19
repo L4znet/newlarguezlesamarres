@@ -37,33 +37,39 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async updateOffer({ id, profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { id: string; profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
-          const { data: offerData, error: offerError } = await supabase
-               .from("offers")
-               .update({
-                    profile_id: profileId,
-                    boat_id: boatId,
-                    title: title,
-                    description: description,
-                    price: price,
-                    is_available: isAvailable,
-                    frequency: frequency,
-                    equipments: equipments,
-                    is_skipper_available: isSkipperAvailable,
-                    is_team_available: isTeamAvailable,
-                    rental_period: rentalPeriod,
-                    location: location,
-                    deleted_at: deletedAt,
-               })
-               .eq("id", id)
-               .select()
-
-          if (offerError) {
-               throw new Error(`Error updating offer: ${offerError.message}`)
+     async updateOffer({ offerId, profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { offerId: string; profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
+          if (!offerId) {
+               throw new Error("Invalid offerId: " + offerId)
           }
 
-          if (offerData?.length) {
-               return OfferEntity.fromSupabaseData(offerData)
+          try {
+               const { data: offerData, error: offerError } = await supabase
+                    .from("offers")
+                    .update({
+                         profile_id: profileId,
+                         boat_id: boatId,
+                         title: title,
+                         description: description,
+                         price: price,
+                         is_available: isAvailable,
+                         frequency: frequency,
+                         equipments: equipments,
+                         is_skipper_available: isSkipperAvailable,
+                         is_team_available: isTeamAvailable,
+                         rental_period: rentalPeriod,
+                         location: location,
+                         deleted_at: deletedAt,
+                    })
+                    .eq("id", offerId)
+                    .select()
+
+               if (offerData?.length) {
+                    return OfferEntity.fromSupabaseData(offerData[0])
+               }
+          } catch (error) {
+               console.log(offerId)
+               console.log("sdffdsqsfdfdqqfsdsfdqsfd", error)
+               throw new Error((error as Error).message)
           }
      }
 
