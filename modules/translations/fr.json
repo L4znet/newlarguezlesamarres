@@ -302,5 +302,7 @@
      "select_equipment_button": "Définissez les équipements",
      "cancel_button": "Annuler",
      "start_date_required": "Vous devez sélectionner une période de location.",
-     "end_date_required": "La date de fin est requise."
+     "end_date_required": "La date de fin est requise.",
+     "loading_offer": "Chargement de l'offre...",
+     "processing_button": "Traitement en cours"
 }

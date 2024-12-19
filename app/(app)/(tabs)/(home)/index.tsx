@@ -27,6 +27,8 @@ export default function Index() {
           fetchBoats()
      }, [boats])*/
 
+     console.log("JE SUIS LAAAA INDEX")
+
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>

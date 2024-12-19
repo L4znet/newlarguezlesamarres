@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text, TextInput, Switch } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
@@ -24,15 +24,19 @@ export default function createOffer() {
           id: parseInt(RentalFrequency.Hour),
      })
 
-     const { equipments, rentalPeriod, location, selectedBoatId } = useOfferExternalScreenStore()
+     const { equipments, rentalPeriod, location, selectedBoatId, resetStore } = useOfferExternalScreenStore()
+
+     useEffect(() => {
+          resetStore()
+     }, [])
 
      const [offer, setOffer] = useState({
           boatId: "",
           profileId: "",
-          title: "Ma super offre",
-          description: "fsdqlkfsdqlfdsqkjfdslkmjhfdqslkmjfkljmqdsfjqdsfqds",
-          price: 10,
-          isAvailable: true,
+          title: "",
+          description: "",
+          price: 0,
+          isAvailable: false,
           isSkipperAvailable: false,
           isTeamAvailable: false,
           rentalPeriod: { start: "", end: "" },
@@ -111,6 +115,14 @@ export default function createOffer() {
                          <View style={styles.inputRow}>
                               <Text>{t("is_available_label")}</Text>
                               <Switch value={offer.isAvailable} onValueChange={(value) => setOffer({ ...offer, isAvailable: value })} />
+                         </View>
+                         <View style={styles.inputRow}>
+                              <Text>{t("is_skipper_available_label")}</Text>
+                              <Switch value={offer.isSkipperAvailable} onValueChange={(value) => setOffer({ ...offer, isSkipperAvailable: value })} />
+                         </View>
+                         <View style={styles.inputRow}>
+                              <Text>{t("is_team_available_label")}</Text>
+                              <Switch value={offer.isTeamAvailable} onValueChange={(value) => setOffer({ ...offer, isTeamAvailable: value })} />
                          </View>
                          <Button
                               icon={equipments.length > 0 ? "check" : "plus"}

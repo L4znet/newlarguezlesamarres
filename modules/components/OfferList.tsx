@@ -8,16 +8,19 @@ import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
 import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
 const OfferList = () => {
      const router = useRouter()
-
+     console.log("JE SUIS LAAAA OFFERLIST")
      const { data: offers, isPending, error } = useOffers()
      const deleteOffer = useDeleteOffer()
      const theme = useTheme()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+
+     const { setCurrentOffer } = useOfferExternalScreenStore()
 
      if (isPending) return <ActivityIndicator size="large" />
      if (error) {
@@ -33,6 +36,11 @@ const OfferList = () => {
           )
      }
 
+     const handleSelectOffer = (offer: any) => {
+          setCurrentOffer(offer)
+          router.navigate("/(app)/(tabs)/(home)/editOffer")
+     }
+
      return (
           <FlatList
                ListEmptyComponent={EmptyList}
@@ -40,9 +48,10 @@ const OfferList = () => {
                keyExtractor={(item) => item.id}
                renderItem={({ item }) => {
                     const frequency = displayRentalFrequency(getRentalFrequency(item.frequency as unknown as RentalFrequency), locale)
+
                     return (
                          <Card key={item.id} style={[styles.card]}>
-                              <Slideshow images={item.boats.boat_images.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
+                              <Slideshow images={item.boats.boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
 
                               <Card.Title title={item.title} subtitle={item.description} />
 
@@ -54,7 +63,7 @@ const OfferList = () => {
                               </Card.Content>
 
                               <Card.Actions>
-                                   <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.boatId } })}>Modifier</Button>
+                                   <Button onPress={() => handleSelectOffer(item)}>Modifier</Button>
                                    <Button mode="contained" onPress={() => deleteOffer.mutate(item.id)} loading={deleteOffer.isPending} disabled={deleteOffer.isPending}>
                                         Supprimer
                                    </Button>

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { View, StyleSheet, FlatList, Text, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, Text as TextPaper } from "react-native-paper"
-import { useLocalSearchParams, useRouter } from "expo-router"
+import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
 interface Equipment {
@@ -13,6 +13,7 @@ export default function selectEquipments() {
      const { equipments, addEquipment, removeEquipment } = useOfferExternalScreenStore()
      const [newEquipment, setNewEquipment] = useState({ name: "", quantity: "" })
      const router = useRouter()
+     const { backPath } = useLocalSearchParams<{ backPath: string }>()
 
      const handleAddEquipment = () => {
           if (newEquipment.name.trim() && newEquipment.quantity.trim()) {
@@ -21,9 +22,13 @@ export default function selectEquipments() {
           }
      }
 
-     const handleGetBack = () => {
-          router.replace("/(app)/(tabs)/(home)/createOffer")
+     const handleNavigation = () => {
+          router.navigate({ pathname: backPath as RelativePathString })
      }
+     const cancelSelection = () => {
+          handleNavigation()
+     }
+     console.log("JE SUIS LAAAA EQUIPMENTS")
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -65,11 +70,8 @@ export default function selectEquipments() {
                               />
                          </View>
 
-                         <Button mode="contained" onPress={handleGetBack} style={styles.saveButton}>
+                         <Button mode="contained" onPress={handleNavigation} style={styles.saveButton}>
                               Enregistrer
-                         </Button>
-                         <Button mode="outlined" onPress={handleGetBack} style={styles.cancelButton}>
-                              Annuler
                          </Button>
                     </ScrollView>
                </SafeAreaView>

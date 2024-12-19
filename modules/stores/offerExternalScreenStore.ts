@@ -36,6 +36,8 @@ interface OfferExternalScreenStore {
      clearCurrentOffer: () => void
 }
 
+console.log("sfdmlkkfsldjmkfsjd")
+
 export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set) => ({
      equipments: [],
      rentalPeriod: { startDate: null, endDate: null },

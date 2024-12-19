@@ -5,6 +5,7 @@ import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepository
 import { undefined } from "zod"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { Equipment, Location, RentalPeriod } from "@/interfaces/Offer"
+import { ProfileUpdateSchema } from "@/modules/domain/profile/schemas/ProfileUpdateSchema"
 
 class OfferRepositorySupabase implements OfferRepository {
      async createOffer({ profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: number; isAvailable: boolean; frequency: number; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
@@ -68,7 +69,24 @@ class OfferRepositorySupabase implements OfferRepository {
      }
 
      async getSingleOffer({ offerId }: { offerId: string }): Promise<OfferEntity> {
-          const { data: offerData, error: offerError } = await supabase.from("offers").select().eq("id", offerId)
+          const { data: offerData, error: offerError } = await supabase
+               .from("offers")
+               .select(
+                    `
+            *,
+            boats (
+                id,
+                boat_name,
+                boat_images (url)
+            ),
+            profiles (
+                id,
+                firstname,
+                lastname,
+                username)
+        `
+               )
+               .eq("id", offerId)
 
           if (offerError) {
                throw new Error(`Error fetching offer: ${offerError.message}`)
@@ -88,10 +106,12 @@ class OfferRepositorySupabase implements OfferRepository {
                     `
             *,
             boats (
+                id,
                 boat_name,
                 boat_images (url)
             ),
             profiles (
+                id,
                 firstname,
                 lastname,
                 username)

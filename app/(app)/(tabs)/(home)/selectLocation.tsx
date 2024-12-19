@@ -1,49 +1,40 @@
 import React, { useState } from "react"
 import { View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView, ScrollView } from "react-native"
-import { Button, Text, useTheme, TextInput } from "react-native-paper"
-import { useRouter } from "expo-router"
+import { Button, Text, useTheme, TextInput, Card } from "react-native-paper"
+import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
-export default function selectLocation() {
+export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
-     const [validationError, setValidationError] = useState<string | null>(null) // Gestion des erreurs de validation
-     const { mutate, data, isPending, error } = useLocationSearch()
-     const { setLocation } = useOfferExternalScreenStore()
-     const router = useRouter()
-     const theme = useTheme()
-
-     const handleSearch = () => {
-          if (searchTerm.trim()) {
-               mutate(searchTerm)
-               setValidationError(null) // Réinitialiser les erreurs en cas de nouvelle recherche
-          }
-     }
-
-     const validateLocation = (
-          location: any
-     ): {
+     const [validationError, setValidationError] = useState<string | null>(null)
+     const [selectedLocation, setSelectedLocation] = useState<{
           city: string
           country: string
           zipcode: string
           address: string
-          status: string
-     } => {
+     } | null>(null)
+     const { mutate, data, isPending, error } = useLocationSearch()
+     const { setLocation, location } = useOfferExternalScreenStore()
+     const router = useRouter()
+     const theme = useTheme()
+
+     const { backPath } = useLocalSearchParams<{ backPath: string }>()
+
+     console.log("JE SUIS LAAAA LOCATION AAA")
+
+     const handleSearch = () => {
+          if (searchTerm.trim()) {
+               mutate(searchTerm)
+               setValidationError(null)
+          }
+     }
+
+     const validateLocation = (location: any) => {
           const { address } = location
 
           if ((!address.municipality || !address.city || !address.localName) && (!address.country || !address.postalCode || !address.streetName || !address.streetNumber)) {
-               console.log({
-                    localName: address.localName,
-                    city: address.city,
-                    municipality: address.municipality,
-                    country: address.country,
-                    postalCode: address.postalCode,
-                    streetNumber: address.streetNumber,
-                    streetName: address.streetName,
-               })
-
                setValidationError("La localisation sélectionnée est incomplète. Assurez-vous que la ville, le pays, le code postal et l'adresse sont disponibles.")
-
                return {
                     city: "",
                     country: "",
@@ -53,36 +44,56 @@ export default function selectLocation() {
                }
           }
 
-          location = {
+          const validatedLocation = {
                city: address.city || address.municipality || address.localName,
                country: address.country,
                zipcode: address.postalCode,
-               address: `${address.streetNumber || ""} ${address.streetName || ""}`,
+               address: `${address.streetNumber || ""} ${address.streetName || ""}`.trim(),
                status: "VALIDATED",
           }
 
-          if (location.status !== "INVALID") {
+          if (validatedLocation.status !== "INVALID") {
                setValidationError(null)
-               return location
           }
 
-          return location
+          return validatedLocation
      }
 
      const handleSelectLocation = (location: any) => {
           const { city, country, zipcode, address, status } = validateLocation(location)
 
           if (status === "VALIDATED") {
-               setLocation({
-                    city,
-                    country,
-                    zipcode,
-                    address,
+               setSelectedLocation({ city, country, zipcode, address })
+               setSearchTerm("")
+               mutate("", {
+                    onSuccess: () => {},
                })
-               router.replace("/(app)/(tabs)/(home)/createOffer")
           }
      }
 
+     const handleNavigation = () => {
+          router.navigate({ pathname: backPath as RelativePathString })
+     }
+
+     const cancelSelection = () => {
+          handleNavigation()
+
+          setSelectedLocation({
+               city: location.city,
+               country: location.country,
+               zipcode: location.zipcode,
+               address: location.address,
+          })
+     }
+
+     const confirmSelection = () => {
+          if (selectedLocation) {
+               setLocation(selectedLocation)
+               handleNavigation()
+          }
+     }
+
+     const currentSelection = selectedLocation ? `${selectedLocation.address}, ${selectedLocation.zipcode} ${selectedLocation.city}, ${selectedLocation.country}` : "Aucune sélection"
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <ScrollView contentContainerStyle={styles.content}>
@@ -108,7 +119,20 @@ export default function selectLocation() {
                          !isPending && searchTerm.trim() !== "" && <Text style={styles.noResultsText}>Aucun résultat trouvé. Essayez un autre mot-clé.</Text>
                     )}
 
-                    <Button mode="contained" onPress={() => router.back()} style={styles.cancelButton}>
+                    <View style={styles.selectionContainer}>
+                         <Text style={styles.selectionTitle}>Votre sélection</Text>
+                         <Card style={styles.selectionCard}>
+                              <Card.Content>
+                                   <Text>{currentSelection}</Text>
+                              </Card.Content>
+                         </Card>
+                    </View>
+
+                    <Button mode="contained" onPress={() => confirmSelection()} style={styles.actionButton}>
+                         Confirmer
+                    </Button>
+
+                    <Button mode="outlined" onPress={() => cancelSelection()} style={styles.actionButton}>
                          Annuler
                     </Button>
                </ScrollView>
@@ -128,16 +152,13 @@ const styles = StyleSheet.create({
      resultItem: {
           padding: 10,
           borderBottomWidth: 1,
-          borderBottomColor: "#ccc",
      },
      resultText: {
           fontSize: 16,
-          color: "white",
      },
      noResultsText: {
           textAlign: "center",
           marginTop: 20,
-          color: "#666",
           fontSize: 16,
      },
      errorText: {
@@ -149,7 +170,19 @@ const styles = StyleSheet.create({
      loading: {
           marginVertical: 20,
      },
-     cancelButton: {
+     actionButton: {
           marginTop: 20,
+     },
+     selectionContainer: {
+          marginTop: 20,
+     },
+     selectionTitle: {
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 10,
+     },
+     selectionCard: {
+          padding: 10,
+          borderRadius: 8,
      },
 })

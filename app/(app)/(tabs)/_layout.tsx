@@ -14,6 +14,8 @@ export default function Layout() {
      if (!session) {
           router.replace("/(app)/(auth)")
      }
+     console.log("JE SUIS LAAAA LAYTOUTR 2")
+
      return (
           <Tabs
                tabBar={(props) => <TabBar {...props} />}

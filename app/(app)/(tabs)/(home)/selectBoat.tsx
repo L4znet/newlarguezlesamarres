@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from "react-native"
-import { Button, useTheme, Text } from "react-native-paper"
-import { useRouter } from "expo-router"
+import { Button, useTheme, Text, Icon } from "react-native-paper"
+import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
@@ -9,12 +9,30 @@ export default function SelectBoat() {
      const theme = useTheme()
      const router = useRouter()
      const { data: boats, isPending, error } = useBoats()
-     const { selectBoat } = useOfferExternalScreenStore()
+     const { selectBoat, selectedBoatId } = useOfferExternalScreenStore()
+     const { backPath } = useLocalSearchParams<{ backPath: string }>()
+     const [newSelectedBoat, setNewSelectedBoat] = React.useState<string | null>(selectedBoatId)
+
+     const handleNavigation = () => {
+          router.navigate({ pathname: backPath as RelativePathString })
+     }
 
      const handleSelectBoat = (boat: any) => {
-          selectBoat(boat.id)
-          router.replace("/(app)/(tabs)/(home)/createOffer")
+          setNewSelectedBoat(boat.id)
      }
+
+     const handleCancelSelection = () => {
+          handleNavigation()
+          setNewSelectedBoat(selectedBoatId as string)
+     }
+
+     const handleConfirmSelection = () => {
+          handleNavigation()
+          selectBoat(newSelectedBoat as string)
+     }
+
+     // @ts-ignore
+     const themeColorText = theme.colors.text
 
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -25,14 +43,19 @@ export default function SelectBoat() {
                     <FlatList
                          data={boats}
                          keyExtractor={(item) => item.id}
-                         renderItem={({ item }) => (
-                              <Button mode={"outlined"} style={styles.boatItem} onPress={() => handleSelectBoat(item)}>
-                                   <Text style={[styles.boatName, { color: theme.colors.text }]}>{item.boatName}</Text>
-                              </Button>
-                         )}
+                         renderItem={({ item }) => {
+                              return (
+                                   <Button mode={"contained"} icon={newSelectedBoat === item.id ? "check" : ""} style={newSelectedBoat === item.id ? [styles.boatItem, { backgroundColor: theme.colors.primary }] : [styles.boatItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 2 }]} onPress={() => handleSelectBoat(item)}>
+                                        <Text style={newSelectedBoat === item.id ? [styles.boatName, { color: theme.colors.background }] : styles.boatName}>{item.boatName}</Text>
+                                   </Button>
+                              )
+                         }}
                     />
                )}
-               <Button mode="outlined" onPress={() => router.back()} style={styles.cancelButton}>
+               <Button mode="contained" onPress={() => handleConfirmSelection()} style={styles.cancelButton}>
+                    Confirmer
+               </Button>
+               <Button mode="outlined" onPress={() => handleCancelSelection()} style={styles.cancelButton}>
                     Annuler
                </Button>
           </SafeAreaView>
@@ -55,11 +78,14 @@ const styles = StyleSheet.create({
      },
      boatItem: {
           padding: 5,
+          paddingVertical: 30,
           marginVertical: 10,
+          fontSize: 16,
+          borderRadius: 10,
      },
      boatName: {
           fontSize: 16,
-          color: "#FFF",
+          fontWeight: "bold",
      },
      loading: {
           marginVertical: 20,

@@ -21,7 +21,7 @@ export const selectValidator = (value: any) => {
 export default function createBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const boatTypeOptions = useBoatTypeOptions()
+     const boatTypeOptions = useBoatTypeOptions(locale)
      const colors = useTheme().colors
      const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
      const { showTranslatedFlashMessage } = useFlashMessage()

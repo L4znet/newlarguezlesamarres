@@ -1,5 +1,6 @@
 import { Equipment, RentalPeriod, Location } from "@/interfaces/Offer"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import ProfileEntity from "@/modules/domain/profile/ProfileEntity"
 
 export default class OfferEntity {
      constructor(
@@ -8,28 +9,17 @@ export default class OfferEntity {
           public readonly title: string,
           public readonly description: string,
           public readonly price: number,
-          public readonly is_available: boolean,
+          public readonly isAvailable: boolean,
           public readonly frequency: number,
           public readonly equipments: Equipment[] | [],
-          public readonly is_skipper_available: boolean,
-          public readonly is_team_available: boolean,
-          public readonly rental_period: RentalPeriod,
+          public readonly isSkipperAvailable: boolean,
+          public readonly isTeamAvailable: boolean,
+          public readonly rentalPeriod: RentalPeriod,
           public readonly location: Location,
-          public readonly deleted_at: Date | null,
+          public readonly deletedAt: Date | null,
           public readonly id: string,
-          public boats: {
-               boat_name: string
-               boat_images: [
-                    {
-                         url: string
-                    },
-               ]
-          },
-          public profiles: {
-               firstname: string
-               lastname: string
-               username: string
-          }
+          public readonly boats: BoatEntity,
+          public readonly profiles: ProfileEntity
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
@@ -65,8 +55,8 @@ export default class OfferEntity {
                       },
                data.deleted_at,
                data.id,
-               data.boats,
-               data.profiles
+               BoatEntity.fromSupabaseData(data.boats),
+               ProfileEntity.fromSupabaseUser(data.profiles)
           )
      }
 }

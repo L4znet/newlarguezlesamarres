@@ -32,12 +32,12 @@ export default class BoatEntity {
                            id: img.id,
                            url: img.url,
                            caption: img.caption || "",
-                           contentType: img.content_type || "unknown",
+                           content_type: img.content_type || "unknown",
                            base64: img.base64 || null,
                            dimensions: img.dimensions || { width: 0, height: 0 },
                            size: img.size || 0,
-                           mimeType: img.mime_type || "unknown",
-                           fileName: img.file_name || "",
+                           mime_type: img.mime_type || "unknown",
+                           file_name: img.file_name || "",
                       }))
                     : []
           )

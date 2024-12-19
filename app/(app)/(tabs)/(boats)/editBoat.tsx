@@ -14,7 +14,7 @@ import { useUpdateBoat } from "@/modules/hooks/boats/useUpdateBoat"
 export default function EditBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const boatTypeOptions = useBoatTypeOptions()
+     const boatTypeOptions = useBoatTypeOptions(locale)
      const { showTranslatedFlashMessage } = useFlashMessage()
      const colors = useTheme().colors
      const updateBoat = useUpdateBoat()
@@ -103,8 +103,6 @@ export default function EditBoat() {
 
      const editBoat = async () => {
           try {
-               console.log(typeof boat.boatCapacity)
-
                updateBoat.mutate({
                     boatId: boatId,
                     updatedData: {
