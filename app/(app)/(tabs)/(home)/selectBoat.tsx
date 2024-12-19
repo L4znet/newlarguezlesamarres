@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
-import { View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from "react-native"
-import { Button, useTheme, Text, Icon } from "react-native-paper"
+import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native"
+import { Button, useTheme, Text, Icon, ActivityIndicator } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"

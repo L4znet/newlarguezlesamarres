@@ -33,12 +33,15 @@ export const updateBoatUseCase = async (
           const { boatName, boatDescription, boatCapacity, boatType, boatImages } = boat
 
           const updatedBoat = await BoatRepositorySupabase.updateBoat(profileId, boatName, boatDescription, boatCapacity, boatType, boatId)
-          if (!updatedBoat?.boatId) {
+
+          console.log(updatedBoat)
+
+          if (!updatedBoat?.id) {
                throw new Error("Failed to update boat.")
           }
 
           if (boatDescription) {
-               await BoatRepositorySupabase.uploadUpdateImages(updatedBoat.boatId, boatImages)
+               await BoatRepositorySupabase.uploadUpdateImages(updatedBoat.id, boatImages)
           }
 
           showTranslatedFlashMessage("success", {

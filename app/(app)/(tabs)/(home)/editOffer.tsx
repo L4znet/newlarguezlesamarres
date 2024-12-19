@@ -8,10 +8,12 @@ import { RelativePathString, useRouter, useLocalSearchParams } from "expo-router
 import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
+import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
+import { RentalPeriod } from "@/interfaces/Offer"
 
 export default function EditOffer() {
      const router = useRouter()
-     const { setLocation, setEquipments, setRentalPeriod, selectBoat, currentOffer } = useOfferExternalScreenStore()
+     const { location, equipments, rentalPeriod, selectedBoatId, setLocation, setEquipments, setRentalPeriod, selectBoat, currentOffer } = useOfferExternalScreenStore()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -24,6 +26,7 @@ export default function EditOffer() {
           router.navigate("/(app)/(tabs)/(home)")
      }
 
+     const updateOffer = useUpdateOffer()
      const { data: fetchedOffer, isPending: isOfferPending, error: offerError } = useOfferById(currentOffer?.id as string)
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
@@ -34,7 +37,7 @@ export default function EditOffer() {
           profileId: "",
           title: "",
           description: "",
-          price: 0,
+          price: "0",
           isAvailable: false,
           isSkipperAvailable: false,
           isTeamAvailable: false,
@@ -48,11 +51,15 @@ export default function EditOffer() {
           id: parseInt(RentalFrequency.Hour),
      })
 
-     useEffect(() => {
-          console.log("RENDER")
+     console.log(fetchedOffer?.rentalPeriod)
 
+     console.log("fff", {
+          start: fetchedOffer?.rentalPeriod.start,
+          end: fetchedOffer?.rentalPeriod.end,
+     })
+
+     useEffect(() => {
           if (fetchedOffer) {
-               console.log("RENDER")
                setOffer({
                     boatId: fetchedOffer.boatId,
                     profileId: fetchedOffer.profileId,
@@ -63,7 +70,6 @@ export default function EditOffer() {
                     isSkipperAvailable: fetchedOffer.isSkipperAvailable,
                     isTeamAvailable: fetchedOffer.isTeamAvailable,
                })
-
                selectBoat(fetchedOffer.boatId)
 
                setLocation({
@@ -90,6 +96,29 @@ export default function EditOffer() {
                pathname: path as RelativePathString,
                params,
           })
+     }
+
+     const editOffer = async () => {
+          try {
+               updateOffer.mutate({
+                    id: currentOffer?.id as string,
+                    profileId: offer.profileId,
+                    boatId: selectedBoatId as string,
+                    title: offer.title,
+                    description: offer.description,
+                    price: offer.price,
+                    isAvailable: offer.isAvailable,
+                    frequency: frequency.id,
+                    equipments: equipments,
+                    isSkipperAvailable: offer.isSkipperAvailable,
+                    isTeamAvailable: offer.isTeamAvailable,
+                    rentalPeriod: rentalPeriod as unknown as RentalPeriod,
+                    location: location,
+                    deletedAt: null,
+               })
+          } catch (error) {
+               console.error("Error while editing boat:", error)
+          }
      }
 
      if (isOfferPending) return <Text>{t("loading_offer")}</Text>
@@ -180,6 +209,9 @@ export default function EditOffer() {
                          >
                               {t("select_boat_button")}
                          </Button>
+                         <Button mode="contained" onPress={() => editOffer()} style={styles.confirmButton}>
+                              {t("confirm_button")}
+                         </Button>
                     </ScrollView>
                </SafeAreaView>
           </KeyboardAvoidingView>
@@ -214,5 +246,8 @@ const styles = StyleSheet.create({
      },
      button: {
           marginVertical: 10,
+     },
+     confirmButton: {
+          marginVertical: 50,
      },
 })

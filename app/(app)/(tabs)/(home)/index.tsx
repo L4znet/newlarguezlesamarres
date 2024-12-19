@@ -7,34 +7,57 @@ import { Card, Button } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import OfferList from "@/modules/components/OfferList"
+import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { undefined } from "zod"
 
 export default function Index() {
      const [isLoading, setIsLoading] = useState(false)
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     /*  const fetchBoats = async () => {
-          try {
-               const fetchedBoats = await getBoatsUseCase()
-               setBoats(fetchedBoats)
-          } catch (error) {
-               console.error("Erreur lors de la récupération des bateaux :", error)
-          } finally {
-               setIsLoading(false)
-          }
+     const { setRentalPeriod, setLocation, setEquipments, setCurrentOffer } = useOfferExternalScreenStore()
+
+     const createOffer = async () => {
+          router.navigate("/(app)/(tabs)/(home)/createOffer")
+          setLocation({
+               city: "",
+               address: "",
+               country: "",
+               zipcode: "",
+          })
+          setRentalPeriod("", "")
+          setEquipments([])
+
+          setCurrentOffer({
+               id: "",
+               title: "",
+               description: "",
+               price: "0",
+               boatId: "",
+               deletedAt: null,
+               frequency: 0,
+               isAvailable: false,
+               isSkipperAvailable: false,
+               isTeamAvailable: false,
+               location: {
+                    city: "",
+                    address: "",
+                    country: "",
+                    zipcode: "",
+               },
+               rentalPeriod: {
+                    start: "",
+                    end: "",
+               },
+               equipments: [],
+          })
      }
-
-     useEffect(() => {
-          fetchBoats()
-     }, [boats])*/
-
-     console.log("JE SUIS LAAAA INDEX")
 
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
                     <OfferList />
                </SafeAreaView>
-               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/createOffer")} />
+               <FAB icon="plus" style={styles.fab} onPress={() => createOffer()} />
           </View>
      )
 }

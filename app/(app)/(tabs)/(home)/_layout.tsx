@@ -8,7 +8,6 @@ import TabBar from "@/modules/components/TabBar"
 
 export default function Layout() {
      const { session } = useAuth()
-     console.log("JE SUIS LAAAA LAYOUT")
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>

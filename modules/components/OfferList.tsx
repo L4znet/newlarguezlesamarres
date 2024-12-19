@@ -12,7 +12,6 @@ import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScree
 
 const OfferList = () => {
      const router = useRouter()
-     console.log("JE SUIS LAAAA OFFERLIST")
      const { data: offers, isPending, error } = useOffers()
      const deleteOffer = useDeleteOffer()
      const theme = useTheme()
@@ -47,7 +46,7 @@ const OfferList = () => {
                data={offers}
                keyExtractor={(item) => item.id}
                renderItem={({ item }) => {
-                    const frequency = displayRentalFrequency(getRentalFrequency(item.frequency as unknown as RentalFrequency), locale)
+                    const frequency = displayRentalFrequency(item.frequency.toString(), locale)
 
                     return (
                          <Card key={item.id} style={[styles.card]}>

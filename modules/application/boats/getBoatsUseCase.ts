@@ -15,8 +15,6 @@ export const getBoatsUseCase = async (
      ) => void
 ): Promise<BoatEntity[]> => {
      try {
-          console.log("JE SUIS LE BOAZAAALMKJN")
-
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
 

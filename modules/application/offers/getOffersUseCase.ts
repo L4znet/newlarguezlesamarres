@@ -18,8 +18,6 @@ export const getOffersUseCase = async (
      const session = await getCurrentSessionUseCase()
      const profileId = session.data.session?.user.id as string
 
-     console.log("JE SUIS LAAAA OFFERS")
-
      if (!profileId) {
           showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "Profile ID is missing" })
      }

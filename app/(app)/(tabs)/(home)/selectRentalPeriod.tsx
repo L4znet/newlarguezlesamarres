@@ -13,8 +13,8 @@ import { useCancelCalendarHandler } from "@/modules/hooks/offers/useCancelCalend
 export default function selectRentalPeriod() {
      const { rentalPeriod, setRentalPeriod } = useOfferExternalScreenStore()
      const [calendarKey, setCalendarKey] = useState(0)
-     const rawStartDate = rentalPeriod.startDate ? new Date(rentalPeriod.startDate) : null
-     const rawEndDate = rentalPeriod.endDate ? new Date(rentalPeriod.endDate) : null
+     const rawStartDate = rentalPeriod.start ? new Date(rentalPeriod.start) : null
+     const rawEndDate = rentalPeriod.end ? new Date(rentalPeriod.end) : null
 
      const [startDate, setStartDate] = useState<Date | null>(rawStartDate)
      const [endDate, setEndDate] = useState<Date | null>(rawEndDate)
@@ -30,6 +30,8 @@ export default function selectRentalPeriod() {
           en: enUS,
           fr: fr,
      }
+
+     console.log("rentalPeriod", rentalPeriod)
 
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
@@ -75,8 +77,6 @@ export default function selectRentalPeriod() {
           setCalendarKey((prev) => prev + 1)
           handleNavigation()
      }
-
-     console.log("JE SUIS LAAAA PERIOD")
 
      const { handleCancel, isProcessing } = useCancelCalendarHandler(rawStartDate, rawEndDate, resetCalendar)
 

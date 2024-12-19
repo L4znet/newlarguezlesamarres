@@ -7,8 +7,8 @@ interface Equipment {
 }
 
 interface RentalPeriod {
-     startDate: string | null
-     endDate: string | null
+     start: string | null
+     end: string | null
 }
 
 interface Location {
@@ -26,7 +26,7 @@ interface OfferExternalScreenStore {
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      removeEquipment: (index: number) => void
-     setRentalPeriod: (startDate: string, endDate: string) => void
+     setRentalPeriod: (start: string, end: string) => void
      setLocation: (location: { zipcode: string; country: string; address: string; city: string }) => void
      selectBoat: (boatUid: string) => void
      resetStore: () => void
@@ -36,11 +36,9 @@ interface OfferExternalScreenStore {
      clearCurrentOffer: () => void
 }
 
-console.log("sfdmlkkfsldjmkfsjd")
-
 export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set) => ({
      equipments: [],
-     rentalPeriod: { startDate: null, endDate: null },
+     rentalPeriod: { start: null, end: null },
      location: {
           city: "",
           country: "",
@@ -59,13 +57,13 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           set((state) => ({
                equipments: state.equipments.filter((_, i) => i !== index),
           })),
-     setRentalPeriod: (startDate, endDate) => set(() => ({ rentalPeriod: { startDate, endDate } })),
+     setRentalPeriod: (start, end) => set(() => ({ rentalPeriod: { start, end } })),
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
      resetStore: () =>
           set(() => ({
                equipments: [],
-               rentalPeriod: { startDate: null, endDate: null },
+               rentalPeriod: { start: null, end: null },
                location: {
                     city: "",
                     country: "",

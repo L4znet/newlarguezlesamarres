@@ -59,9 +59,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      }
 
      useEffect(() => {
+          let isMounted = true // Prevent state updates on unmounted components
           const getSession = async () => {
                const storedSession = await AsyncStorage.getItem("supabase_session")
-               if (storedSession) {
+               if (storedSession && isMounted) {
                     const parsedSession = JSON.parse(storedSession)
                     setSession(parsedSession)
                     setUser(parsedSession.user.user_metadata)
@@ -71,10 +72,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           getSession()
 
           const { data: subscription } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+               if (!isMounted) return
+
                if (newSession) {
                     await AsyncStorage.setItem("supabase_session", JSON.stringify(newSession))
-                    setSession(newSession)
-
+                    setSession(newSession) // Avoid redundant updates
                     setUser(newSession.user.user_metadata)
                } else {
                     await AsyncStorage.removeItem("supabase_session")
@@ -84,6 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           })
 
           return () => {
+               isMounted = false // Prevent updates on unmounted components
                subscription.subscription?.unsubscribe()
           }
      }, [])

@@ -46,7 +46,6 @@ const CombinedDarkTheme = merge(DarkTheme, customDarkTheme)
 export default function RootLayout() {
      const colorScheme = useColorScheme()
      const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
-     console.log("JE SUIS LAAAA zafdsfsdfsd 2")
      return (
           <QueryClientProvider client={queryClient}>
                <TranslationProvider>

@@ -28,7 +28,6 @@ export default function selectEquipments() {
      const cancelSelection = () => {
           handleNavigation()
      }
-     console.log("JE SUIS LAAAA EQUIPMENTS")
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>

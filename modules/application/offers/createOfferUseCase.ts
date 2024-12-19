@@ -20,11 +20,10 @@ export const createOfferUseCase = async (
           location,
           deletedAt = null,
      }: {
-          profileId: string
           boatId: string
           title: string
           description: string
-          price: number
+          price: string
           isAvailable: boolean
           frequency: number
           equipments: Equipment[] | []
@@ -48,7 +47,7 @@ export const createOfferUseCase = async (
           if (!title) {
                throw new Error("Le titre est requis.")
           }
-          if (price <= 0) {
+          if (parseInt(price) <= 0) {
                throw new Error("Le prix doit être supérieur à 0.")
           }
 
@@ -81,7 +80,21 @@ export const createOfferUseCase = async (
           })
 
           router.push("/(app)/(tabs)/(home)")
-          return new OfferEntity(profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt)
+          return OfferEntity.toSupabaseData({
+               profileId,
+               boatId,
+               title,
+               description,
+               price,
+               isAvailable,
+               frequency,
+               equipments,
+               isSkipperAvailable,
+               isTeamAvailable,
+               rentalPeriod,
+               location,
+               deletedAt,
+          })
      } catch (error: any) {
           console.error("Error in createOfferUseCase:", error.message)
           throw new Error(error.message)

@@ -43,8 +43,6 @@ export const createBoatUseCase = async (
                throw new Error("Failed to create boat.")
           }
 
-          console.log("newBoat", newBoat.id)
-
           await BoatRepositorySupabase.uploadImages(newBoat.id, boatImages)
 
           router.push("/(app)/(tabs)/(boats)")
@@ -54,7 +52,5 @@ export const createBoatUseCase = async (
                title: "flash_title_danger",
                description: (error as Error).message,
           })
-     } finally {
-          console.log("finally")
      }
 }

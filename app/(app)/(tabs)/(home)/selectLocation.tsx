@@ -1,27 +1,26 @@
 import React, { useState } from "react"
-import { View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView, ScrollView } from "react-native"
-import { Button, Text, useTheme, TextInput, Card } from "react-native-paper"
+import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from "react-native"
+import { Button, Text, useTheme, TextInput, Card, ActivityIndicator } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 
 export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
+     const { setLocation, location } = useOfferExternalScreenStore()
      const [validationError, setValidationError] = useState<string | null>(null)
      const [selectedLocation, setSelectedLocation] = useState<{
           city: string
           country: string
           zipcode: string
           address: string
-     } | null>(null)
+     } | null>(location)
      const { mutate, data, isPending, error } = useLocationSearch()
-     const { setLocation, location } = useOfferExternalScreenStore()
+
      const router = useRouter()
      const theme = useTheme()
 
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
-
-     console.log("JE SUIS LAAAA LOCATION AAA")
 
      const handleSearch = () => {
           if (searchTerm.trim()) {
@@ -93,7 +92,7 @@ export default function SelectLocation() {
           }
      }
 
-     const currentSelection = selectedLocation ? `${selectedLocation.address}, ${selectedLocation.zipcode} ${selectedLocation.city}, ${selectedLocation.country}` : "Aucune sélection"
+     const currentSelection = selectedLocation?.country && selectedLocation.city && selectedLocation.address && selectedLocation.zipcode ? `${selectedLocation.address}, ${selectedLocation.zipcode} ${selectedLocation.city}, ${selectedLocation.country}` : "Aucune sélection"
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <ScrollView contentContainerStyle={styles.content}>

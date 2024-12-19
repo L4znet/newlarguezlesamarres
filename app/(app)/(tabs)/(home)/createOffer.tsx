@@ -24,29 +24,16 @@ export default function createOffer() {
           id: parseInt(RentalFrequency.Hour),
      })
 
-     const { equipments, rentalPeriod, location, selectedBoatId, resetStore } = useOfferExternalScreenStore()
-
-     useEffect(() => {
-          resetStore()
-     }, [])
+     const { equipments, rentalPeriod, location, selectedBoatId, resetStore, setLocation, setRentalPeriod, setEquipments } = useOfferExternalScreenStore()
 
      const [offer, setOffer] = useState({
           boatId: "",
-          profileId: "",
           title: "",
           description: "",
-          price: 0,
+          price: "0",
           isAvailable: false,
           isSkipperAvailable: false,
           isTeamAvailable: false,
-          rentalPeriod: { start: "", end: "" },
-          location: {
-               city: "",
-               address: "",
-               country: "",
-               zipcode: "",
-          },
-          equipments: [],
      })
 
      const { mutate: createOffer, isPending } = useCreateOffer(
@@ -65,14 +52,14 @@ export default function createOffer() {
      )
 
      const handleSubmit = () => {
-          if (rentalPeriod.startDate && rentalPeriod.endDate && location.city && location.address && location.country && location.zipcode && selectedBoatId) {
+          if (rentalPeriod.start && rentalPeriod.end && location.city && location.address && location.country && location.zipcode && selectedBoatId) {
                createOffer({
                     ...offer,
                     frequency: frequency.id,
                     equipments,
                     rentalPeriod: {
-                         start: rentalPeriod.startDate,
-                         end: rentalPeriod.endDate,
+                         start: rentalPeriod.start,
+                         end: rentalPeriod.end,
                     },
                     location,
                     boatId: selectedBoatId,
@@ -94,7 +81,7 @@ export default function createOffer() {
                     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
                          <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offer.title} onChangeText={(title) => setOffer({ ...offer, title })} />
                          <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offer.description} onChangeText={(description) => setOffer({ ...offer, description })} />
-                         <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: parseFloat(price) })} />
+                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: price })} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
                               value={frequency.value}
@@ -129,7 +116,8 @@ export default function createOffer() {
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectEquipments", {
-                                        initialEquipments: offer.equipments || [],
+                                        initialEquipments: equipments || [],
+                                        backPath: "/createOffer",
                                    })
                               }
                               style={styles.button}
@@ -137,11 +125,12 @@ export default function createOffer() {
                               {t("select_equipment_button")}
                          </Button>
                          <Button
-                              icon={rentalPeriod.startDate && rentalPeriod.endDate ? "check" : "plus"}
+                              icon={rentalPeriod.start && rentalPeriod.end ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
-                                        initialPeriod: offer.rentalPeriod,
+                                        initialPeriod: rentalPeriod,
+                                        backPath: "/createOffer",
                                    })
                               }
                               style={styles.button}
@@ -154,7 +143,8 @@ export default function createOffer() {
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectLocation", {
-                                        initialLocation: offer.location,
+                                        initialLocation: location,
+                                        backPath: "/createOffer",
                                    })
                               }
                               style={styles.button}
@@ -168,6 +158,7 @@ export default function createOffer() {
                               onPress={() =>
                                    handleNavigate("/selectBoat", {
                                         initialBoatId: offer.boatId,
+                                        backPath: "/createOffer",
                                    })
                               }
                               style={styles.button}

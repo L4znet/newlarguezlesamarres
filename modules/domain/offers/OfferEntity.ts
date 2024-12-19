@@ -8,7 +8,7 @@ export default class OfferEntity {
           public readonly boatId: string,
           public readonly title: string,
           public readonly description: string,
-          public readonly price: number,
+          public readonly price: string,
           public readonly isAvailable: boolean,
           public readonly frequency: number,
           public readonly equipments: Equipment[] | [],
@@ -17,9 +17,9 @@ export default class OfferEntity {
           public readonly rentalPeriod: RentalPeriod,
           public readonly location: Location,
           public readonly deletedAt: Date | null,
-          public readonly id: string,
-          public readonly boats: BoatEntity,
-          public readonly profiles: ProfileEntity
+          public readonly id?: string,
+          public readonly boats?: BoatEntity,
+          public readonly profiles?: ProfileEntity
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
@@ -58,5 +58,23 @@ export default class OfferEntity {
                BoatEntity.fromSupabaseData(data.boats),
                ProfileEntity.fromSupabaseUser(data.profiles)
           )
+     }
+
+     static toSupabaseData(data: OfferEntity): any {
+          return {
+               profile_id: data.profileId,
+               boat_id: data.boatId,
+               title: data.title,
+               description: data.description,
+               price: data.price,
+               is_available: data.isAvailable,
+               frequency: data.frequency,
+               equipments: data.equipments,
+               is_skipper_available: data.isSkipperAvailable,
+               is_team_available: data.isTeamAvailable,
+               rental_period: data.rentalPeriod,
+               location: data.location,
+               deleted_at: data.deletedAt,
+          }
      }
 }

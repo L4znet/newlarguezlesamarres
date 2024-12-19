@@ -5,8 +5,6 @@ export const fetchLocations = async (query: string = ""): Promise<any[]> => {
           throw new Error("Clé API TomTom manquante")
      }
 
-     console.log("JE SUIS LAAAA LOCATION")
-
      const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(query)}.json?storeResult=false&limit=10&countrySet=FR&key=${TOMTOM_API_KEY}`
 
      const response = await fetch(url)

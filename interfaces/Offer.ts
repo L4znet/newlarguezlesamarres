@@ -1,9 +1,9 @@
 export interface Offer {
      boatId: string
-     profileId: string
+     profileId?: string
      title: string
      description: string
-     price: number
+     price: string
      isAvailable: boolean
      frequency: number
      equipments: Equipment[] | []

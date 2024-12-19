@@ -7,7 +7,6 @@ export const useCancelCalendarHandler = (rawStartDate: Date | null, rawEndDate: 
           if (isProcessing) return
 
           setIsProcessing(true)
-          console.log("JE SUIS LAAAA 2")
           resetCalendar()
           setTimeout(() => {
                setIsProcessing(false)
