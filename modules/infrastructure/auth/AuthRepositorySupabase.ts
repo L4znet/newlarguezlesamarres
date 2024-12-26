@@ -1,7 +1,8 @@
 import AuthRepository from "../../domain/auth/AuthRepository"
 
 import supabase from "@/supabaseClient"
-import { UserResponse } from "@supabase/auth-js"
+import { AuthChangeEvent, UserResponse } from "@supabase/auth-js"
+import { Session } from "@supabase/supabase-js"
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
           try {
@@ -162,6 +163,7 @@ class AuthRepositorySupabase implements AuthRepository {
      onAuthStateChanged(callback: (session: Session | null) => void) {
           const { data: subscription } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
                callback(session)
+               console.log(session?.access_token)
           })
 
           return () => {
