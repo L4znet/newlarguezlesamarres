@@ -34,6 +34,8 @@ interface OfferExternalScreenStore {
      setCurrentOffer: (offer: Offer) => void
      updateCurrentOffer: (updatedData: Partial<Offer>) => void
      clearCurrentOffer: () => void
+     setCurrentOfferToRent: (offer: { isAvailable: boolean; amount: string; rentalPeriod: RentalPeriod; description: string; title: string; frequency: number; equipments: Equipment[] | []; deletedAt: Date | null; profileId?: string; price: string; isTeamAvailable: boolean; location: Location; id?: string; boatId: string; isSkipperAvailable: boolean }) => void
+     currentOfferToRent: Offer | null
 }
 
 export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set) => ({
@@ -47,6 +49,7 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
      },
      selectedBoatId: null,
      currentOffer: null,
+     currentOfferToRent: null,
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -77,6 +80,7 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           set((state) => ({
                currentOffer: state.currentOffer ? { ...state.currentOffer, ...updatedData } : null,
           })),
+     setCurrentOfferToRent: (offer) => set(() => ({ currentOfferToRent: offer })),
 
      clearCurrentOffer: () => set(() => ({ currentOffer: null })),
 }))

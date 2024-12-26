@@ -31,7 +31,6 @@ export default function EditOffer() {
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     // Local State
      const [offer, setOffer] = useState({
           boatId: "",
           profileId: "",

@@ -39,6 +39,12 @@ export default function Layout() {
                               drawerItemStyle: { display: "none" },
                          }}
                     />
+                    <Drawer.Screen
+                         name="checkout"
+                         options={{
+                              drawerItemStyle: { display: "none" },
+                         }}
+                    />
 
                     <Drawer.Screen
                          options={{

@@ -23,8 +23,6 @@ export default class OfferEntity {
      ) {}
 
      static fromSupabaseData(data: any): OfferEntity {
-          console.log("Supabase data received in OfferEntity:", data)
-
           const boats = data.boats ? BoatEntity.fromSupabaseData(data.boats) : undefined
 
           const profiles = data.profiles ? ProfileEntity.fromSupabaseUser(data.profiles) : undefined

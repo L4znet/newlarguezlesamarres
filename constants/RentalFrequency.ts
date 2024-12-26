@@ -1,6 +1,5 @@
 import { useTranslation } from "@/modules/context/TranslationContext"
 
-// Enum pour les fréquences de location
 export enum RentalFrequency {
      Hour = "0",
      Day = "1",

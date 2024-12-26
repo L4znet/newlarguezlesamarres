@@ -12,6 +12,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/queryClient"
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { StripeProvider } from "@stripe/stripe-react-native"
+
+const publishableKey = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+const merchantIdentifier = process.env.EXPO_PUBLIC_APPLE_MERCHANT_IDENTIFIER as string
+const urlScheme = process.env.EXPO_PUBLIC_STRIPE_URL_SCHEME as string
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -47,27 +52,29 @@ export default function RootLayout() {
      const colorScheme = useColorScheme()
      const paperTheme = colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme
      return (
-          <QueryClientProvider client={queryClient}>
-               <TranslationProvider>
-                    <PaperProvider theme={paperTheme}>
-                         <ThemeProvider value={paperTheme}>
-                              <FlashMessageProvider>
-                                   <ProfileProvider>
-                                        <AuthProvider>
-                                             <Stack
-                                                  screenOptions={{
-                                                       headerShown: false,
-                                                  }}
-                                             >
-                                                  <Stack.Screen name="(auth)" />
-                                                  <Stack.Screen name="(tabs)" />
-                                             </Stack>
-                                        </AuthProvider>
-                                   </ProfileProvider>
-                              </FlashMessageProvider>
-                         </ThemeProvider>
-                    </PaperProvider>
-               </TranslationProvider>
-          </QueryClientProvider>
+          <StripeProvider publishableKey={publishableKey}>
+               <QueryClientProvider client={queryClient}>
+                    <TranslationProvider>
+                         <PaperProvider theme={paperTheme}>
+                              <ThemeProvider value={paperTheme}>
+                                   <FlashMessageProvider>
+                                        <ProfileProvider>
+                                             <AuthProvider>
+                                                  <Stack
+                                                       screenOptions={{
+                                                            headerShown: false,
+                                                       }}
+                                                  >
+                                                       <Stack.Screen name="(auth)" />
+                                                       <Stack.Screen name="(tabs)" />
+                                                  </Stack>
+                                             </AuthProvider>
+                                        </ProfileProvider>
+                                   </FlashMessageProvider>
+                              </ThemeProvider>
+                         </PaperProvider>
+                    </TranslationProvider>
+               </QueryClientProvider>
+          </StripeProvider>
      )
 }

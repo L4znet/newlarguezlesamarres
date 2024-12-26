@@ -9,17 +9,15 @@ import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/c
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { Offer } from "@/interfaces/Offer"
 
 const OfferList = () => {
      const router = useRouter()
      const { data: offers, isPending, error } = useOffers()
-     const deleteOffer = useDeleteOffer()
      const theme = useTheme()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-
-     const { setCurrentOffer } = useOfferExternalScreenStore()
 
      if (isPending) return <ActivityIndicator size="large" />
      if (error) {
@@ -35,9 +33,11 @@ const OfferList = () => {
           )
      }
 
-     const handleSelectOffer = (offer: any) => {
-          setCurrentOffer(offer)
-          router.navigate("/(app)/(tabs)/(home)/editOffer")
+     const handleMoreDetails = (offer: Offer) => {
+          router.navigate({
+               pathname: "/(app)/(tabs)/(home)/offerDetail",
+               params: { offerId: offer.id },
+          })
      }
 
      return (
@@ -47,24 +47,30 @@ const OfferList = () => {
                keyExtractor={(item) => item.id}
                renderItem={({ item }) => {
                     const frequency = displayRentalFrequency(item.frequency.toString(), locale)
+                    const username = item?.profiles?.username as string
+                    const boatImages = item?.boats?.boatImages as unknown as [
+                         {
+                              url: string
+                              caption: string
+                         },
+                    ]
 
                     return (
                          <Card key={item.id} style={[styles.card]}>
-                              <Slideshow images={item.boats.boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
+                              <Slideshow images={boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
 
                               <Card.Title title={item.title} subtitle={item.description} />
 
                               <Card.Content>
-                                   <Text>Publié par : {item.profiles.username}</Text>
+                                   <Text>Publié par : {username}</Text>
                                    <Text>
                                         Prix : {item.price} € / {frequency}
                                    </Text>
                               </Card.Content>
 
                               <Card.Actions>
-                                   <Button onPress={() => handleSelectOffer(item)}>Modifier</Button>
-                                   <Button mode="contained" onPress={() => deleteOffer.mutate(item.id)} loading={deleteOffer.isPending} disabled={deleteOffer.isPending}>
-                                        Supprimer
+                                   <Button mode="contained" onPress={() => handleMoreDetails(item)}>
+                                        Voir plus de détails
                                    </Button>
                               </Card.Actions>
                          </Card>
