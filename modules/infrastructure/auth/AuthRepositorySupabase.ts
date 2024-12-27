@@ -3,6 +3,9 @@ import AuthRepository from "../../domain/auth/AuthRepository"
 import supabase from "@/supabaseClient"
 import { AuthChangeEvent, UserResponse } from "@supabase/auth-js"
 import { Session } from "@supabase/supabase-js"
+
+import * as Linking from "expo-linking"
+
 class AuthRepositorySupabase implements AuthRepository {
      async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
           try {
@@ -86,10 +89,21 @@ class AuthRepositorySupabase implements AuthRepository {
           }
      }
 
-     async resetPassword(email: string) {
-          const { error } = await supabase.auth.resetPasswordForEmail(email)
+     async resetPassword(email: string, url: string | null) {
+          const { error, data } = await supabase.auth.resetPasswordForEmail(email, {
+               redirectTo: url + "/reset-password",
+          })
+
+          console.log({
+               error,
+               data,
+          })
+
+          console.log("data", data)
+
           if (error) {
-               throw new Error(`Erreur lors de la réinitialisation du mot de passe : ${error.message}`)
+               console.log(error)
+               throw new Error("Erreur lors de la réinitialisation du mot de passe : " + error.message)
           }
      }
 
@@ -161,9 +175,19 @@ class AuthRepositorySupabase implements AuthRepository {
      }
 
      onAuthStateChanged(callback: (session: Session | null) => void) {
-          const { data: subscription } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+          const { data: subscription } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
                callback(session)
-               console.log(session?.access_token)
+               if (event == "PASSWORD_RECOVERY") {
+                    console.log("password recovery event")
+                    const newPassword = prompt("What would you like your new password to be?")
+                    if (newPassword) {
+                         const { data, error } = await supabase.auth.updateUser({ password: newPassword })
+                         if (data) alert("Password updated successfully!")
+                         if (error) alert("There was an error updating your password.")
+                    } else {
+                         alert("Password cannot be null.")
+                    }
+               }
           })
 
           return () => {

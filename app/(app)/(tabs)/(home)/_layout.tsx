@@ -36,12 +36,14 @@ export default function Layout() {
                     <Drawer.Screen
                          name="offerDetail"
                          options={{
+                              title: "Détail de l'annonce",
                               drawerItemStyle: { display: "none" },
                          }}
                     />
                     <Drawer.Screen
                          name="checkout"
                          options={{
+                              title: "Procéder au paiement",
                               drawerItemStyle: { display: "none" },
                          }}
                     />

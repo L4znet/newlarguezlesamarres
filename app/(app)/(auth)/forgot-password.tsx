@@ -4,15 +4,18 @@ import { Button, Text, TextInput } from "react-native-paper"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { router } from "expo-router"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { recoverPasswordUseCase } from "@/modules/application/auth/recoverPasswordUseCase"
 
-export default function Signin() {
-     const [loginInfo, setLoginInfo] = useState({
-          email: "charly.escalona1@gmail.com",
-          password: "testtesttesttest",
-     })
+export default function ForgotPassword() {
+     const { user } = useAuth()
+     const [email, setEmail] = useState("charly.escalona1@gmail.com")
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+
+     const handleForgotPassword = async () => {
+          await recoverPasswordUseCase(email)
+     }
 
      return (
           <View style={styles.container}>
@@ -23,8 +26,8 @@ export default function Signin() {
                     <Text style={styles.subtitle} variant="titleMedium">
                          {t("forgot_password_subtitle")}
                     </Text>
-                    <TextInput style={styles.input} placeholder={t("forgot_password_email_placeholder")} label={t("forgot_password_email_label")} value={loginInfo.email} onChangeText={(email) => setLoginInfo({ ...loginInfo, email })} />
-                    <Button icon="login" mode="contained" style={styles.login}>
+                    <TextInput style={styles.input} placeholder={t("forgot_password_email_placeholder")} label={t("forgot_password_email_label")} value={email} onChangeText={(email) => setEmail(email)} />
+                    <Button icon="login" mode="contained" style={styles.login} onPress={() => handleForgotPassword()}>
                          {t("forgot_password_submit")}
                     </Button>
                </View>

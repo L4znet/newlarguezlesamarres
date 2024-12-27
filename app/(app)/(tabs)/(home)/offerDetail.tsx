@@ -5,6 +5,7 @@ import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScree
 import { Offer } from "@/interfaces/Offer"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import { useEffect, useState } from "react"
+import Slideshow from "@/modules/components/Slideshow"
 
 export default function offerDetail() {
      const { offerId } = useLocalSearchParams<{
@@ -67,21 +68,26 @@ export default function offerDetail() {
           })
           router.navigate("/(app)/(tabs)/(home)/checkout")
      }
+
+     console.log()
+
      return (
           <View>
-               <Text>Bienvenue sur la page de détail des offres</Text>
+               <Slideshow images={offerToRent?.boats.boatImages} />
+               <Text variant={"displayMedium"}>{offerToRent?.title}</Text>
+               <Text variant={"headlineMedium"}>{offerToRent?.title}</Text>
 
-               <Text>Voici l'offre sélectionnée : {offerId}</Text>
                <Text>
                     La période : DU {offerToRent?.rentalPeriod.start} AU {offerToRent?.rentalPeriod.end}
                </Text>
 
                <Button
+                    mode={"contained"}
                     onPress={() => {
                          handleRentOffer(offerToRent as Offer)
                     }}
                >
-                    Aller sur le checkout
+                    Poursuivre vers le paiement
                </Button>
           </View>
      )

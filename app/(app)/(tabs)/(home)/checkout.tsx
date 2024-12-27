@@ -1,10 +1,11 @@
-import { useStripe } from "@stripe/stripe-react-native"
+import { confirmPaymentSheetPayment, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
 import { Alert, View } from "react-native"
 import { Button } from "react-native-paper"
 import { useLocalSearchParams } from "expo-router"
 import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { undefined } from "zod"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -13,21 +14,34 @@ export default function Checkout() {
 
      const currentOfferToRent = useOfferExternalScreenStore((state) => state.currentOfferToRent)
      const fetchPaymentSheetParams = async () => {
-          /* return {
+          const session = await getCurrentSessionUseCase()
+          const accessToken = session.data.session?.access_token
+
+          const response = await fetch(`${API_URL}/transactions`, {
+               method: "POST",
+               headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+               },
+               body: JSON.stringify({
+                    offerId: currentOfferToRent.id,
+                    amount: currentOfferToRent.price,
+                    currency: "eur",
+                    userId: session.data.session?.user.id,
+               }),
+          })
+
+          const { paymentIntent, ephemeralKey, customer } = await response.json()
+
+          return {
                paymentIntent,
                ephemeralKey,
                customer,
-          }*/
+          }
      }
 
      const initializePaymentSheet = async () => {
           const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams()
-
-          console.log({
-               paymentIntent: paymentIntent,
-               ephemeralKey: ephemeralKey,
-               customer: customer,
-          })
 
           const { error } = await initPaymentSheet({
                merchantDisplayName: "Example, Inc.",
@@ -36,12 +50,9 @@ export default function Checkout() {
                paymentIntentClientSecret: paymentIntent,
                allowsDelayedPaymentMethods: true,
                defaultBillingDetails: {
-                    name: `${firstname} ${lastname}`,
+                    name: "Jane Doe",
                },
           })
-
-          console.log("error", error)
-
           if (!error) {
                setLoading(true)
           }
@@ -51,51 +62,29 @@ export default function Checkout() {
           initializePaymentSheet()
      }, [])
 
-     const openPaymentSheet = async () => {
-          //  initializePaymentSheet()
+     const handlePayment = async () => {
+          try {
+               const { error, paymentOption } = await presentPaymentSheet()
+               if (error) {
+                    Alert.alert("Error", error.message)
+               } else {
+                    console.log("Payment successful", paymentOption)
+                    confirmPayment()
+               }
+          } catch (e) {
+               console.log("Error", e)
+          }
+     }
 
-          const session = await getCurrentSessionUseCase()
-          const accessToken = session.data.session?.access_token
+     const confirmPayment = async () => {
+          const { error } = await confirmPaymentSheetPayment()
 
-          const response = await fetch(API_URL + "/transactions", {
-               method: "POST",
-               headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + accessToken,
-               },
-               body: JSON.stringify({
-                    offerId: currentOfferToRent?.id,
-                    amount: currentOfferToRent?.amount as string,
-               }),
-          })
-
-          console.log(API_URL + "/transactions")
-          console.log(response)
-
-          console.log("dsflmkjsfdkljm")
-
-          const { paymentIntent, ephemeralKey, customer } = await response.json()
-
-          console.log({
-               status: response.status,
-               paymentIntent: paymentIntent,
-               ephemeralKey: ephemeralKey,
-               customer: customer,
-          })
-
-          /*     const { error } = await presentPaymentSheet()
-          console.log(error)
-
-          if (error) {
-               Alert.alert(`Error code: ${error.code}`, error.message)
-          } else {
-               Alert.alert("Success", "Your order is confirmed!")
-          }*/
+          console.log("Payment confirmed", error)
      }
 
      return (
           <View>
-               <Button onPress={() => openPaymentSheet()} disabled={loading} mode={"contained"}>
+               <Button onPress={() => handlePayment()} disabled={!loading} mode={"contained"}>
                     Réserver
                </Button>
           </View>
