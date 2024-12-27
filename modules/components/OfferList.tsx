@@ -15,7 +15,7 @@ const OfferList = () => {
      const { data: offers, isPending, error } = useOffers()
      const theme = useTheme()
 
-     const { setCurrentOffer, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
+     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -53,7 +53,14 @@ const OfferList = () => {
                isTeamAvailable: offer.isTeamAvailable,
                boatId: offer.boatId,
           })
-          await setCurrentOffer(offer)
+          setOfferField("id", offer.id)
+          setOfferField("title", offer.title)
+          setOfferField("description", offer.description)
+          setOfferField("price", offer.price)
+          setOfferField("frequency", offer.frequency.toString())
+          setOfferField("isAvailable", offer.isAvailable)
+          setOfferField("isSkipperAvailable", offer.isSkipperAvailable)
+          setOfferField("isTeamAvailable", offer.isTeamAvailable)
 
           setEquipments(offer.equipments)
           setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
