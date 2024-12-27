@@ -11,7 +11,7 @@ import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function EditOffer() {
      const router = useRouter()
-     const { location, equipments, rentalPeriod, selectedBoatId, setLocation, setEquipments, setRentalPeriod, selectBoat, setOfferField, profileId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, frequency } = useOfferStore()
+     const { currentOffer, location, equipments, rentalPeriod, selectedBoatId, setLocation, setEquipments, setRentalPeriod, selectBoat, setOfferField } = useOfferStore()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -19,14 +19,20 @@ export default function EditOffer() {
      const { mutate: updateOffer } = useUpdateOffer()
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const frequencyParsed = rentalFrequencyOptions.find((option) => option._id === frequency.toString()) || rentalFrequencyOptions[0]
-
      const handleNavigate = (path: string, params: any) => {
           router.push({
                pathname: path as RelativePathString,
                params,
           })
      }
+
+     const frequencyParsed = rentalFrequencyOptions.find((option) => option._id === frequency) || rentalFrequencyOptions[0]
+
+     const { id, title, description, price, isAvailable, frequency, isSkipperAvailable, isTeamAvailable, boatId } = currentOffer as any
+
+     console.log({
+          rentalPeriod,
+     })
 
      const handleSave = () => {
           if (!title || !description || !price) {
@@ -40,20 +46,18 @@ export default function EditOffer() {
           const boatId = selectedBoatId as string
 
           updateOffer({
-               title: title,
-               description: description,
-               price: price,
+               id: id,
+               title,
+               description,
+               price,
                isAvailable,
+               frequency,
+               equipments,
                isSkipperAvailable,
                isTeamAvailable,
-               equipments,
                rentalPeriod,
                location,
-               boatId: boatId,
-               id: "",
-               profileId: profileId as string,
-               frequency: 0,
-               deletedAt: null,
+               boatId,
           })
      }
 
@@ -66,7 +70,7 @@ export default function EditOffer() {
                          <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} keyboardType="decimal-pad" onChangeText={(text) => setOfferField("price", text)} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
-                              value={frequency.toString()}
+                              value={frequencyParsed.value}
                               onSelection={(value: any) => {
                                    setOfferField("frequency", value)
                               }}

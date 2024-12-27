@@ -24,27 +24,16 @@ export default function Index() {
           setRentalPeriod("", "")
           setEquipments([])
 
-          setCurrentOffer({
+          await setCurrentOffer({
                id: "",
                title: "",
                description: "",
                price: "0",
                boatId: "",
-               deletedAt: null,
                frequency: 0,
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,
-               location: {
-                    city: "",
-                    address: "",
-                    country: "",
-                    zipcode: "",
-               },
-               rentalPeriod: {
-                    start: "",
-                    end: "",
-               },
           })
      }
 

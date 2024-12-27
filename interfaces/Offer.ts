@@ -1,6 +1,6 @@
 export interface Offer {
      boatId: string
-     profileId?: string
+     profileId?: string | null
      title: string
      description: string
      price: string
@@ -11,7 +11,7 @@ export interface Offer {
      isTeamAvailable: boolean
      rentalPeriod: RentalPeriod
      location: Location
-     deletedAt: Date | null
+     deletedAt?: Date | null
      id?: string
 }
 

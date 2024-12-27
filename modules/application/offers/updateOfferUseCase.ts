@@ -6,7 +6,6 @@ import { router } from "expo-router"
 export const updateOfferUseCase = async (
      {
           id,
-          profileId,
           boatId,
           title,
           description,
@@ -18,10 +17,8 @@ export const updateOfferUseCase = async (
           isTeamAvailable,
           rentalPeriod,
           location,
-          deletedAt,
      }: {
           id: string
-          profileId: string
           boatId: string
           title: string
           description: string
@@ -33,14 +30,12 @@ export const updateOfferUseCase = async (
           isTeamAvailable: boolean
           rentalPeriod: RentalPeriod
           location: { city: string; country: string; zipcode: string; address: string }
-          deletedAt: Date | null
      },
      showTranslatedFlashMessage: (type: MessageType, message: { title: string; description: string }) => void
 ): Promise<void> => {
      try {
           const updatedBoat = await OfferRepositorySupabase.updateOffer({
                offerId: id,
-               profileId: profileId,
                boatId: boatId,
                title: title,
                description: description,
@@ -52,7 +47,6 @@ export const updateOfferUseCase = async (
                isTeamAvailable: isTeamAvailable,
                rentalPeriod: rentalPeriod,
                location: location,
-               deletedAt: deletedAt,
           })
           showTranslatedFlashMessage("success", {
                title: "Succès",

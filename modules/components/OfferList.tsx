@@ -15,6 +15,8 @@ const OfferList = () => {
      const { data: offers, isPending, error } = useOffers()
      const theme = useTheme()
 
+     const { setCurrentOffer, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
+
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -36,6 +38,30 @@ const OfferList = () => {
           router.navigate({
                pathname: "/(app)/(tabs)/(home)/offerDetail",
                params: { offerId: offer.id },
+          })
+     }
+
+     const handleUpdateOffer = async (offer: Offer) => {
+          console.log({
+               id: offer.id,
+               title: offer.title,
+               description: offer.description,
+               price: offer.price,
+               frequency: getRentalFrequency(offer.frequency.toString()),
+               isAvailable: offer.isAvailable,
+               isSkipperAvailable: offer.isSkipperAvailable,
+               isTeamAvailable: offer.isTeamAvailable,
+               boatId: offer.boatId,
+          })
+          await setCurrentOffer(offer)
+
+          setEquipments(offer.equipments)
+          setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
+          setLocation(offer.location)
+          selectBoat(offer.boatId)
+
+          router.navigate({
+               pathname: "/(app)/(tabs)/(home)/editOffer",
           })
      }
 
@@ -68,6 +94,9 @@ const OfferList = () => {
                               </Card.Content>
 
                               <Card.Actions>
+                                   <Button mode="contained" onPress={() => handleUpdateOffer(item)}>
+                                        Modifier
+                                   </Button>
                                    <Button mode="contained" onPress={() => handleMoreDetails(item)}>
                                         Voir plus de détails
                                    </Button>

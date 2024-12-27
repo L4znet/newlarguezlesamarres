@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { Offer } from "@/interfaces/Offer"
 
 interface Equipment {
      name: string
@@ -23,6 +24,7 @@ interface OfferStore {
      rentalPeriod: RentalPeriod
      location: Location
      selectedBoatId: string | null
+     id: string | null
      title: string
      description: string
      price: string
@@ -30,6 +32,7 @@ interface OfferStore {
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
      frequency: number
+     boatId: string | null
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      removeEquipment: (index: number) => void
@@ -37,7 +40,9 @@ interface OfferStore {
      setLocation: (location: Location) => void
      selectBoat: (boatUid: string) => void
      setOfferField: (field: keyof OfferStore, value: any) => void
+     setCurrentOffer: (offer: Promise<Partial<Offer>> | Partial<Offer>) => Promise<void>
      resetStore: () => void
+     currentOffer: Offer | null
 }
 
 export const useOfferStore = create<OfferStore>((set) => ({
@@ -51,6 +56,7 @@ export const useOfferStore = create<OfferStore>((set) => ({
           zipcode: "",
      },
      selectedBoatId: null,
+     id: null,
      title: "",
      description: "",
      price: "0",
@@ -58,6 +64,8 @@ export const useOfferStore = create<OfferStore>((set) => ({
      isSkipperAvailable: false,
      isTeamAvailable: false,
      frequency: 0,
+     boatId: null,
+     currentOffer: null,
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -72,6 +80,31 @@ export const useOfferStore = create<OfferStore>((set) => ({
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
      setOfferField: (field, value) => set(() => ({ [field]: value })),
+
+     setCurrentOffer: async (offer) => {
+          const resolvedOffer = offer instanceof Promise ? await offer : offer
+
+          set((state) => ({
+               ...state,
+               currentOffer: {
+                    id: resolvedOffer.id ?? state.id ?? "",
+                    profileId: resolvedOffer.profileId ?? state.profileId ?? null,
+                    title: resolvedOffer.title ?? state.title,
+                    description: resolvedOffer.description ?? state.description,
+                    price: resolvedOffer.price ?? state.price,
+                    isAvailable: resolvedOffer.isAvailable ?? state.isAvailable,
+                    isSkipperAvailable: resolvedOffer.isSkipperAvailable ?? state.isSkipperAvailable,
+                    isTeamAvailable: resolvedOffer.isTeamAvailable ?? state.isTeamAvailable,
+                    frequency: resolvedOffer.frequency ?? state.frequency,
+                    boatId: resolvedOffer.boatId ?? state.boatId ?? "",
+                    rentalPeriod: resolvedOffer.rentalPeriod ?? state.rentalPeriod,
+                    location: resolvedOffer.location ?? state.location,
+                    equipments: resolvedOffer.equipments ?? state.equipments,
+                    deletedAt: resolvedOffer.deletedAt ?? null,
+               },
+          }))
+     },
+
      resetStore: () =>
           set(() => ({
                profileId: null,
@@ -84,6 +117,7 @@ export const useOfferStore = create<OfferStore>((set) => ({
                     zipcode: "",
                },
                selectedBoatId: null,
+               id: null,
                title: "",
                description: "",
                price: "0",
@@ -91,5 +125,7 @@ export const useOfferStore = create<OfferStore>((set) => ({
                isSkipperAvailable: false,
                isTeamAvailable: false,
                frequency: 0,
+               boatId: null,
+               currentOffer: null,
           })),
 }))
