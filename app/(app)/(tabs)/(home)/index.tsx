@@ -2,19 +2,16 @@ import { SafeAreaView, FlatList, StyleSheet, View } from "react-native"
 import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
-import Slideshow from "@/modules/components/Slideshow"
-import { Card, Button } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import OfferList from "@/modules/components/OfferList"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
-import { undefined } from "zod"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function Index() {
      const [isLoading, setIsLoading] = useState(false)
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     const { setRentalPeriod, setLocation, setEquipments, setCurrentOffer } = useOfferExternalScreenStore()
+     const { setRentalPeriod, setLocation, setEquipments, setCurrentOffer } = useOfferStore()
 
      const createOffer = async () => {
           router.navigate("/(app)/(tabs)/(home)/createOffer")
@@ -48,7 +45,6 @@ export default function Index() {
                     start: "",
                     end: "",
                },
-               equipments: [],
           })
      }
 

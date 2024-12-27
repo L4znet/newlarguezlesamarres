@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { View, StyleSheet, FlatList, Text, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, Text as TextPaper } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 interface Equipment {
      name: string
@@ -10,7 +10,7 @@ interface Equipment {
 }
 
 export default function selectEquipments() {
-     const { equipments, addEquipment, removeEquipment } = useOfferExternalScreenStore()
+     const { equipments, addEquipment, removeEquipment } = useOfferStore()
      const [newEquipment, setNewEquipment] = useState({ name: "", quantity: "" })
      const router = useRouter()
      const { backPath } = useLocalSearchParams<{ backPath: string }>()

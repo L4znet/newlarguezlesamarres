@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text, TextInput, Switch } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
@@ -6,81 +6,20 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { PaperSelect } from "react-native-paper-select"
 import { RelativePathString, useRouter, useLocalSearchParams } from "expo-router"
 import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
-import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
-import { RentalPeriod } from "@/interfaces/Offer"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function EditOffer() {
      const router = useRouter()
-     const { location, equipments, rentalPeriod, selectedBoatId, setLocation, setEquipments, setRentalPeriod, selectBoat, currentOffer } = useOfferExternalScreenStore()
+     const { location, equipments, rentalPeriod, selectedBoatId, setLocation, setEquipments, setRentalPeriod, selectBoat, setOfferField, profileId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, frequency } = useOfferStore()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     if (!currentOffer) {
-          showTranslatedFlashMessage("danger", {
-               title: "flash_title_danger",
-               description: "No offer selected",
-          })
-          router.navigate("/(app)/(tabs)/(home)")
-     }
-
-     const updateOffer = useUpdateOffer()
-     const { data: fetchedOffer, isPending: isOfferPending, error: offerError } = useOfferById(currentOffer?.id as string)
-
+     const { mutate: updateOffer } = useUpdateOffer()
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const [offer, setOffer] = useState({
-          boatId: "",
-          profileId: "",
-          title: "",
-          description: "",
-          price: "0",
-          isAvailable: false,
-          isSkipperAvailable: false,
-          isTeamAvailable: false,
-     })
-
-     const [frequency, setFrequency] = useState({
-          value: rentalFrequencyOptions[0].value,
-          list: rentalFrequencyOptions,
-          selectedList: [rentalFrequencyOptions[0]],
-          error: "",
-          id: parseInt(RentalFrequency.Hour),
-     })
-     useEffect(() => {
-          if (fetchedOffer) {
-               setOffer({
-                    boatId: fetchedOffer.boatId,
-                    profileId: fetchedOffer.profileId,
-                    title: fetchedOffer.title,
-                    description: fetchedOffer.description,
-                    price: fetchedOffer.price,
-                    isAvailable: fetchedOffer.isAvailable,
-                    isSkipperAvailable: fetchedOffer.isSkipperAvailable,
-                    isTeamAvailable: fetchedOffer.isTeamAvailable,
-               })
-               selectBoat(fetchedOffer.boatId)
-
-               setLocation({
-                    city: fetchedOffer.location.city,
-                    address: fetchedOffer.location.address,
-                    country: fetchedOffer.location.country,
-                    zipcode: fetchedOffer.location.zipcode,
-               })
-               setEquipments(fetchedOffer.equipments)
-               setRentalPeriod(fetchedOffer.rentalPeriod.start, fetchedOffer.rentalPeriod.end)
-
-               setFrequency({
-                    value: rentalFrequencyOptions[fetchedOffer.frequency]?.value || rentalFrequencyOptions[0].value,
-                    list: rentalFrequencyOptions,
-                    selectedList: [rentalFrequencyOptions[fetchedOffer.frequency] || rentalFrequencyOptions[0]],
-                    error: "",
-                    id: fetchedOffer.frequency,
-               })
-          }
-     }, [fetchedOffer])
+     const frequencyParsed = rentalFrequencyOptions.find((option) => option._id === frequency.toString()) || rentalFrequencyOptions[0]
 
      const handleNavigate = (path: string, params: any) => {
           router.push({
@@ -89,70 +28,67 @@ export default function EditOffer() {
           })
      }
 
-     const editOffer = async () => {
-          try {
-               updateOffer.mutate({
-                    id: currentOffer?.id as string,
-                    profileId: offer.profileId,
-                    boatId: selectedBoatId as string,
-                    title: offer.title,
-                    description: offer.description,
-                    price: offer.price,
-                    isAvailable: offer.isAvailable,
-                    frequency: frequency.id,
-                    equipments: equipments,
-                    isSkipperAvailable: offer.isSkipperAvailable,
-                    isTeamAvailable: offer.isTeamAvailable,
-                    rentalPeriod: rentalPeriod as unknown as RentalPeriod,
-                    location: location,
-                    deletedAt: null,
+     const handleSave = () => {
+          if (!title || !description || !price) {
+               showTranslatedFlashMessage("danger", {
+                    title: "flash_title_error",
+                    description: t("all_fields_required"),
                })
-          } catch (error) {
-               console.error("Error while editing boat:", error)
+               return
           }
-     }
 
-     if (isOfferPending) return <Text>{t("loading_offer")}</Text>
-     if (offerError) return <Text>{t("error_loading_offer")}</Text>
+          const boatId = selectedBoatId as string
+
+          updateOffer({
+               title: title,
+               description: description,
+               price: price,
+               isAvailable,
+               isSkipperAvailable,
+               isTeamAvailable,
+               equipments,
+               rentalPeriod,
+               location,
+               boatId: boatId,
+               id: "",
+               profileId: profileId as string,
+               frequency: 0,
+               deletedAt: null,
+          })
+     }
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
-                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offer.title} onChangeText={(title) => setOffer({ ...offer, title })} />
-                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offer.description} onChangeText={(description) => setOffer({ ...offer, description })} />
-                         <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: price })} />
+                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={title} onChangeText={(text) => setOfferField("title", text)} />
+                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={description} onChangeText={(text) => setOfferField("description", text)} />
+                         <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} keyboardType="decimal-pad" onChangeText={(text) => setOfferField("price", text)} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
-                              value={frequency.value}
+                              value={frequency.toString()}
                               onSelection={(value: any) => {
-                                   setFrequency({
-                                        ...frequency,
-                                        value: value.text,
-                                        selectedList: value.selectedList,
-                                        error: "",
-                                        id: parseInt(value.selectedList[0]._id),
-                                   })
+                                   setOfferField("frequency", value)
                               }}
-                              arrayList={[...frequency.list]}
-                              selectedArrayList={frequency.selectedList}
-                              errorText={frequency.error}
+                              arrayList={rentalFrequencyOptions}
+                              selectedArrayList={[frequencyParsed]}
+                              errorText=""
                               multiEnable={false}
                          />
                          <View style={styles.inputRow}>
                               <Text>{t("is_available_label")}</Text>
-                              <Switch value={offer.isAvailable} onValueChange={(value) => setOffer({ ...offer, isAvailable: value })} />
+                              <Switch value={isAvailable} onValueChange={(value) => setOfferField("isAvailable", value)} />
                          </View>
                          <View style={styles.inputRow}>
                               <Text>{t("is_skipper_available_label")}</Text>
-                              <Switch value={offer.isSkipperAvailable} onValueChange={(value) => setOffer({ ...offer, isSkipperAvailable: value })} />
+                              <Switch value={isSkipperAvailable} onValueChange={(value) => setOfferField("isSkipperAvailable", value)} />
                          </View>
                          <View style={styles.inputRow}>
                               <Text>{t("is_team_available_label")}</Text>
-                              <Switch value={offer.isTeamAvailable} onValueChange={(value) => setOffer({ ...offer, isTeamAvailable: value })} />
+                              <Switch value={isTeamAvailable} onValueChange={(value) => setOfferField("isTeamAvailable", value)} />
                          </View>
                          <Button
-                              icon={fetchedOffer?.equipments?.length ? "check" : "plus"}
+                              icon={equipments.length > 0 ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectEquipments", {
@@ -163,9 +99,8 @@ export default function EditOffer() {
                          >
                               {t("select_equipment_button")}
                          </Button>
-
                          <Button
-                              icon={fetchedOffer?.rentalPeriod?.start && fetchedOffer?.rentalPeriod?.end ? "check" : "plus"}
+                              icon={rentalPeriod.start && rentalPeriod.end ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
@@ -177,7 +112,7 @@ export default function EditOffer() {
                               {t("select_rental_period_button")}
                          </Button>
                          <Button
-                              icon={fetchedOffer?.location.city && fetchedOffer?.location.address && fetchedOffer?.location.country && fetchedOffer?.location.zipcode ? "check" : "plus"}
+                              icon={location.city && location.address && location.country && location.zipcode ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectLocation", {
@@ -189,7 +124,7 @@ export default function EditOffer() {
                               {t("select_location_button")}
                          </Button>
                          <Button
-                              icon={fetchedOffer?.boatId ? "check" : "plus"}
+                              icon={selectedBoatId ? "check" : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectBoat", {
@@ -200,7 +135,7 @@ export default function EditOffer() {
                          >
                               {t("select_boat_button")}
                          </Button>
-                         <Button mode="contained" onPress={() => editOffer()} style={styles.confirmButton}>
+                         <Button mode="contained" onPress={handleSave} style={styles.confirmButton}>
                               {t("confirm_button")}
                          </Button>
                     </ScrollView>

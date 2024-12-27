@@ -74,11 +74,6 @@ export const createOfferUseCase = async (
                deletedAt,
           })
 
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Offer created successfully",
-          })
-
           router.push("/(app)/(tabs)/(home)")
           return OfferEntity.toSupabaseData({
                profileId,

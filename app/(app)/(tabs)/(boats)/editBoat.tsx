@@ -7,7 +7,7 @@ import Slideshow from "@/modules/components/Slideshow"
 import { useUpdateBoat } from "@/modules/hooks/boats/useUpdateBoat"
 import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { useBoatStore } from "@/modules/stores/boatExternalScreenStore"
+import { useBoatStore } from "@/modules/stores/boatStore"
 
 export default function EditBoat() {
      const { currentBoat, updateCurrentBoatField } = useBoatStore()

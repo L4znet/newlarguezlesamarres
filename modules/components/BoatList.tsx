@@ -6,7 +6,7 @@ import Slideshow from "@/modules/components/Slideshow"
 import { router } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { BoatType, displayBoatType, getBoatType } from "@/constants/BoatTypes"
-import { useBoatStore } from "@/modules/stores/boatExternalScreenStore"
+import { useBoatStore } from "@/modules/stores/boatStore"
 import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
 
 const BoatList = () => {

@@ -4,11 +4,10 @@ import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-pa
 import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
-import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
 import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 
 const OfferList = () => {

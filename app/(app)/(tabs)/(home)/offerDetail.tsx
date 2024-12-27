@@ -1,7 +1,7 @@
 import { View } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import { useEffect, useState } from "react"
@@ -12,7 +12,7 @@ export default function offerDetail() {
           offerId: string
      }>()
 
-     const { currentOfferToRent, setCurrentOfferToRent } = useOfferExternalScreenStore()
+     const { currentOfferToRent, setCurrentOfferToRent } = useOfferStore()
      const [offerToRent, setOfferToRent] = useState<Offer | undefined>(undefined)
 
      const fetchSingleOffer = async (offerId: string) => {

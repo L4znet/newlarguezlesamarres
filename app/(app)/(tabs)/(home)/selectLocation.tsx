@@ -3,11 +3,11 @@ import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView 
 import { Button, Text, useTheme, TextInput, Card, ActivityIndicator } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
-     const { setLocation, location } = useOfferExternalScreenStore()
+     const { setLocation, location } = useOfferStore()
      const [validationError, setValidationError] = useState<string | null>(null)
      const [selectedLocation, setSelectedLocation] = useState<{
           city: string

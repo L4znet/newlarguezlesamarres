@@ -7,11 +7,11 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { format } from "date-fns"
 import { fr, enUS } from "date-fns/locale"
 import { useTheme } from "react-native-paper"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 import { useCancelCalendarHandler } from "@/modules/hooks/offers/useCancelCalendarHandler"
 
 export default function selectRentalPeriod() {
-     const { rentalPeriod, setRentalPeriod } = useOfferExternalScreenStore()
+     const { rentalPeriod, setRentalPeriod } = useOfferStore()
      const [calendarKey, setCalendarKey] = useState(0)
      const rawStartDate = rentalPeriod.start ? new Date(rentalPeriod.start) : null
      const rawEndDate = rentalPeriod.end ? new Date(rentalPeriod.end) : null

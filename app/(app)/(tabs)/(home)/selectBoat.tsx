@@ -3,13 +3,13 @@ import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView } from "reac
 import { Button, useTheme, Text, Icon, ActivityIndicator } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function SelectBoat() {
      const theme = useTheme()
      const router = useRouter()
      const { data: boats, isPending, error } = useBoats()
-     const { selectBoat, selectedBoatId } = useOfferExternalScreenStore()
+     const { selectBoat, selectedBoatId } = useOfferStore()
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
      const [newSelectedBoat, setNewSelectedBoat] = React.useState<string | null>(selectedBoatId)
 

@@ -1,20 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createOfferUseCase } from "@/modules/application/offers/createOfferUseCase"
-import { Offer } from "@/interfaces/Offer"
+import { useOfferStore } from "@/modules/stores/offerStore"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
-export const useCreateOffer = (onSuccess?: () => void, onError?: (error: Error) => void) => {
+export const useCreateOffer = () => {
      const queryClient = useQueryClient()
+     const { resetStore } = useOfferStore()
      const { showTranslatedFlashMessage } = useFlashMessage()
+
      return useMutation({
-          mutationFn: async (offer: Offer) => {
-               await createOfferUseCase(offer, showTranslatedFlashMessage)
+          mutationFn: async (offerData: any) => {
+               return await createOfferUseCase(offerData, showTranslatedFlashMessage)
           },
-          onSuccess: (data) => {
+          onSuccess: (createdOffer) => {
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
-                    description: "Offer added successfully!",
+                    description: "L'offre a été créée avec succès.",
                })
+
+               resetStore()
 
                queryClient.invalidateQueries({ queryKey: ["offers"] })
           },

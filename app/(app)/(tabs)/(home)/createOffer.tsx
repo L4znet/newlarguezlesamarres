@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text, TextInput, Switch } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
@@ -7,7 +7,7 @@ import { PaperSelect } from "react-native-paper-select"
 import { RelativePathString, useRouter } from "expo-router"
 import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
 import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function createOffer() {
      const router = useRouter()
@@ -16,24 +16,15 @@ export default function createOffer() {
      const t = getTranslator(locale)
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
-     const [frequency, setFrequency] = useState({
+
+     const { equipments, rentalPeriod, location, selectedBoatId, offerTitle, offerDescription, offerPrice, isAvailable, isSkipperAvailable, isTeamAvailable, setOfferField, resetStore } = useOfferStore()
+
+     const [frequency, setFrequency] = React.useState({
           value: rentalFrequencyOptions[0].value,
           list: rentalFrequencyOptions,
           selectedList: [rentalFrequencyOptions[0]],
           error: "",
           id: parseInt(RentalFrequency.Hour),
-     })
-
-     const { equipments, rentalPeriod, location, selectedBoatId, resetStore, setLocation, setRentalPeriod, setEquipments } = useOfferExternalScreenStore()
-
-     const [offer, setOffer] = useState({
-          boatId: "",
-          title: "",
-          description: "",
-          price: "0",
-          isAvailable: false,
-          isSkipperAvailable: false,
-          isTeamAvailable: false,
      })
 
      const { mutate: createOffer, isPending } = useCreateOffer(
@@ -42,6 +33,8 @@ export default function createOffer() {
                     title: "flash_title_success",
                     description: "L'offre a été créée avec succès.",
                })
+               resetStore()
+               router.push("/(app)/(tabs)/(home)")
           },
           (error) => {
                showTranslatedFlashMessage("danger", {
@@ -54,7 +47,12 @@ export default function createOffer() {
      const handleSubmit = () => {
           if (rentalPeriod.start && rentalPeriod.end && location.city && location.address && location.country && location.zipcode && selectedBoatId) {
                createOffer({
-                    ...offer,
+                    title: offerTitle,
+                    description: offerDescription,
+                    price: offerPrice,
+                    isAvailable,
+                    isSkipperAvailable,
+                    isTeamAvailable,
                     frequency: frequency.id,
                     equipments,
                     rentalPeriod: {
@@ -64,6 +62,11 @@ export default function createOffer() {
                     location,
                     boatId: selectedBoatId,
                     deletedAt: null,
+               })
+          } else {
+               showTranslatedFlashMessage("danger", {
+                    title: "flash_title_error",
+                    description: "Veuillez remplir tous les champs requis.",
                })
           }
      }
@@ -79,9 +82,9 @@ export default function createOffer() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
-                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offer.title} onChangeText={(title) => setOffer({ ...offer, title })} />
-                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offer.description} onChangeText={(description) => setOffer({ ...offer, description })} />
-                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offer.price.toString()} onChangeText={(price) => setOffer({ ...offer, price: price })} />
+                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offerTitle} onChangeText={(title) => setOfferField("offerTitle", title)} />
+                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offerDescription} onChangeText={(description) => setOfferField("offerDescription", description)} />
+                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offerPrice} onChangeText={(price) => setOfferField("offerPrice", price)} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
                               value={frequency.value}
@@ -101,15 +104,15 @@ export default function createOffer() {
                          />
                          <View style={styles.inputRow}>
                               <Text>{t("is_available_label")}</Text>
-                              <Switch value={offer.isAvailable} onValueChange={(value) => setOffer({ ...offer, isAvailable: value })} />
+                              <Switch value={isAvailable} onValueChange={(value) => setOfferField("isAvailable", value)} />
                          </View>
                          <View style={styles.inputRow}>
                               <Text>{t("is_skipper_available_label")}</Text>
-                              <Switch value={offer.isSkipperAvailable} onValueChange={(value) => setOffer({ ...offer, isSkipperAvailable: value })} />
+                              <Switch value={isSkipperAvailable} onValueChange={(value) => setOfferField("isSkipperAvailable", value)} />
                          </View>
                          <View style={styles.inputRow}>
                               <Text>{t("is_team_available_label")}</Text>
-                              <Switch value={offer.isTeamAvailable} onValueChange={(value) => setOffer({ ...offer, isTeamAvailable: value })} />
+                              <Switch value={isTeamAvailable} onValueChange={(value) => setOfferField("isTeamAvailable", value)} />
                          </View>
                          <Button
                               icon={equipments.length > 0 ? "check" : "plus"}
@@ -157,7 +160,7 @@ export default function createOffer() {
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectBoat", {
-                                        initialBoatId: offer.boatId,
+                                        initialBoatId: selectedBoatId,
                                         backPath: "/createOffer",
                                    })
                               }

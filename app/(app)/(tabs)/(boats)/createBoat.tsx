@@ -27,9 +27,9 @@ export default function createBoat() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      const [boat, setBoat] = useState<Boat>({
-          boatName: "Mon super bateau",
-          boatDescription: "sdfqfdsqdsfdljkmfdqslmfdsqjfdsqklfdsqkljfqsd",
-          boatCapacity: "10",
+          boatName: "",
+          boatDescription: "",
+          boatCapacity: "",
           boatType: 1,
           boatImages: [],
      })

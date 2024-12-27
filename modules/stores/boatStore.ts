@@ -14,7 +14,7 @@ interface BoatStore {
      isCurrentBoatLoading: boolean
      setCurrentBoat: (boat: Boat | Promise<Boat>) => void
      updateCurrentBoatField: (field: keyof Boat, value: any) => void
-     resetCurrentBoat: () => void
+     resetBoatStore: () => void
 }
 
 export const useBoatStore = create<BoatStore>((set) => ({
@@ -32,5 +32,5 @@ export const useBoatStore = create<BoatStore>((set) => ({
                currentBoat: state.currentBoat ? { ...state.currentBoat, [field]: value } : null,
           })),
 
-     resetCurrentBoat: () => set({ currentBoat: null, isCurrentBoatLoading: false }),
+     resetBoatStore: () => set({ currentBoat: null, isCurrentBoatLoading: false }),
 }))

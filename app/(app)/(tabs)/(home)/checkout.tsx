@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { Alert, View } from "react-native"
 import { Button } from "react-native-paper"
 import { useLocalSearchParams } from "expo-router"
-import { useOfferExternalScreenStore } from "@/modules/stores/offerExternalScreenStore"
+import { useOfferStore } from "@/modules/stores/offerStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { undefined } from "zod"
 
@@ -12,7 +12,7 @@ export default function Checkout() {
      const [loading, setLoading] = useState(false)
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 
-     const currentOfferToRent = useOfferExternalScreenStore((state) => state.currentOfferToRent)
+     const currentOfferToRent = useOfferStore((state) => state.currentOfferToRent)
      const fetchPaymentSheetParams = async () => {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token
