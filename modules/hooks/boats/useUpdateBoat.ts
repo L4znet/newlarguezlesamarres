@@ -7,16 +7,18 @@ export function useUpdateBoat() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useMutation({
-          mutationFn: async ({ boatId, updatedData, imageSelected }: { boatId: string | string[]; updatedData: any; imageSelected: boolean }) => {
+          mutationFn: async ({ boatId, updatedData, imageSelected }: { boatId: string; updatedData: any; imageSelected: boolean }) => {
                await updateBoatUseCase(boatId, updatedData, imageSelected, showTranslatedFlashMessage)
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["boats"] })
+               queryClient.invalidateQueries({ queryKey: ["offers"] })
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
                     description: "Boat updated successfully!",
                })
           },
+
           onError: (error) => {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_danger",

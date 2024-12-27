@@ -17,7 +17,7 @@ export default class OfferEntity {
           public readonly rentalPeriod: RentalPeriod,
           public readonly location: Location,
           public readonly deletedAt: Date | null,
-          public readonly id: string,
+          public readonly id?: string,
           public readonly boats?: BoatEntity,
           public readonly profiles?: ProfileEntity
      ) {}

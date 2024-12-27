@@ -4,34 +4,36 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { ActivityIndicator, Button, Card, FAB, Text } from "react-native-paper"
 import Slideshow from "@/modules/components/Slideshow"
 import { router } from "expo-router"
-import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase"
-import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
-import { useDeleteBoat } from "@/modules/hooks/boats/useDeleteBoat"
-import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
 import { BoatType, displayBoatType, getBoatType } from "@/constants/BoatTypes"
-import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { useBoatStore } from "@/modules/stores/boatExternalScreenStore"
+import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
 
 const BoatList = () => {
-     const { data: boats, isPending, error } = useBoats()
-
-     const deleteBoat = useDeleteBoat()
-
-     const { locale } = useTranslation()
-     const t = getTranslator(locale)
+     const { data: boats, isPending } = useBoats()
+     const { setCurrentBoat } = useBoatStore()
 
      if (isPending) return <ActivityIndicator size="large" />
 
      const EmptyList = () => {
           return (
+               //@TODO Translate
                <View style={styles.container}>
                     <Text>Rien à afficher pour le moment</Text>
                </View>
           )
      }
 
+     const handleEditBoat = async (boatId: string) => {
+          const boat = await getSingleBoatUseCase(boatId)
+
+          setCurrentBoat(boat)
+          router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat" })
+     }
+
      const renderItem = ({ item }: { item: BoatEntity }) => {
-          const boatType = displayBoatType(item.boatType as unknown as BoatType, locale)
+          const boatType = displayBoatType(item.boatType as unknown as BoatType)
+
           return (
                <Card key={item.id} style={styles.card}>
                     <Slideshow images={item.boatImages} />
@@ -42,10 +44,10 @@ const BoatList = () => {
                          <Text>Type : {boatType}</Text>
                     </Card.Content>
                     <Card.Actions>
-                         <Button onPress={() => router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId: item.id } })}>Modifier</Button>
-                         <Button loading={deleteBoat.isPending} onPress={async () => deleteBoat.mutate(item.id)}>
-                              Supprimer
-                         </Button>
+                         <Button onPress={() => handleEditBoat(item.id)}>Modifier</Button>
+                         {/*    <Button loading={deleteBoat.isPending} onPress={async () => deleteBoat.mutate(item.id)}>
+                             Supprimer
+                        </Button>*/}
                     </Card.Actions>
                </Card>
           )

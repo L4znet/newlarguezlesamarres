@@ -44,7 +44,7 @@ const OfferList = () => {
           <FlatList
                ListEmptyComponent={EmptyList}
                data={offers}
-               keyExtractor={(item) => item.id}
+               keyExtractor={(item) => item.id as string}
                renderItem={({ item }) => {
                     const frequency = displayRentalFrequency(item.frequency.toString(), locale)
                     const username = item?.profiles?.username as string

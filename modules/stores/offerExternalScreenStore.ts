@@ -36,8 +36,8 @@ interface OfferExternalScreenStore {
      clearCurrentOffer: () => void
      setCurrentOfferToRent: (offer: { isAvailable: boolean; amount: string; rentalPeriod: RentalPeriod; description: string; title: string; frequency: number; equipments: Equipment[] | []; deletedAt: Date | null; profileId?: string; price: string; isTeamAvailable: boolean; location: Location; id?: string; boatId: string; isSkipperAvailable: boolean }) => void
      currentOfferToRent: Offer | null
+     updateBoatImagesInOffer: (boatId: string, newImages: string[]) => void
 }
-
 export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set) => ({
      equipments: [],
      rentalPeriod: { start: null, end: null },
@@ -80,7 +80,23 @@ export const useOfferExternalScreenStore = create<OfferExternalScreenStore>((set
           set((state) => ({
                currentOffer: state.currentOffer ? { ...state.currentOffer, ...updatedData } : null,
           })),
-     setCurrentOfferToRent: (offer) => set(() => ({ currentOfferToRent: offer })),
+     setCurrentOfferToRent: (offer) =>
+          set(() => ({
+               currentOfferToRent: {
+                    ...offer,
+                    rentalPeriod: {
+                         ...offer.rentalPeriod,
+                         start: offer.rentalPeriod.start || "",
+                         end: offer.rentalPeriod.end || "",
+                    },
+               },
+          })),
 
      clearCurrentOffer: () => set(() => ({ currentOffer: null })),
+
+     updateBoatImagesInOffer: (boatId, newImages) =>
+          set((state) => ({
+               currentOffer: state.currentOffer && state.currentOffer.boatId === boatId ? { ...state.currentOffer, boatImages: newImages } : state.currentOffer,
+               currentOfferToRent: state.currentOfferToRent && state.currentOfferToRent.boatId === boatId ? { ...state.currentOfferToRent, boatImages: newImages } : state.currentOfferToRent,
+          })),
 }))
