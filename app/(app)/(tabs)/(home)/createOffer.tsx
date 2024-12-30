@@ -170,7 +170,7 @@ export default function createOffer() {
                               {t("select_rental_period_button")}
                          </Button>
                          {getErrors("rentalPeriod") &&
-                              getErrors("rentalPeriod").map((error, index) => (
+                              getErrors("rentalPeriod")?.map((error, index) => (
                                    <Text key={index} style={styles.errorText}>
                                         {error}
                                    </Text>
