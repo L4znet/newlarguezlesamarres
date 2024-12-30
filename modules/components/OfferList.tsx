@@ -1,5 +1,5 @@
 import React from "react"
-import { View, FlatList, StyleSheet } from "react-native"
+import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
 import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-paper"
 import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
@@ -9,6 +9,7 @@ import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/c
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
+import OfferEntity from "@/modules/domain/offers/OfferEntity"
 
 const OfferList = () => {
      const router = useRouter()
@@ -53,14 +54,17 @@ const OfferList = () => {
                isTeamAvailable: offer.isTeamAvailable,
                boatId: offer.boatId,
           })
-          setOfferField("id", offer.id)
-          setOfferField("title", offer.title)
-          setOfferField("description", offer.description)
-          setOfferField("price", offer.price)
-          setOfferField("frequency", offer.frequency.toString())
-          setOfferField("isAvailable", offer.isAvailable)
-          setOfferField("isSkipperAvailable", offer.isSkipperAvailable)
-          setOfferField("isTeamAvailable", offer.isTeamAvailable)
+          setOfferField({
+               id: offer.id,
+               title: offer.title,
+               description: offer.description,
+               price: offer.price,
+               frequency: offer.frequency,
+               isAvailable: offer.isAvailable,
+               isSkipperAvailable: offer.isSkipperAvailable,
+               isTeamAvailable: offer.isTeamAvailable,
+               boatId: offer.boatId,
+          })
 
           setEquipments(offer.equipments)
           setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
@@ -72,47 +76,42 @@ const OfferList = () => {
           })
      }
 
-     return (
-          <FlatList
-               ListEmptyComponent={EmptyList}
-               data={offers}
-               keyExtractor={(item) => item.id as string}
-               renderItem={({ item }) => {
-                    const frequency = displayRentalFrequency(item.frequency.toString(), locale)
-                    const username = item?.profiles?.username as string
-                    const boatImages = item?.boats?.boatImages as unknown as [
-                         {
-                              url: string
-                              caption: string
-                         },
-                    ]
+     const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
+          const frequency = displayRentalFrequency(item.frequency.toString(), locale)
+          const username = item?.profiles?.username as string
+          const boatImages = item?.boats?.boatImages as unknown as [
+               {
+                    url: string
+                    caption: string
+               },
+          ]
 
-                    return (
-                         <Card key={item.id} style={[styles.card]}>
-                              <Slideshow images={boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
+          return (
+               <Card key={item.id} style={[styles.card]} onPress={() => handleMoreDetails(item)}>
+                    <Slideshow images={boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
 
-                              <Card.Title title={item.title} subtitle={item.description} />
+                    <Card.Title title={item.title} subtitle={item.description} />
 
-                              <Card.Content>
-                                   <Text>Publié par : {username}</Text>
-                                   <Text>
-                                        Prix : {item.price} € / {frequency}
-                                   </Text>
-                              </Card.Content>
+                    <Card.Content>
+                         <Text>Publié par : {username}</Text>
+                         <Text>
+                              Prix : {item.price} € / {frequency}
+                         </Text>
+                    </Card.Content>
 
-                              <Card.Actions>
-                                   <Button mode="contained" onPress={() => handleUpdateOffer(item)}>
-                                        Modifier
-                                   </Button>
-                                   <Button mode="contained" onPress={() => handleMoreDetails(item)}>
-                                        Voir plus de détails
-                                   </Button>
-                              </Card.Actions>
-                         </Card>
-                    )
-               }}
-          />
-     )
+                    <Card.Actions>
+                         <Button mode="contained" onPress={() => handleUpdateOffer(item)}>
+                              Modifier
+                         </Button>
+                         <Button mode="contained" onPress={() => handleMoreDetails(item)}>
+                              Voir plus de détails
+                         </Button>
+                    </Card.Actions>
+               </Card>
+          )
+     }
+
+     return <FlatList ListEmptyComponent={EmptyList} data={offers} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} />
 }
 
 const styles = StyleSheet.create({

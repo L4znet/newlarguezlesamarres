@@ -1,94 +1,108 @@
-import { View } from "react-native"
+import React, { useEffect } from "react"
+import { View, StyleSheet } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
-import { Offer } from "@/interfaces/Offer"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
-import { useEffect, useState } from "react"
 import Slideshow from "@/modules/components/Slideshow"
 
-export default function offerDetail() {
-     const { offerId } = useLocalSearchParams<{
-          offerId: string
-     }>()
-
-     const { currentOfferToRent, setCurrentOfferToRent } = useOfferStore()
-     const [offerToRent, setOfferToRent] = useState<Offer | undefined>(undefined)
-
-     const fetchSingleOffer = async (offerId: string) => {
-          try {
-               return await getSingleOfferUseCase(offerId)
-          } catch (error) {
-               console.error("Erreur lors de la récupération de l'offre", error)
-          }
-     }
+export default function OfferDetail() {
+     const { offerId } = useLocalSearchParams<{ offerId: string }>()
+     const { currentOffer, setCurrentOffer } = useOfferStore()
 
      useEffect(() => {
-          fetchSingleOffer(offerId).then((offer) => {
-               setOfferToRent(offer)
-          })
-     }, [])
+          if (offerId) {
+               const fetchOffer = async () => {
+                    const offer = await getSingleOfferUseCase(offerId)
+                    await setCurrentOffer(offer)
+               }
+               fetchOffer()
+          }
+     }, [offerId])
 
-     const convertAmountForStripe = (amount: number) => {
-          return amount * 100
+     console.log(currentOffer)
+
+     if (!currentOffer) {
+          return <Text style={styles.loadingText}>Loading...</Text>
      }
+
+     const { title, rentalPeriod, price, frequency, description } = currentOffer
+
+     const convertAmountForStripe = (amount: number) => amount * 100
 
      const getHowManyDays = (start: string, end: string) => {
           const startDate = new Date(start)
           const endDate = new Date(end)
           const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-          return diffDays
+          return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
      }
 
-     const handleRentOffer = (offer: Offer) => {
-          let amount: number
-          if (offer.frequency === 0) {
-               // we need to calculate the amount by hours
+     const handleRentOffer = () => {
+          let amount = 0
 
-               const startDate = new Date(offer.rentalPeriod.start)
-               const endDate = new Date(offer.rentalPeriod.end)
-
-               const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
-
-               const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
-
-               const price = diffHours * parseInt(offer.price)
-
-               amount = convertAmountForStripe(price)
+          if (frequency === 0) {
+               const startDate = new Date(rentalPeriod.start)
+               const endDate = new Date(rentalPeriod.end)
+               const diffHours = Math.ceil(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60))
+               amount = convertAmountForStripe(diffHours * parseInt(price))
           } else {
-               const days = getHowManyDays(offer.rentalPeriod.start, offer.rentalPeriod.end)
-               const price = days * parseInt(offer.price)
-               amount = convertAmountForStripe(price)
+               const days = getHowManyDays(rentalPeriod.start, rentalPeriod.end)
+               amount = convertAmountForStripe(days * parseInt(price))
           }
 
-          setCurrentOfferToRent({
-               ...offer,
-               amount: amount.toString(),
+          router.push({
+               pathname: "/(app)/(tabs)/(home)/checkout",
+               params: { amount, offerId },
           })
-          router.navigate("/(app)/(tabs)/(home)/checkout")
      }
 
-     console.log()
-
      return (
-          <View>
-               <Slideshow images={offerToRent?.boats.boatImages} />
-               <Text variant={"displayMedium"}>{offerToRent?.title}</Text>
-               <Text variant={"headlineMedium"}>{offerToRent?.title}</Text>
-
-               <Text>
-                    La période : DU {offerToRent?.rentalPeriod.start} AU {offerToRent?.rentalPeriod.end}
+          <View style={styles.container}>
+               <Slideshow images={currentOffer.boatImages} />
+               <Text variant="headlineLarge" style={styles.title}>
+                    {title}
                </Text>
-
-               <Button
-                    mode={"contained"}
-                    onPress={() => {
-                         handleRentOffer(offerToRent as Offer)
-                    }}
-               >
-                    Poursuivre vers le paiement
+               <Text variant="bodyLarge" style={styles.description}>
+                    {description}
+               </Text>
+               <Text style={styles.period}>
+                    Rental Period: {rentalPeriod.start} to {rentalPeriod.end}
+               </Text>
+               <Text style={styles.price}>Price: ${price}</Text>
+               <Button mode="contained" style={styles.button} onPress={handleRentOffer}>
+                    Proceed to Payment
                </Button>
           </View>
      )
 }
+
+const styles = StyleSheet.create({
+     container: {
+          flex: 1,
+          padding: 16,
+     },
+     title: {
+          marginBottom: 8,
+          fontWeight: "bold",
+     },
+     description: {
+          marginBottom: 16,
+     },
+     period: {
+          marginBottom: 8,
+          color: "#666",
+     },
+     price: {
+          marginBottom: 16,
+          fontSize: 16,
+          fontWeight: "bold",
+     },
+     button: {
+          marginTop: 16,
+     },
+     loadingText: {
+          flex: 1,
+          textAlign: "center",
+          marginTop: 20,
+     },
+})

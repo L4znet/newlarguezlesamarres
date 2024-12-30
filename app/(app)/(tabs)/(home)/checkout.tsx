@@ -12,7 +12,7 @@ export default function Checkout() {
      const [loading, setLoading] = useState(false)
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 
-     const currentOfferToRent = useOfferStore((state) => state.currentOfferToRent)
+     const currentOfferToRent = useOfferStore((state) => state.currentOffer)
      const fetchPaymentSheetParams = async () => {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token
@@ -24,31 +24,32 @@ export default function Checkout() {
                     Authorization: `Bearer ${accessToken}`,
                },
                body: JSON.stringify({
-                    offerId: currentOfferToRent.id,
-                    amount: currentOfferToRent.price,
+                    offerId: currentOfferToRent?.id,
+                    amount: currentOfferToRent?.price,
                     currency: "eur",
                     userId: session.data.session?.user.id,
                }),
           })
 
-          const { paymentIntent, ephemeralKey, customer } = await response.json()
+          const { clientSecret, ephemeralKey, customer } = await response.json()
 
           return {
-               paymentIntent,
+               clientSecret,
                ephemeralKey,
                customer,
           }
      }
 
      const initializePaymentSheet = async () => {
-          const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams()
+          const { clientSecret, ephemeralKey, customer } = await fetchPaymentSheetParams()
 
           const { error } = await initPaymentSheet({
                merchantDisplayName: "Example, Inc.",
                customerId: customer,
                customerEphemeralKeySecret: ephemeralKey,
-               paymentIntentClientSecret: paymentIntent,
+               paymentIntentClientSecret: clientSecret,
                allowsDelayedPaymentMethods: true,
+               returnURL: "",
                defaultBillingDetails: {
                     name: "Jane Doe",
                },
@@ -59,14 +60,18 @@ export default function Checkout() {
      }
 
      useEffect(() => {
-          initializePaymentSheet()
+          const init = async () => {
+               initializePaymentSheet()
+          }
+          init()
      }, [])
 
      const handlePayment = async () => {
+          await initializePaymentSheet()
           try {
                const { error, paymentOption } = await presentPaymentSheet()
                if (error) {
-                    Alert.alert("Error", error.message)
+                    console.log("Payment failed", error)
                } else {
                     console.log("Payment successful", paymentOption)
                     confirmPayment()

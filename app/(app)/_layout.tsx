@@ -14,7 +14,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { StripeProvider } from "@stripe/stripe-react-native"
 
-const publishableKey = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+const publishableKey = process.env.EXPO_PUBLIC_PUBLISHABLE_STRIPE_KEY
 const merchantIdentifier = process.env.EXPO_PUBLIC_APPLE_MERCHANT_IDENTIFIER as string
 const urlScheme = process.env.EXPO_PUBLIC_STRIPE_URL_SCHEME as string
 
@@ -47,6 +47,8 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
 
 const CombinedLightTheme = merge(LightTheme, customLightTheme)
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme)
+
+console.log("publishableKey", publishableKey)
 
 export default function RootLayout() {
      const colorScheme = useColorScheme()

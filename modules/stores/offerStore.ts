@@ -18,6 +18,27 @@ interface Location {
      zipcode: string
 }
 
+interface BoatImage {
+     id: string
+     url: string
+     caption: string | null
+     contentType: string
+     dimensions: { width: number; height: number }
+     size: number
+     mimeType: string
+     fileName: string
+}
+
+interface Boat {
+     id: string
+     profileId: string
+     boatName: string
+     boatDescription: string
+     boatCapacity: string
+     boatType: number
+     boatImages: BoatImage[]
+}
+
 interface OfferStore {
      profileId: string | null
      equipments: Equipment[]
@@ -33,16 +54,18 @@ interface OfferStore {
      isTeamAvailable: boolean
      frequency: number
      boatId: string | null
+     boatImages: BoatImage[]
+     boat: Boat | null
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      removeEquipment: (index: number) => void
      setRentalPeriod: (start: string, end: string) => void
      setLocation: (location: Location) => void
      selectBoat: (boatUid: string) => void
-     setOfferField: (field: keyof OfferStore, value: any) => void
+     setOfferField: (fieldOrFields: keyof OfferStore | Partial<OfferStore>, value?: any) => void
      setCurrentOffer: (offer: Promise<Partial<Offer>> | Partial<Offer>) => Promise<void>
      resetStore: () => void
-     currentOffer: Offer | null
+     currentOffer: (Offer & { boatImages: BoatImage[] }) | null
 }
 
 export const useOfferStore = create<OfferStore>((set) => ({
@@ -65,6 +88,8 @@ export const useOfferStore = create<OfferStore>((set) => ({
      isTeamAvailable: false,
      frequency: 0,
      boatId: null,
+     boatImages: [],
+     boat: null,
      currentOffer: null,
 
      setEquipments: (equipments) => set(() => ({ equipments })),
@@ -79,8 +104,13 @@ export const useOfferStore = create<OfferStore>((set) => ({
      setRentalPeriod: (start, end) => set(() => ({ rentalPeriod: { start, end } })),
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
-     setOfferField: (field, value) => set(() => ({ [field]: value })),
-
+     setOfferField: (fieldOrFields, value) => {
+          if (typeof fieldOrFields === "string") {
+               set(() => ({ [fieldOrFields]: value }))
+          } else {
+               set((state) => ({ ...state, ...fieldOrFields }))
+          }
+     },
      setCurrentOffer: async (offer) => {
           const resolvedOffer = offer instanceof Promise ? await offer : offer
 
@@ -101,10 +131,13 @@ export const useOfferStore = create<OfferStore>((set) => ({
                     location: resolvedOffer.location ?? state.location,
                     equipments: resolvedOffer.equipments ?? state.equipments,
                     deletedAt: resolvedOffer.deletedAt ?? null,
+                    boat: resolvedOffer.boats ?? state.boat,
+                    boatImages: resolvedOffer.boats?.boatImages ?? state.boat?.boatImages ?? [],
                },
+               boat: resolvedOffer.boats ?? state.boat,
+               boatImages: resolvedOffer.boats?.boatImages ?? state.boat?.boatImages ?? [],
           }))
      },
-
      resetStore: () =>
           set(() => ({
                profileId: null,
@@ -126,6 +159,8 @@ export const useOfferStore = create<OfferStore>((set) => ({
                isTeamAvailable: false,
                frequency: 0,
                boatId: null,
+               boatImages: [],
+               boat: null,
                currentOffer: null,
           })),
 }))
