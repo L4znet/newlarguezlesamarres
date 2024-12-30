@@ -9,6 +9,7 @@ const LanguageSwitcher: React.FC = () => {
           <View style={{ flexDirection: "row", justifyContent: "space-around", margin: 20 }}>
                <Button title="Français" onPress={() => setLocale("fr")} />
                <Button title="English" onPress={() => setLocale("en")} />
+               <Button title="Español" onPress={() => setLocale("es")} />
           </View>
      )
 }

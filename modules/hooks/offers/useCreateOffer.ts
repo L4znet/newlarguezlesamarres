@@ -15,7 +15,7 @@ export const useCreateOffer = () => {
           onSuccess: (createdOffer) => {
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
-                    description: "L'offre a été créée avec succès.",
+                    description: "Offer created",
                })
 
                resetStore()

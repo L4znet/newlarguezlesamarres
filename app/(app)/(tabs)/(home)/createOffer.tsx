@@ -17,7 +17,7 @@ export default function createOffer() {
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const { equipments, rentalPeriod, location, selectedBoatId, offerTitle, offerDescription, offerPrice, isAvailable, isSkipperAvailable, isTeamAvailable, setOfferField, resetStore } = useOfferStore()
+     const { equipments, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setOfferField, resetStore } = useOfferStore()
 
      const [frequency, setFrequency] = React.useState({
           value: rentalFrequencyOptions[0].value,
@@ -27,29 +27,14 @@ export default function createOffer() {
           id: parseInt(RentalFrequency.Hour),
      })
 
-     const { mutate: createOffer, isPending } = useCreateOffer(
-          () => {
-               showTranslatedFlashMessage("success", {
-                    title: "flash_title_success",
-                    description: "L'offre a été créée avec succès.",
-               })
-               resetStore()
-               router.push("/(app)/(tabs)/(home)")
-          },
-          (error) => {
-               showTranslatedFlashMessage("danger", {
-                    title: "flash_title_error",
-                    description: error.message,
-               })
-          }
-     )
+     const { mutate: createOffer, isPending } = useCreateOffer()
 
      const handleSubmit = () => {
           if (rentalPeriod.start && rentalPeriod.end && location.city && location.address && location.country && location.zipcode && selectedBoatId) {
                createOffer({
-                    title: offerTitle,
-                    description: offerDescription,
-                    price: offerPrice,
+                    title: title,
+                    description: description,
+                    price: price,
                     isAvailable,
                     isSkipperAvailable,
                     isTeamAvailable,
@@ -66,7 +51,7 @@ export default function createOffer() {
           } else {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_error",
-                    description: "Veuillez remplir tous les champs requis.",
+                    description: "An error occurred while adding the offer",
                })
           }
      }
@@ -82,9 +67,9 @@ export default function createOffer() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
-                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={offerTitle} onChangeText={(title) => setOfferField("offerTitle", title)} />
-                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={offerDescription} onChangeText={(description) => setOfferField("offerDescription", description)} />
-                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={offerPrice} onChangeText={(price) => setOfferField("offerPrice", price)} />
+                         <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={title} onChangeText={(title) => setOfferField("title", title)} />
+                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={description} onChangeText={(description) => setOfferField("description", description)} />
+                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} onChangeText={(price) => setOfferField("price", price)} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}
                               value={frequency.value}

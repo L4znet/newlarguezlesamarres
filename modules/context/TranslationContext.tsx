@@ -6,6 +6,7 @@ import { Locale } from "@/constants/Locales"
 const translationFiles = {
      en: require("../translations/en.json"),
      fr: require("../translations/fr.json"),
+     es: require("../translations/es.json"),
 }
 
 export type Translations = typeof translationFiles.en

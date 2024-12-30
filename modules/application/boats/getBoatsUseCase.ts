@@ -21,7 +21,7 @@ export const getBoatsUseCase = async (
           const boats = await BoatRepositorySupabase.getBoats(profileId)
 
           if (!boats) {
-               showTranslatedFlashMessage("danger", { title: "Error loading boats", description: "An error occurred while loading the boats." })
+               showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "An error occurred while loading the boats." })
           }
 
           return boats as BoatEntity[] | []

@@ -46,8 +46,10 @@ const BoatList = () => {
                          <Text>Type : {boatType}</Text>
                     </Card.Content>
                     <Card.Actions>
-                         <Button onPress={() => handleEditBoat(item.id)}>Modifier</Button>
-                         <Button loading={isDeletePending} disabled={isDeletePending} onPress={async () => deleteBoat(item.id)}>
+                         <Button mode={"contained"} onPress={() => handleEditBoat(item.id)}>
+                              Modifier
+                         </Button>
+                         <Button mode={"outlined"} loading={isDeletePending} disabled={isDeletePending} onPress={async () => deleteBoat(item.id)}>
                               Supprimer
                          </Button>
                     </Card.Actions>

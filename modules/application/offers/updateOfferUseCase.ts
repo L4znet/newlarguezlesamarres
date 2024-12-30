@@ -48,9 +48,10 @@ export const updateOfferUseCase = async (
                rentalPeriod: rentalPeriod,
                location: location,
           })
+
           showTranslatedFlashMessage("success", {
-               title: "Succès",
-               description: "L'offre a été mise à jour avec succès.",
+               title: "flash_title_success",
+               description: "Offer updated successfully!",
           })
           router.push("/(app)/(tabs)/(home)")
      } catch (error) {

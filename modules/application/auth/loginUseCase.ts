@@ -52,7 +52,7 @@ export const loginUseCase = async (
           console.dir(error)
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",
-               description: error.message || "Une erreur inattendue est survenue.",
+               description: error.message,
           })
           throw new Error(error.message)
      }

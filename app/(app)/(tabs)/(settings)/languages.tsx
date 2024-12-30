@@ -15,6 +15,9 @@ export default function Index() {
           case "fr":
                language = "Français"
                break
+          case "es":
+               language = "Español"
+               break
      }
      return (
           <View style={styles.container}>

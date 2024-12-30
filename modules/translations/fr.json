@@ -91,7 +91,7 @@
      "published_at": "Publié le",
      "published_by": "Publié par",
      "price": "Prix",
-     "Payer": "Payer",
+     "pay": "Payer",
      "add": "Ajouter",
      "unit_price": "Prix unitaire",
      "moreDetails": "Voir plus de détails",
@@ -113,6 +113,11 @@
      "flash_title_info": "Information",
      "flash_title_default": "Information",
      "flash_title_none": "Information",
+
+     "flash_title_payment_success": "Paiement effectué",
+     "flash_title_payment_error": "Erreur de paiement",
+     "flash_title_payment_pending": "Paiement en attente",
+     "flash_title_payment_canceled": "Paiement annulé",
 
      "validation_email_invalid": "L'adresse e-mail est invalide.",
      "validation_password_too_short": "Le mot de passe doit contenir au moins 8 caractères.",
@@ -150,7 +155,6 @@
           "supabase_message": "Invalid login credentials",
           "translation": "Identifiants de connexion invalides."
      },
-
      "auth_api_success_user_registered": {
           "supabase_message": "User successfully registered",
           "translation": "Inscription réussie."
@@ -207,6 +211,15 @@
           "supabase_message": "Boat updated successfully!",
           "translation": "Bateau mis à jour avec succès !"
      },
+     "supabase_offer_success_created_offer": {
+          "supabase_message": "Offer created",
+          "translation": "Offre créée avec succès !"
+     },
+
+     "payment_success": {
+          "supabase_message": "Payment successful",
+          "translation": "Paiement effectué avec succès."
+     },
 
      "supabase_offer_success_deleted_offer": {
           "supabase_message": "Offer deleted successfully!",
@@ -231,6 +244,34 @@
      "supabase_boat_error_updated_boat": {
           "supabase_message": "An error occurred while updating the boat",
           "translation": "Une erreur s'est produite lors de la mise à jour du bateau."
+     },
+     "supabase_offer_error_deleted_offer": {
+          "supabase_message": "An error occurred while deleting the offer",
+          "translation": "Une erreur s'est produite lors de la suppression de l'offre."
+     },
+     "supabase_offer_error_added_offer": {
+          "supabase_message": "An error occurred while adding the offer",
+          "translation": "Une erreur s'est produite lors de l'ajout de l'offre."
+     },
+
+     "supabase_offer_error_updated_offer": {
+          "supabase_message": "An error occurred while updating the offer",
+          "translation": "Une erreur s'est produite lors de la mise à jour de l'offre."
+     },
+
+     "supabase_offer_error_created_offer": {
+          "supabase_message": "An error occurred while creating the offer",
+          "translation": "Une erreur s'est produite lors de la création de l'offre."
+     },
+
+     "all_fields_required": {
+          "supabase_message": "All fields are required",
+          "translation": "Tous les champs sont requis."
+     },
+
+     "offers_not_found": {
+          "supabase_message": "No offers found",
+          "translation": "Aucune offre trouvée."
      },
 
      "location_selected_success": {
@@ -348,5 +389,6 @@
      "start_date_required": "Vous devez sélectionner une période de location.",
      "end_date_required": "La date de fin est requise.",
      "loading_offer": "Chargement de l'offre...",
-     "processing_button": "Traitement en cours"
+     "processing_button": "Traitement en cours",
+     "your_boats": "Vos bateaux"
 }

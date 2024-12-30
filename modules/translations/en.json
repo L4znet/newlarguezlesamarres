@@ -61,6 +61,12 @@
      "flash_title_info": "Information",
      "flash_title_default": "Information",
      "flash_title_none": "Information",
+
+     "flash_title_payment_success": "Payment successful",
+     "flash_title_payment_error": "Payment error",
+     "flash_title_payment_pending": "Payment pending",
+     "flash_title_payment_canceled": "Payment canceled",
+
      "validation_email_invalid": "The email address is invalid.",
      "validation_password_too_short": "The password must be at least 8 characters long.",
      "validation_firstname_required": "First name is required.",
@@ -162,14 +168,12 @@
      "delete": "Delete",
      "edit": "Edit",
      "price": "Price",
-     "pay": "Pay",
      "unit_price": "Unit price",
      "published_by": "Published by",
      "money_symbol": "$",
      "moreDetails": "More details",
      "rental_date": "Rental date",
      "your_boats": "Your boats",
-     "your_rentals": "Your rentals",
      "checkout": "Checkout",
      "continue_to_payment": "Continue to payment",
      "supabase_boat_success_deleted_boat": {
@@ -184,10 +188,50 @@
           "supabase_message": "Boat updated successfully!",
           "translation": "Boat updated successfully!"
      },
+
+     "supabase_offer_success_created_offer": {
+          "supabase_message": "Offer created",
+          "translation": "Offer created successfully!"
+     },
+
+     "payment_success": {
+          "supabase_message": "Payment successful",
+          "translation": "Payment successful"
+     },
      "supabase_offer_success_deleted_offer": {
           "supabase_message": "Offer deleted successfully!",
           "translation": "Offer deleted successfully!"
      },
+
+     "supabase_offer_error_deleted_offer": {
+          "supabase_message": "An error occurred while deleting the offer",
+          "translation": "An error occurred while deleting the offer."
+     },
+     "supabase_offer_error_added_offer": {
+          "supabase_message": "An error occurred while adding the offer",
+          "translation": "An error occurred while adding the offer."
+     },
+
+     "supabase_offer_error_updated_offer": {
+          "supabase_message": "An error occurred while updating the offer",
+          "translation": "An error occurred while updating the offer."
+     },
+
+     "supabase_offer_error_created_offer": {
+          "supabase_message": "An error occurred while creating the offer",
+          "translation": "An error occurred while creating the offer."
+     },
+
+     "all_fields_required": {
+          "supabase_message": "All fields are required",
+          "translation": "All fields are required."
+     },
+
+     "offers_not_found": {
+          "supabase_message": "No offers found",
+          "translation": "No offers found."
+     },
+
      "supabase_offer_success_added_offer": {
           "supabase_message": "Offer added successfully!",
           "translation": "Offer added successfully!"
@@ -291,7 +335,7 @@
      "processing_button": "Processing...",
      "save": "Save",
      "published_at": "Published on",
-     "Payer": "Pay",
+     "pay": "Pay",
      "add": "Add",
      "your_rental": "Your rental",
      "from_date": "From",

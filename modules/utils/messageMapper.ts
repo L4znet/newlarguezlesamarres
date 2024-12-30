@@ -1,11 +1,13 @@
 import en from "../translations/en.json"
 import fr from "../translations/fr.json"
+import es from "../translations/es.json"
 import { MessageType } from "react-native-flash-message"
 import { TitleTypeKeys } from "@/constants/TitleTypeKeys"
 
 const translations = {
      en,
      fr,
+     es,
 }
 
 type Translations = typeof en

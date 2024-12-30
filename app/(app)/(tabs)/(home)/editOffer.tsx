@@ -33,7 +33,7 @@ export default function EditOffer() {
           if (!title || !description || !price) {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_error",
-                    description: t("all_fields_required"),
+                    description: "All fields required",
                })
                return
           }
@@ -41,7 +41,7 @@ export default function EditOffer() {
           if (!id || !selectedBoatId) {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_error",
-                    description: t("offer_not_found"),
+                    description: "Offers not found",
                })
                router.push("/(app)/(tabs)/(home)")
                return

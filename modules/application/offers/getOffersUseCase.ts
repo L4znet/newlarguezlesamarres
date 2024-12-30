@@ -19,7 +19,7 @@ export const getOffersUseCase = async (
      const profileId = session.data.session?.user.id as string
 
      if (!profileId) {
-          showTranslatedFlashMessage("danger", { title: "Error loading offers", description: "Profile ID is missing" })
+          showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "Profile ID is missing" })
      }
 
      try {
@@ -30,7 +30,7 @@ export const getOffersUseCase = async (
 
           return offers as OfferEntity[] | []
      } catch (error) {
-          showTranslatedFlashMessage("danger", { title: "Error loading offers", description: (error as Error).message })
+          showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
 
           throw error as Error
      }

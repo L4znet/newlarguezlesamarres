@@ -21,10 +21,10 @@ export const deleteOfferUseCase = async (
           if (profileId) {
                const deletedOffer = await OfferRepositorySupabase.deleteOffer({ profileId, offerId })
                if (deletedOffer) {
-                    showTranslatedFlashMessage("success", { title: "Offer deleted", description: "The offer has been successfully deleted." })
+                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "The offer has been successfully deleted." })
                }
           }
      } catch (error) {
-          showTranslatedFlashMessage("danger", { title: "Error deleting offer", description: (error as Error).message })
+          showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
      }
 }
