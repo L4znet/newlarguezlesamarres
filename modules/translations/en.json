@@ -67,6 +67,8 @@
      "flash_title_payment_pending": "Payment pending",
      "flash_title_payment_canceled": "Payment canceled",
 
+     "fix_errors_before_submitting": "Please correct the errors before submitting the form.",
+
      "validation_email_invalid": "The email address is invalid.",
      "validation_password_too_short": "The password must be at least 8 characters long.",
      "validation_firstname_required": "First name is required.",
@@ -337,6 +339,8 @@
      "published_at": "Published on",
      "pay": "Pay",
      "add": "Add",
+     "cancel": "Cancel",
+     "confirm": "Confirm",
      "your_rental": "Your rental",
      "from_date": "From",
      "to_date": "To",
@@ -365,5 +369,24 @@
      "drawer_select_rental_period": "Rental period",
      "drawer_select_equipments": "Equipments",
      "drawer_select_boat": "Select a boat",
-     "drawer_my_offers": "My offers"
+     "drawer_my_offers": "My offers",
+     "start_date_invalid": "The start date must be before the end date.",
+     "end_date_invalid": "The end date must be after the start date.",
+     "not_specified": "Waiting for selection",
+
+     "zod_rule_title_required": "The title is required.",
+     "zod_rule_title_min_length": "The title must contain at least 10 characters.",
+     "zod_rule_title_max_length": "The title must not exceed 100 characters.",
+     "zod_rule_description_min_length": "The description must contain at least 20 characters.",
+     "zod_rule_description_max_length": "The description must not exceed 500 characters.",
+     "zod_rule_price_required": "The price is required.",
+     "zod_rule_price_invalid": "The price must be a number.",
+     "zod_rule_price_min": "The price must be greater than 0.",
+     "zod_rule_end_date_must_be_after_start_date": "The end date must be after the start date.",
+     "zod_rule_start_date_required": "The start date is required.",
+     "zod_rule_end_date_required": "The end date is required.",
+
+     "zod_rule_rental_period_invalid_days": "The rental period must be between 1 and 7 days inclusive.",
+     "zod_rule_rental_period_invalid_weeks": "The rental period must be between 1 and 4 weeks inclusive.",
+     "zod_rule_rental_period_invalid_months": "The rental period must be between 1 and 12 months inclusive."
 }

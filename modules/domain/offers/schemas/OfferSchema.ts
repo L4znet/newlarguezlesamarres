@@ -4,9 +4,9 @@ export const OfferSchema = z
      .object({
           id: z.string().uuid(),
           profileId: z.string().uuid(),
-          title: z.string().min(5, "Title must be at least 5 characters long"),
-          description: z.string().min(10, "Description must be at least 10 characters long"),
-          price: z.number(),
+          title: z.string().nonempty("zod_rule_title_required").min(10, "zod_rule_title_min_length").max(100, "zod_rule_title_max_length"),
+          description: z.string().min(20, "zod_rule_description_min_length").max(500, "zod_rule_description_max_length"),
+          price: z.number().min(0, "zod_rule_price_min_value"),
           isAvailable: z.boolean(),
           frequency: z.number(),
           equipments: z.array(
@@ -18,12 +18,12 @@ export const OfferSchema = z
           ),
           isSkipperAvailable: z.boolean(),
           isTeamAvailable: z.boolean(),
-          rentalPeriod: z.array(
-               z.object({
-                    from: z.date(),
-                    to: z.date(),
+          rentalPeriod: z
+               .object({
+                    start: z.date({ required_error: "zod_rule_start_date_required" }),
+                    end: z.date({ required_error: "zod_rule_end_date_required" }),
                })
-          ),
+               .refine(({ start, end }) => end > start, { message: "zod_rule_end_date_must_be_after_start_date" }),
           location: z.object({
                city: z.string(),
                country: z.string(),

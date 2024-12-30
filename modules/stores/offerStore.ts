@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { Offer } from "@/interfaces/Offer"
 
 interface Equipment {
      name: string
@@ -18,25 +17,10 @@ interface Location {
      zipcode: string
 }
 
-interface BoatImage {
-     id: string
-     url: string
-     caption: string | null
-     contentType: string
-     dimensions: { width: number; height: number }
-     size: number
-     mimeType: string
-     fileName: string
-}
-
-interface Boat {
-     id: string
-     profileId: string
-     boatName: string
-     boatDescription: string
-     boatCapacity: string
-     boatType: number
-     boatImages: BoatImage[]
+interface OfferStoreErrors {
+     rentalPeriodErrors: string[]
+     equipmentsErrors: string[]
+     locationErrors: string[]
 }
 
 interface OfferStore {
@@ -54,8 +38,9 @@ interface OfferStore {
      isTeamAvailable: boolean
      frequency: number
      boatId: string | null
-     boatImages: BoatImage[]
-     boat: Boat | null
+     boatImages: any[]
+     boat: any | null
+     errors: OfferStoreErrors
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      removeEquipment: (index: number) => void
@@ -63,21 +48,17 @@ interface OfferStore {
      setLocation: (location: Location) => void
      selectBoat: (boatUid: string) => void
      setOfferField: (fieldOrFields: keyof OfferStore | Partial<OfferStore>, value?: any) => void
-     setCurrentOffer: (offer: Promise<Partial<Offer>> | Partial<Offer>) => Promise<void>
+     setErrors: (section: string, errors: string[]) => void
+     clearErrors: (section: string) => void
+     getErrors: (section: string) => string[] | undefined
      resetStore: () => void
-     currentOffer: (Offer & { boatImages: BoatImage[] }) | null
 }
 
-export const useOfferStore = create<OfferStore>((set) => ({
+export const useOfferStore = create<OfferStore>((set, get) => ({
      profileId: null,
      equipments: [],
      rentalPeriod: { start: "", end: "" },
-     location: {
-          city: "",
-          country: "",
-          address: "",
-          zipcode: "",
-     },
+     location: { city: "", country: "", address: "", zipcode: "" },
      selectedBoatId: null,
      id: null,
      title: "",
@@ -90,7 +71,7 @@ export const useOfferStore = create<OfferStore>((set) => ({
      boatId: null,
      boatImages: [],
      boat: null,
-     currentOffer: null,
+     errors: { rentalPeriodErrors: [], equipmentsErrors: [], locationErrors: [] },
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -111,44 +92,21 @@ export const useOfferStore = create<OfferStore>((set) => ({
                set((state) => ({ ...state, ...fieldOrFields }))
           }
      },
-     setCurrentOffer: async (offer) => {
-          const resolvedOffer = offer instanceof Promise ? await offer : offer
-
+     setErrors: (section, errors) =>
           set((state) => ({
-               ...state,
-               currentOffer: {
-                    id: resolvedOffer.id ?? state.id ?? "",
-                    profileId: resolvedOffer.profileId ?? state.profileId ?? null,
-                    title: resolvedOffer.title ?? state.title,
-                    description: resolvedOffer.description ?? state.description,
-                    price: resolvedOffer.price ?? state.price,
-                    isAvailable: resolvedOffer.isAvailable ?? state.isAvailable,
-                    isSkipperAvailable: resolvedOffer.isSkipperAvailable ?? state.isSkipperAvailable,
-                    isTeamAvailable: resolvedOffer.isTeamAvailable ?? state.isTeamAvailable,
-                    frequency: resolvedOffer.frequency ?? state.frequency,
-                    boatId: resolvedOffer.boatId ?? state.boatId ?? "",
-                    rentalPeriod: resolvedOffer.rentalPeriod ?? state.rentalPeriod,
-                    location: resolvedOffer.location ?? state.location,
-                    equipments: resolvedOffer.equipments ?? state.equipments,
-                    deletedAt: resolvedOffer.deletedAt ?? null,
-                    boat: resolvedOffer.boats ?? state.boat,
-                    boatImages: resolvedOffer.boats?.boatImages ?? state.boat?.boatImages ?? [],
-               },
-               boat: resolvedOffer.boats ?? state.boat,
-               boatImages: resolvedOffer.boats?.boatImages ?? state.boat?.boatImages ?? [],
-          }))
-     },
+               errors: { ...state.errors, [section]: errors },
+          })),
+     clearErrors: (section) =>
+          set((state) => ({
+               errors: { ...state.errors, [section]: undefined },
+          })),
+     getErrors: (section) => get().errors[section],
      resetStore: () =>
           set(() => ({
                profileId: null,
                equipments: [],
                rentalPeriod: { start: "", end: "" },
-               location: {
-                    city: "",
-                    country: "",
-                    address: "",
-                    zipcode: "",
-               },
+               location: { city: "", country: "", address: "", zipcode: "" },
                selectedBoatId: null,
                id: null,
                title: "",
@@ -161,6 +119,6 @@ export const useOfferStore = create<OfferStore>((set) => ({
                boatId: null,
                boatImages: [],
                boat: null,
-               currentOffer: null,
+               errors: { rentalPeriodErrors: [], equipmentsErrors: [], locationErrors: [] },
           })),
 }))

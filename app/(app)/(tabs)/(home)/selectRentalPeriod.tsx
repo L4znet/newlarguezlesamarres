@@ -4,36 +4,34 @@ import { Button, Text } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import CalendarPicker from "react-native-calendar-picker"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { format } from "date-fns"
-import { fr, enUS } from "date-fns/locale"
 import { useTheme } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
-import { useCancelCalendarHandler } from "@/modules/hooks/offers/useCancelCalendarHandler"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 
-export default function selectRentalPeriod() {
-     const { rentalPeriod, setRentalPeriod } = useOfferStore()
+export default function SelectRentalPeriod() {
+     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors } = useOfferStore()
      const [calendarKey, setCalendarKey] = useState(0)
      const rawStartDate = rentalPeriod.start ? new Date(rentalPeriod.start) : null
      const rawEndDate = rentalPeriod.end ? new Date(rentalPeriod.end) : null
 
      const [startDate, setStartDate] = useState<Date | null>(rawStartDate)
      const [endDate, setEndDate] = useState<Date | null>(rawEndDate)
-     const [error, setError] = useState<string | null>(null)
+
      const router = useRouter()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const theme = useTheme()
-     const { backPath } = useLocalSearchParams<{ backPath: string }>()
+     const { backPath, frequency } = useLocalSearchParams<{ backPath: string; frequency: string }>()
      const calendarRef = React.createRef<CalendarPicker>()
 
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
                setEndDate(date)
-               setError(null)
+               clearErrors("rentalPeriod")
           } else {
                setStartDate(date)
                setEndDate(null)
+               clearErrors("rentalPeriod")
           }
      }
 
@@ -43,17 +41,58 @@ export default function selectRentalPeriod() {
 
      const handleConfirm = () => {
           if (!startDate) {
-               setError(t("start_date_required"))
+               const errorMessage = t("start_date_required")
+               setErrors("rentalPeriod", [errorMessage])
                return
           }
+
           if (!endDate) {
-               setError(t("end_date_required"))
+               const errorMessage = t("end_date_required")
+               setErrors("rentalPeriod", [errorMessage])
                return
           }
-          if (startDate && endDate) {
-               setRentalPeriod(startDate.toISOString().split("T")[0], endDate.toISOString().split("T")[0])
-               handleNavigation()
+
+          const diffInMs = endDate.getTime() - startDate.getTime()
+          const diffInHours = diffInMs / (1000 * 60 * 60)
+          const diffInDays = diffInHours / 24
+
+          console.log("aaaa", frequency)
+
+          switch (frequency) {
+               case "1":
+                    if (diffInDays > 6) {
+                         const errorMessage = t("zod_rule_rental_period_invalid_days")
+                         setErrors("rentalPeriod", [errorMessage])
+                         return
+                    }
+                    break
+               case "2":
+                    const diffInWeeks = diffInDays / 7
+
+                    if (diffInWeeks < 1 || diffInWeeks > 4) {
+                         console.log("fsdfdfsd", diffInWeeks)
+                         const errorMessage = t("zod_rule_rental_period_invalid_weeks")
+                         setErrors("rentalPeriod", [errorMessage])
+                         return
+                    }
+                    break
+               case "3":
+                    const diffInMonths = diffInDays / 30
+                    if (diffInMonths < 2 || diffInMonths > 12) {
+                         const errorMessage = t("zod_rule_rental_period_invalid_months")
+                         setErrors("rentalPeriod", [errorMessage])
+                         return
+                    }
+                    break
+               default:
+                    break
           }
+
+          setRentalPeriod(startDate.toISOString().split("T")[0], endDate.toISOString().split("T")[0])
+          clearErrors("rentalPeriod")
+          handleNavigation()
+
+          console.log("fsdfdfsd", getErrors("rentalPeriod"))
      }
 
      const resetCalendar = () => {
@@ -62,14 +101,12 @@ export default function selectRentalPeriod() {
 
           calendarRef.current?.resetSelections()
 
-          setError(null)
           setCalendarKey((prev) => prev + 1)
           handleNavigation()
      }
 
-     const { handleCancel, isProcessing } = useCancelCalendarHandler(rawStartDate, rawEndDate, resetCalendar)
-
      const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end)
+     const rentalPeriodErrors = getErrors("rentalPeriod")
 
      // @ts-ignore
      const themeColor = theme.colors.text
@@ -86,15 +123,20 @@ export default function selectRentalPeriod() {
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>
                               {t("end_date_label")}: {rentalEndDate}
                          </Text>
-                         {error && <Text style={[styles.errorText, { color: theme.colors.error }]}>{error}</Text>}
+                         {rentalPeriodErrors &&
+                              rentalPeriodErrors.map((err, index) => (
+                                   <Text key={index} style={[styles.errorText, { color: theme.colors.error }]}>
+                                        {err}
+                                   </Text>
+                              ))}
                     </View>
                     <View style={styles.buttons}>
                          <Button mode="contained" onPress={handleConfirm} style={styles.confirmButton}>
                               {t("confirm_button")}
                          </Button>
 
-                         <Button mode="outlined" onPress={handleCancel} disabled={isProcessing} style={styles.cancelButton}>
-                              {isProcessing ? t("processing_button") : t("cancel_button")}
+                         <Button mode="outlined" onPress={resetCalendar} style={styles.cancelButton}>
+                              {t("cancel_button")}
                          </Button>
                     </View>
                </ScrollView>

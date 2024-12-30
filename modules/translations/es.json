@@ -94,6 +94,8 @@
      "price": "Precio",
      "pay": "Pagar",
      "add": "Añadir",
+     "confirm": "Confirmar",
+     "cancel": "Cancelar",
      "unit_price": "Precio unitario",
      "moreDetails": "Ver más detalles",
      "rental_date": "Fecha de reserva",
@@ -114,6 +116,8 @@
      "flash_title_info": "Información",
      "flash_title_default": "Información",
      "flash_title_none": "Información",
+
+     "fix_errors_before_submitting": "Por favor, corrige los errores antes de enviar el formulario.",
 
      "validation_email_invalid": "La dirección de correo electrónico no es válida.",
      "validation_password_too_short": "La contraseña debe tener al menos 8 caracteres.",
@@ -338,5 +342,8 @@
      "end_date_required": "La fecha de fin es obligatoria.",
      "loading_offer": "Cargando la oferta...",
      "processing_button": "Procesando...",
-     "your_boats": "Tus barcos"
+     "your_boats": "Tus barcos",
+     "start_date_invalid": "La fecha de inicio no puede ser anterior a hoy.",
+     "end_date_invalid": "La fecha de fin no puede ser anterior a la fecha de inicio.",
+     "not_specified": "En espera de selección"
 }

@@ -1,8 +1,8 @@
-import { format } from "date-fns"
+import { format, isValid } from "date-fns"
 import { enUS, es, fr } from "date-fns/locale"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
-export const displayRentalPeriod = (start: string, end: string) => {
+export const displayRentalPeriod = (start: string | null, end: string | null) => {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -12,8 +12,15 @@ export const displayRentalPeriod = (start: string, end: string) => {
           es: es,
      }
 
+     const parsedStartDate = start ? new Date(start) : null
+     const parsedEndDate = end ? new Date(end) : null
+
+     const rentalStartDate = parsedStartDate && isValid(parsedStartDate) ? format(parsedStartDate, "dd MMMM yyyy", { locale: localeMap[locale] || fr }) : t("not_specified")
+
+     const rentalEndDate = parsedEndDate && isValid(parsedEndDate) ? format(parsedEndDate, "dd MMMM yyyy", { locale: localeMap[locale] || fr }) : t("not_specified")
+
      return {
-          rentalStartDate: format(new Date(start), "dd MMMM yyyy", { locale: localeMap[locale] || fr }),
-          rentalEndDate: format(new Date(end), "dd MMMM yyyy", { locale: localeMap[locale] || fr }),
+          rentalStartDate,
+          rentalEndDate,
      }
 }

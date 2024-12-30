@@ -22,6 +22,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@faker-js/faker": "^9.2.0",
     "@gorhom/bottom-sheet": "^5.0.6",
+    "@hookform/resolvers": "^3.9.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.0",
@@ -46,6 +47,7 @@
     "pretty-format": "^29.7.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-hook-form": "^7.54.2",
     "react-native": "0.76.5",
     "react-native-calendar-picker": "^8.0.5",
     "react-native-calendars": "^1.1307.0",
@@ -63,7 +65,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.10",
     "ts-jest": "^29.2.5",
-    "zod": "^3.23.8",
+    "zod": "^3.24.1",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
