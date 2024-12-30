@@ -1,21 +1,23 @@
 import { confirmPaymentSheetPayment, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
-import { Alert, View } from "react-native"
+import { Alert, StyleSheet, View } from "react-native"
 import { Button, Text } from "react-native-paper"
-import { useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import { undefined } from "zod"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayRentalFrequency } from "@/constants/RentalFrequency"
-import { displayTotalPrice } from "@/constants/displayTotalPrice"
+import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
+import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useStripePayment } from "@/modules/hooks/useStripePayment"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
      const [loading, setLoading] = useState(false)
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
-
+     const { showTranslatedFlashMessage } = useFlashMessage()
      const currentOfferToRent = useOfferStore((state) => state.currentOffer)
+     const { mutate, data, isPending, error } = useStripePayment()
 
      const fetchPaymentSheetParams = async () => {
           const session = await getCurrentSessionUseCase()
@@ -30,26 +32,12 @@ export default function Checkout() {
                currentOfferToRent?.frequency as number
           )
 
-          const response = await fetch(`${API_URL}/transactions`, {
-               method: "POST",
-               headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-               },
-               body: JSON.stringify({
-                    offerId: currentOfferToRent?.id,
-                    amount: amountForStripe,
-                    currency: "eur",
-                    userId: session.data.session?.user.id,
-               }),
-          })
-
-          const { clientSecret, ephemeralKey, customer } = await response.json()
+          mutate({ accessToken: accessToken as string, offerId: currentOfferToRent?.id as string, currency: "eur", amount: amountForStripe, userId: session.data.session?.user.id as string })
 
           return {
-               clientSecret,
-               ephemeralKey,
-               customer,
+               clientSecret: data?.clientSecret as string,
+               ephemeralKey: data?.ephemeralKey as string,
+               customer: data?.customer as string,
           }
      }
 
@@ -62,10 +50,13 @@ export default function Checkout() {
                customerEphemeralKeySecret: ephemeralKey,
                paymentIntentClientSecret: clientSecret,
                allowsDelayedPaymentMethods: true,
-               returnURL: "",
+               returnURL: "payments-example://stripe-redirect",
                defaultBillingDetails: {
                     name: "Jane Doe",
                },
+          })
+          console.log("aaaa", {
+               error: error,
           })
           if (!error) {
                setLoading(true)
@@ -73,61 +64,101 @@ export default function Checkout() {
      }
 
      useEffect(() => {
-          const init = async () => {
-               initializePaymentSheet()
-          }
-          init()
+          initializePaymentSheet()
      }, [])
 
      const handlePayment = async () => {
-          await initializePaymentSheet()
           try {
+               await initializePaymentSheet()
                const { error, paymentOption } = await presentPaymentSheet()
-               if (error) {
-                    console.log("Payment failed", error)
-               } else {
-                    console.log("Payment successful", paymentOption)
-                    confirmPayment()
-               }
+
+               confirmPayment()
           } catch (e) {
                console.log("Error", e)
           }
      }
 
      const confirmPayment = async () => {
-          const { error } = await confirmPaymentSheetPayment()
+          await initializePaymentSheet()
+          const confirmPaymentSheetPaymentResult = await confirmPaymentSheetPayment()
 
-          console.log("Payment confirmed", error)
+          if (confirmPaymentSheetPaymentResult.error) {
+               showTranslatedFlashMessage("danger", {
+                    title: "flash_title_payment_error",
+                    description: confirmPaymentSheetPaymentResult.error.message,
+               })
+          } else {
+               showTranslatedFlashMessage("success", {
+                    title: "flash_title_payment_success",
+                    description: "Payment successful",
+               })
+          }
      }
-
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
      const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
 
-     const { amountForStripe, unitAmount, totalAmount } = displayTotalPrice(
-          currentOfferToRent?.price as string,
-          currentOfferToRent?.rentalPeriod as {
-               start: string
-               end: string
-          },
-          currentOfferToRent?.frequency as number
-     )
+     const { totalAmount } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string }, currentOfferToRent?.frequency as number)
+
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string)
 
      return (
-          <View>
-               <Text>Vous vous apprétez à réserver cette offre, voici un résumer avant de procéder au paiement</Text>
-
-               <Text>{currentOfferToRent?.title}</Text>
-               <Text>{currentOfferToRent?.description}</Text>
-
-               <Text>
-                    {currentOfferToRent?.price}€ / {frequencyParsed.toLowerCase()}
+          <View style={styles.container}>
+               <Text style={styles.title} variant="headlineMedium">
+                    {t("your_rental")}
                </Text>
-               <Text>Pour un total de : {totalAmount} €</Text>
-               <Button onPress={() => handlePayment()} disabled={!loading} mode={"contained"}>
-                    Payer {totalAmount} €
+               <Text
+                    variant="bodyLarge"
+                    style={{
+                         marginTop: 16,
+                         fontWeight: "bold",
+                    }}
+               >
+                    {currentOfferToRent?.title}
+               </Text>
+               <Text variant="bodyLarge">{currentOfferToRent?.description}</Text>
+               <Text style={styles.subtitle} variant="titleLarge">
+                    {t("rental_date")}
+               </Text>
+               <Text variant="bodyMedium">Du {rentalStartDate}</Text>
+               <Text variant="bodyMedium">Au {rentalEndDate}</Text>
+               <Text variant="titleSmall">
+                    {t("unit_price")} : {currentOfferToRent?.price}
+                    {t("money_symbol")} / {frequencyParsed.toLowerCase()}
+               </Text>
+               <View style={styles.totalAmount}>
+                    <Text style={styles.title} variant="headlineSmall">
+                         Total
+                    </Text>
+                    <Text style={styles.title} variant="headlineSmall">
+                         {totalAmount} €
+                    </Text>
+               </View>
+               <Button onPress={() => handlePayment()} mode={"contained"} disabled={!loading} loading={!loading}>
+                    {totalAmount} {t("money_symbol")}
                </Button>
           </View>
      )
 }
+
+const styles = StyleSheet.create({
+     container: {
+          flex: 1,
+          padding: 16,
+     },
+     title: {
+          fontWeight: "bold",
+          marginVertical: 16,
+     },
+     subtitle: {
+          fontWeight: "bold",
+          marginTop: 16,
+          marginBottom: 8,
+     },
+     totalAmount: {
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginVertical: 16,
+     },
+})

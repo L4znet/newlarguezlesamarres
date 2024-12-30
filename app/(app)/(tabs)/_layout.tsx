@@ -37,6 +37,13 @@ export default function Layout() {
                     }}
                />
                <Tabs.Screen
+                    name="(offers)"
+                    options={{
+                         title: t("bottom_bar_(offers)"),
+                         tabBarIcon: ({ color }) => <FontAwesome size={28} name={"file-text"} color={color} />,
+                    }}
+               />
+               <Tabs.Screen
                     name="(boats)"
                     options={{
                          title: t("bottom_bar_(boats)"),

@@ -47,21 +47,6 @@ export default function EditOffer() {
                return
           }
 
-          console.log({
-               id,
-               title,
-               description,
-               price,
-               isAvailable,
-               frequency,
-               equipments,
-               isSkipperAvailable,
-               isTeamAvailable,
-               rentalPeriod,
-               location,
-               boatId: selectedBoatId as string,
-          })
-
           updateOffer({
                id,
                title,

@@ -1,13 +1,13 @@
 import React, { useEffect } from "react"
 import { View, StyleSheet } from "react-native"
-import { Button, Text } from "react-native-paper"
+import { ActivityIndicator, Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import Slideshow from "@/modules/components/Slideshow"
 import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { displayTotalPrice } from "@/constants/displayTotalPrice"
+import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 
 export default function OfferDetail() {
      const { offerId } = useLocalSearchParams<{ offerId: string }>()
@@ -23,10 +23,8 @@ export default function OfferDetail() {
           }
      }, [offerId])
 
-     console.log(currentOffer)
-
      if (!currentOffer) {
-          return <Text style={styles.loadingText}>Loading...</Text>
+          return <ActivityIndicator size="large" />
      }
 
      const { title, rentalPeriod, price, frequency, description } = currentOffer
@@ -41,6 +39,7 @@ export default function OfferDetail() {
      const t = getTranslator(locale)
 
      const frequencyParsed = displayRentalFrequency(frequency.toString(), locale)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end)
 
      return (
           <View style={styles.container}>
@@ -52,13 +51,13 @@ export default function OfferDetail() {
                     {description}
                </Text>
                <Text style={styles.period}>
-                    Rental Period: {rentalPeriod.start} to {rentalPeriod.end}
+                    {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
                </Text>
                <Text style={styles.price}>
-                    {price} € / {frequencyParsed.toLowerCase()}
+                    {price} {t("money_symbol")} / {frequencyParsed.toLowerCase()}
                </Text>
                <Button mode="contained" style={styles.button} onPress={handleRentOffer}>
-                    Continuer vers le paiement
+                    {t("continue_to_payment")}
                </Button>
           </View>
      )

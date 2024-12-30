@@ -20,26 +20,7 @@ export default function Layout() {
                     <Drawer.Screen
                          name="index"
                          options={{
-                              title: t("drawer_my_boats"),
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="createBoat"
-                         options={{
-                              title: t("drawer_add_boat"),
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="editBoat"
-                         options={{
-                              title: t("drawer_edit_boat"),
-                              drawerItemStyle: { display: "none" },
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="boatDetails"
-                         options={{
-                              drawerItemStyle: { display: "none" },
+                              title: t("drawer_my_offers"),
                          }}
                     />
                </Drawer>

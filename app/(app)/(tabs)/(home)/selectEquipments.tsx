@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList, Text, SafeAreaView, ScrollView, KeyboardAvo
 import { Button, TextInput, Text as TextPaper } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 interface Equipment {
      name: string
@@ -29,12 +30,15 @@ export default function selectEquipments() {
           handleNavigation()
      }
 
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView>
                     <ScrollView style={styles.safearea}>
                          <TextPaper style={{ textAlign: "center" }} variant={"titleLarge"}>
-                              Ajoutez les équipements inclus dans la location
+                              {t("add_enquipments_include")}
                          </TextPaper>
                          <TextPaper
                               style={{
@@ -43,14 +47,14 @@ export default function selectEquipments() {
                               }}
                               variant={"titleSmall"}
                          >
-                              Cela permettra d'ajouter une plue-value à votre annonce, mais ceci n'est pas obligatoire
+                              {t("add_equipments_description")}
                          </TextPaper>
 
                          <View style={styles.inputContainer}>
                               <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.name} onChangeText={(name) => setNewEquipment({ ...newEquipment, name: name })} />
                               <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.quantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, quantity: quantity })} />
                               <Button mode="contained" onPress={handleAddEquipment} style={styles.addButton}>
-                                   Ajouter
+                                   {t("add")}
                               </Button>
                          </View>
 
@@ -62,7 +66,7 @@ export default function selectEquipments() {
                                         <View style={styles.listItem}>
                                              <Text style={styles.listText}>{item.quantity === "1" ? item.name : `${item.quantity} ${item.name}`}</Text>
                                              <Button mode="text" onPress={() => removeEquipment(index)}>
-                                                  Supprimer
+                                                  {t("delete")}
                                              </Button>
                                         </View>
                                    )}
@@ -70,7 +74,7 @@ export default function selectEquipments() {
                          </View>
 
                          <Button mode="contained" onPress={handleNavigation} style={styles.saveButton}>
-                              Enregistrer
+                              {t("save")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>

@@ -9,6 +9,7 @@ import { fr, enUS } from "date-fns/locale"
 import { useTheme } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { useCancelCalendarHandler } from "@/modules/hooks/offers/useCancelCalendarHandler"
+import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 
 export default function selectRentalPeriod() {
      const { rentalPeriod, setRentalPeriod } = useOfferStore()
@@ -26,11 +27,6 @@ export default function selectRentalPeriod() {
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
      const calendarRef = React.createRef<CalendarPicker>()
 
-     const localeMap = {
-          en: enUS,
-          fr: fr,
-     }
-
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
                setEndDate(date)
@@ -39,11 +35,6 @@ export default function selectRentalPeriod() {
                setStartDate(date)
                setEndDate(null)
           }
-     }
-
-     const formatDate = (date: Date | null): string => {
-          if (!date) return t("none")
-          return format(date, "dd MMMM yyyy", { locale: localeMap[locale] || enUS })
      }
 
      const handleNavigation = () => {
@@ -78,6 +69,8 @@ export default function selectRentalPeriod() {
 
      const { handleCancel, isProcessing } = useCancelCalendarHandler(rawStartDate, rawEndDate, resetCalendar)
 
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end)
+
      // @ts-ignore
      const themeColor = theme.colors.text
 
@@ -88,10 +81,10 @@ export default function selectRentalPeriod() {
                     <CalendarPicker key={calendarKey} ref={calendarRef} initialDate={new Date()} selectedStartDate={startDate ? startDate.toString() : undefined} selectedEndDate={endDate ? endDate.toString() : undefined} weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]} months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]} previousTitle={t("previous")} nextTitle={t("next")} startFromMonday allowRangeSelection minDate={new Date()} todayBackgroundColor="#f2e6ff" selectedDayColor="#7300e6" textStyle={{ color: themeColor }} onDateChange={handleDateChange} selectedRangeStyle={{ backgroundColor: theme.colors.primary }} />
                     <View style={styles.selectedDates}>
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>
-                              {t("start_date_label")}: {formatDate(startDate)}
+                              {t("start_date_label")}: {rentalStartDate}
                          </Text>
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>
-                              {t("end_date_label")}: {formatDate(endDate)}
+                              {t("end_date_label")}: {rentalEndDate}
                          </Text>
                          {error && <Text style={[styles.errorText, { color: theme.colors.error }]}>{error}</Text>}
                     </View>

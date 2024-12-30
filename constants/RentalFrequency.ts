@@ -10,10 +10,10 @@ export enum RentalFrequency {
 // Traductions statiques des fréquences
 const translations: Record<string, Record<RentalFrequency, string>> = {
      en: {
-          [RentalFrequency.Hour]: "Hourly",
-          [RentalFrequency.Day]: "Daily",
-          [RentalFrequency.Week]: "Weekly",
-          [RentalFrequency.Month]: "Monthly",
+          [RentalFrequency.Hour]: "Hour",
+          [RentalFrequency.Day]: "Day",
+          [RentalFrequency.Week]: "Week",
+          [RentalFrequency.Month]: "Month",
      },
      fr: {
           [RentalFrequency.Hour]: "Heure",

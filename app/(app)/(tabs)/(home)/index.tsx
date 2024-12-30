@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import OfferList from "@/modules/components/OfferList"
+import OffersList from "@/modules/components/OffersList"
 import { useOfferStore } from "@/modules/stores/offerStore"
 
 export default function Index() {
@@ -40,7 +40,7 @@ export default function Index() {
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
-                    <OfferList />
+                    <OffersList />
                </SafeAreaView>
                <FAB icon="plus" style={styles.fab} onPress={() => createOffer()} />
           </View>

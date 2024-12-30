@@ -20,9 +20,10 @@ export default function editEmail() {
      return (
           <View style={styles.container}>
                <View style={styles.form}>
-                    <Text variant="titleLarge">Besoin d'un changement d'e-mail ?</Text>
-                    <Text variant="titleMedium">C'est comme si c'était fait !</Text>
-                    <Text variant="titleMedium">Uun e-mail de confirmation sera envoyé sur votre ancienne et sur votre nouvelle adresse</Text>
+                    <Text variant="titleLarge">{t("email_change_title")}</Text>
+                    <Text variant="titleMedium">{t("email_change_subtitle")}</Text>
+                    <Text variant="titleMedium">{t("email_change_description")}</Text>
+
                     <TextInput style={styles.input} placeholder={t("email_placeholder")} label={t("email_label")} value={userData.email} onChangeText={(email) => setUserData({ ...userData, email })} />
                </View>
                <Button icon="pencil" mode="contained" onPress={async () => await updateEmail(userData.email)}>

@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from "react"
-import { Redirect, Stack } from "expo-router"
-import { useColorScheme, StyleSheet } from "react-native"
+import React from "react"
+import { Stack } from "expo-router"
+import { useColorScheme } from "react-native"
 import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper"
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from "@react-navigation/native"
 import merge from "deepmerge"
@@ -8,15 +8,11 @@ import { AuthProvider } from "@/modules/context/AuthProvider"
 import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 import { TranslationProvider } from "@/modules/context/TranslationContext"
 import { ProfileProvider } from "@/modules/context/ProfileProvider"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/queryClient"
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
-import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { StripeProvider } from "@stripe/stripe-react-native"
 
-const publishableKey = process.env.EXPO_PUBLIC_PUBLISHABLE_STRIPE_KEY
-const merchantIdentifier = process.env.EXPO_PUBLIC_APPLE_MERCHANT_IDENTIFIER as string
-const urlScheme = process.env.EXPO_PUBLIC_STRIPE_URL_SCHEME as string
+const publishableKey = process.env.EXPO_PUBLIC_PUBLISHABLE_STRIPE_KEY as string
 
 const customDarkTheme = {
      ...MD3DarkTheme,
@@ -47,8 +43,6 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
 
 const CombinedLightTheme = merge(LightTheme, customLightTheme)
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme)
-
-console.log("publishableKey", publishableKey)
 
 export default function RootLayout() {
      const colorScheme = useColorScheme()

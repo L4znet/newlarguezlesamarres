@@ -5,76 +5,78 @@ import { Drawer } from "expo-router/drawer"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { router, Stack, Tabs } from "expo-router"
 import TabBar from "@/modules/components/TabBar"
+import { useTranslation, getTranslator } from "@/modules/context/TranslationContext"
 
 export default function Layout() {
      const { session } = useAuth()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
                <Drawer>
                     <Drawer.Screen
                          name="index"
                          options={{
-                              drawerLabel: "Accueil",
-                              title: "Accueil",
+                              drawerLabel: t("drawer_home"),
+                              title: t("drawer_home"),
                          }}
                     />
                     <Drawer.Screen
                          name="createOffer"
                          options={{
-                              title: "Ajouter une annonce",
-                              drawerLabel: "Ajouter une annonce",
+                              drawerLabel: t("drawer_add_offer"),
+                              title: t("drawer_add_offer"),
                          }}
                     />
-
                     <Drawer.Screen
                          name="editOffer"
                          options={{
-                              title: "Modifier une annonce",
+                              title: t("drawer_edit_offer"),
                               drawerItemStyle: { display: "none" },
                          }}
                     />
                     <Drawer.Screen
                          name="offerDetail"
                          options={{
-                              title: "Détail de l'annonce",
+                              title: t("drawer_offer_detail"),
                               drawerItemStyle: { display: "none" },
                          }}
                     />
                     <Drawer.Screen
                          name="checkout"
                          options={{
-                              title: "Procéder au paiement",
+                              title: t("drawer_checkout"),
                               drawerItemStyle: { display: "none" },
                          }}
                     />
-
                     <Drawer.Screen
-                         options={{
-                              title: "Localisation de l'annonce",
-                              drawerItemStyle: { display: "none" },
-                         }}
                          name="selectLocation"
-                    />
-                    <Drawer.Screen
                          options={{
-                              title: "Période de location",
+                              title: t("drawer_select_location"),
                               drawerItemStyle: { display: "none" },
                          }}
+                    />
+                    <Drawer.Screen
                          name="selectRentalPeriod"
-                    />
-                    <Drawer.Screen
                          options={{
-                              title: "Équipements",
+                              title: t("drawer_select_rental_period"),
                               drawerItemStyle: { display: "none" },
                          }}
+                    />
+                    <Drawer.Screen
                          name="selectEquipments"
-                    />
-                    <Drawer.Screen
                          options={{
-                              title: "Sélection du bateau",
+                              title: t("drawer_select_equipments"),
                               drawerItemStyle: { display: "none" },
                          }}
+                    />
+                    <Drawer.Screen
                          name="selectBoat"
+                         options={{
+                              title: t("drawer_select_boat"),
+                              drawerItemStyle: { display: "none" },
+                         }}
                     />
                </Drawer>
           </GestureHandlerRootView>

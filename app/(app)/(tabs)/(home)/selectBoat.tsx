@@ -4,6 +4,7 @@ import { Button, useTheme, Text, Icon, ActivityIndicator } from "react-native-pa
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { useOfferStore } from "@/modules/stores/offerStore"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function SelectBoat() {
      const theme = useTheme()
@@ -34,9 +35,12 @@ export default function SelectBoat() {
      // @ts-ignore
      const themeColorText = theme.colors.text
 
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-               <Text style={[styles.title, { color: theme.colors.primary }]}>Sélectionnez un bateau</Text>
+               <Text style={[styles.title, { color: theme.colors.primary }]}>{t("select_boat")}</Text>
                {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
                {error && <Text style={styles.errorText}>Une erreur est survenue lors de la récupération des bateaux.</Text>}
                {boats && (

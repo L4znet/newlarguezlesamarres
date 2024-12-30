@@ -4,6 +4,7 @@ import { Button, Text, useTheme, TextInput, Card, ActivityIndicator } from "reac
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 import { useOfferStore } from "@/modules/stores/offerStore"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
@@ -33,6 +34,7 @@ export default function SelectLocation() {
           const { address } = location
 
           if ((!address.municipality || !address.city || !address.localName) && (!address.country || !address.postalCode || !address.streetName || !address.streetNumber)) {
+               //@TODO Traduction
                setValidationError("La localisation sélectionnée est incomplète. Assurez-vous que la ville, le pays, le code postal et l'adresse sont disponibles.")
                return {
                     city: "",
@@ -91,6 +93,8 @@ export default function SelectLocation() {
                handleNavigation()
           }
      }
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      const currentSelection = selectedLocation?.country && selectedLocation.city && selectedLocation.address && selectedLocation.zipcode ? `${selectedLocation.address}, ${selectedLocation.zipcode} ${selectedLocation.city}, ${selectedLocation.country}` : "Aucune sélection"
      return (
@@ -100,6 +104,7 @@ export default function SelectLocation() {
 
                     {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
+                    {/*  TODO Traduction*/}
                     {error && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
 
                     {validationError && <Text style={styles.errorText}>{validationError}</Text>}
@@ -119,7 +124,7 @@ export default function SelectLocation() {
                     )}
 
                     <View style={styles.selectionContainer}>
-                         <Text style={styles.selectionTitle}>Votre sélection</Text>
+                         <Text style={styles.selectionTitle}>{t("your_selection")}</Text>
                          <Card style={styles.selectionCard}>
                               <Card.Content>
                                    <Text>{currentSelection}</Text>
@@ -128,11 +133,11 @@ export default function SelectLocation() {
                     </View>
 
                     <Button mode="contained" onPress={() => confirmSelection()} style={styles.actionButton}>
-                         Confirmer
+                         {t("confirm")}
                     </Button>
 
                     <Button mode="outlined" onPress={() => cancelSelection()} style={styles.actionButton}>
-                         Annuler
+                         {t("cancel")}
                     </Button>
                </ScrollView>
           </SafeAreaView>

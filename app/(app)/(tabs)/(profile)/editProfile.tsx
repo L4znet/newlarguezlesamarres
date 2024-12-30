@@ -56,8 +56,9 @@ export default function editProfile() {
                <View style={styles.form}>
                     <Avatar.Image size={150} source={userData.avatar ? { uri: userData.avatar } : require("@/assets/images/avatars/default-avatar.png")} />
                     <Button mode="text" onPress={handleAvatarChange}>
-                         Change Avatar
+                         {t("change_avatar_button")}
                     </Button>
+
                     <TextInput style={styles.input} placeholder={t("lastname_placeholder")} label={t("lastname_label")} value={userData.lastname} onChangeText={(lastname) => setUserData({ ...userData, lastname })} />
                     <TextInput style={styles.input} placeholder={t("firstname_placeholder")} label={t("firstname_label")} value={userData.firstname} onChangeText={(firstname) => setUserData({ ...userData, firstname })} />
                     <TextInput style={styles.input} placeholder={t("username_placeholder")} label={t("username_label")} value={userData.username} onChangeText={(username) => setUserData({ ...userData, username })} />

@@ -133,9 +133,7 @@ class BoatRepositorySupabase implements BoatRepository {
      }
 
      async deleteBoat(profileId: string | undefined, boatId: string): Promise<BoatEntity | undefined> {
-          const boatIdString = boatId
-
-          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatIdString).eq("profile_id", profileId).select()
+          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatId).eq("profile_id", profileId).select()
 
           if (boatError) {
                throw new Error(`Error deleting boat: ${boatError.message}`)

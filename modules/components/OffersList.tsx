@@ -11,12 +11,10 @@ import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 
-const OfferList = () => {
+const OffersList = () => {
      const router = useRouter()
      const { data: offers, isPending, error } = useOffers()
      const theme = useTheme()
-
-     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -42,40 +40,6 @@ const OfferList = () => {
           })
      }
 
-     const handleUpdateOffer = async (offer: Offer) => {
-          console.log({
-               id: offer.id,
-               title: offer.title,
-               description: offer.description,
-               price: offer.price,
-               frequency: getRentalFrequency(offer.frequency.toString()),
-               isAvailable: offer.isAvailable,
-               isSkipperAvailable: offer.isSkipperAvailable,
-               isTeamAvailable: offer.isTeamAvailable,
-               boatId: offer.boatId,
-          })
-          setOfferField({
-               id: offer.id,
-               title: offer.title,
-               description: offer.description,
-               price: offer.price,
-               frequency: offer.frequency,
-               isAvailable: offer.isAvailable,
-               isSkipperAvailable: offer.isSkipperAvailable,
-               isTeamAvailable: offer.isTeamAvailable,
-               boatId: offer.boatId,
-          })
-
-          setEquipments(offer.equipments)
-          setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
-          setLocation(offer.location)
-          selectBoat(offer.boatId)
-
-          router.navigate({
-               pathname: "/(app)/(tabs)/(home)/editOffer",
-          })
-     }
-
      const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
           const frequency = displayRentalFrequency(item.frequency.toString(), locale)
           const username = item?.profiles?.username as string
@@ -93,18 +57,17 @@ const OfferList = () => {
                     <Card.Title title={item.title} subtitle={item.description} />
 
                     <Card.Content>
-                         <Text>Publié par : {username}</Text>
                          <Text>
-                              Prix : {item.price} € / {frequency}
+                              {t("published_by")} {username}
+                         </Text>
+                         <Text>
+                              {t("price")} : {item.price} {t("money_symbol")} / {frequency}
                          </Text>
                     </Card.Content>
 
                     <Card.Actions>
-                         <Button mode="contained" onPress={() => handleUpdateOffer(item)}>
-                              Modifier
-                         </Button>
                          <Button mode="contained" onPress={() => handleMoreDetails(item)}>
-                              Voir plus de détails
+                              {t("moreDetails")}
                          </Button>
                     </Card.Actions>
                </Card>
@@ -126,4 +89,4 @@ const styles = StyleSheet.create({
      },
 })
 
-export default OfferList
+export default OffersList

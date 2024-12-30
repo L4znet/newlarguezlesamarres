@@ -8,9 +8,11 @@ import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { BoatType, displayBoatType, getBoatType } from "@/constants/BoatTypes"
 import { useBoatStore } from "@/modules/stores/boatStore"
 import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
+import { useDeleteBoat } from "@/modules/hooks/boats/useDeleteBoat"
 
 const BoatList = () => {
      const { data: boats, isPending } = useBoats()
+     const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
      const { setCurrentBoat } = useBoatStore()
 
      if (isPending) return <ActivityIndicator size="large" />
@@ -45,9 +47,9 @@ const BoatList = () => {
                     </Card.Content>
                     <Card.Actions>
                          <Button onPress={() => handleEditBoat(item.id)}>Modifier</Button>
-                         {/*    <Button loading={deleteBoat.isPending} onPress={async () => deleteBoat.mutate(item.id)}>
-                             Supprimer
-                        </Button>*/}
+                         <Button loading={isDeletePending} disabled={isDeletePending} onPress={async () => deleteBoat(item.id)}>
+                              Supprimer
+                         </Button>
                     </Card.Actions>
                </Card>
           )

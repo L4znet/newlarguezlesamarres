@@ -135,11 +135,11 @@ export default function EditBoat() {
 
                          <Slideshow images={currentBoat.boatImages} />
                          <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
-                              Modifier les images
+                              {t("change_thumbnail_btn")}
                          </Button>
 
                          <Button mode="contained" onPress={() => handleSave()} loading={isUpdating} disabled={isUpdating} style={styles.button}>
-                              Enregistrer
+                              {t("create_boat_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
