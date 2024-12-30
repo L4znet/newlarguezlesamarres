@@ -5,6 +5,9 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import Slideshow from "@/modules/components/Slideshow"
+import { displayRentalFrequency } from "@/constants/RentalFrequency"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { displayTotalPrice } from "@/constants/displayTotalPrice"
 
 export default function OfferDetail() {
      const { offerId } = useLocalSearchParams<{ offerId: string }>()
@@ -28,33 +31,16 @@ export default function OfferDetail() {
 
      const { title, rentalPeriod, price, frequency, description } = currentOffer
 
-     const convertAmountForStripe = (amount: number) => amount * 100
-
-     const getHowManyDays = (start: string, end: string) => {
-          const startDate = new Date(start)
-          const endDate = new Date(end)
-          const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
-          return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-     }
-
      const handleRentOffer = () => {
-          let amount = 0
-
-          if (frequency === 0) {
-               const startDate = new Date(rentalPeriod.start)
-               const endDate = new Date(rentalPeriod.end)
-               const diffHours = Math.ceil(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60))
-               amount = convertAmountForStripe(diffHours * parseInt(price))
-          } else {
-               const days = getHowManyDays(rentalPeriod.start, rentalPeriod.end)
-               amount = convertAmountForStripe(days * parseInt(price))
-          }
-
           router.push({
                pathname: "/(app)/(tabs)/(home)/checkout",
-               params: { amount, offerId },
           })
      }
+
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+
+     const frequencyParsed = displayRentalFrequency(frequency.toString(), locale)
 
      return (
           <View style={styles.container}>
@@ -68,9 +54,11 @@ export default function OfferDetail() {
                <Text style={styles.period}>
                     Rental Period: {rentalPeriod.start} to {rentalPeriod.end}
                </Text>
-               <Text style={styles.price}>Price: ${price}</Text>
+               <Text style={styles.price}>
+                    {price} € / {frequencyParsed.toLowerCase()}
+               </Text>
                <Button mode="contained" style={styles.button} onPress={handleRentOffer}>
-                    Proceed to Payment
+                    Continuer vers le paiement
                </Button>
           </View>
      )

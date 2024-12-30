@@ -1,11 +1,14 @@
 import { confirmPaymentSheetPayment, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
 import { Alert, View } from "react-native"
-import { Button } from "react-native-paper"
+import { Button, Text } from "react-native-paper"
 import { useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { undefined } from "zod"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { displayRentalFrequency } from "@/constants/RentalFrequency"
+import { displayTotalPrice } from "@/constants/displayTotalPrice"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -13,9 +16,19 @@ export default function Checkout() {
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 
      const currentOfferToRent = useOfferStore((state) => state.currentOffer)
+
      const fetchPaymentSheetParams = async () => {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token
+
+          const { amountForStripe } = displayTotalPrice(
+               currentOfferToRent?.price as string,
+               currentOfferToRent?.rentalPeriod as {
+                    start: string
+                    end: string
+               },
+               currentOfferToRent?.frequency as number
+          )
 
           const response = await fetch(`${API_URL}/transactions`, {
                method: "POST",
@@ -25,7 +38,7 @@ export default function Checkout() {
                },
                body: JSON.stringify({
                     offerId: currentOfferToRent?.id,
-                    amount: currentOfferToRent?.price,
+                    amount: amountForStripe,
                     currency: "eur",
                     userId: session.data.session?.user.id,
                }),
@@ -87,10 +100,33 @@ export default function Checkout() {
           console.log("Payment confirmed", error)
      }
 
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+
+     const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
+
+     const { amountForStripe, unitAmount, totalAmount } = displayTotalPrice(
+          currentOfferToRent?.price as string,
+          currentOfferToRent?.rentalPeriod as {
+               start: string
+               end: string
+          },
+          currentOfferToRent?.frequency as number
+     )
+
      return (
           <View>
+               <Text>Vous vous apprétez à réserver cette offre, voici un résumer avant de procéder au paiement</Text>
+
+               <Text>{currentOfferToRent?.title}</Text>
+               <Text>{currentOfferToRent?.description}</Text>
+
+               <Text>
+                    {currentOfferToRent?.price}€ / {frequencyParsed.toLowerCase()}
+               </Text>
+               <Text>Pour un total de : {totalAmount} €</Text>
                <Button onPress={() => handlePayment()} disabled={!loading} mode={"contained"}>
-                    Réserver
+                    Payer {totalAmount} €
                </Button>
           </View>
      )
