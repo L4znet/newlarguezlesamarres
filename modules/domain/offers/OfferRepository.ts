@@ -8,8 +8,8 @@ interface OfferRepository {
      updateOffer({ offerId, profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt }: { offerId: string; profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined>
      deleteOffer({ offerId, profileId }: { offerId: string; profileId: string }): Promise<OfferEntity | undefined>
      getSingleOffer({ offerId }: { offerId: string }): Promise<OfferEntity>
-     getOffers(): Promise<OfferEntity[] | undefined>
-     getOwnOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined>
+     getOffers(profileId: string): Promise<OfferEntity[] | undefined>
+     getOwnOffers(profileId: string): Promise<OfferEntity[] | undefined>
 }
 
 export default OfferRepository

@@ -101,7 +101,7 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer fetch.")
      }
 
-     async getOffers(): Promise<OfferEntity[] | undefined> {
+     async getOffers(profileId: string): Promise<OfferEntity[] | undefined> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .select(
@@ -120,6 +120,7 @@ class OfferRepositorySupabase implements OfferRepository {
         `
                )
                .eq("is_available", true)
+               .neq("profile_id", profileId)
 
           if (offerError) {
                throw new Error(`Error fetching offers: ${offerError.message}`)
@@ -130,7 +131,7 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async getOwnOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined> {
+     async getOwnOffers(profileId: string): Promise<OfferEntity[] | undefined> {
           console.log("profileId", profileId)
 
           const { data: offerData, error: offerError } = await supabase

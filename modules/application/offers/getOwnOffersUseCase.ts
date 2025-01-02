@@ -29,7 +29,7 @@ export const getOwnOffersUseCase = async (
 
      try {
           console.log("profileId", profileId)
-          const offers = await OfferRepositorySupabase.getOwnOffers({ profileId })
+          const offers = await OfferRepositorySupabase.getOwnOffers(profileId)
 
           console.log(offers)
 

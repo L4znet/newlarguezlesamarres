@@ -1,6 +1,6 @@
 export default class ProfileEntity {
      constructor(
-          public readonly email: string | undefined,
+          public readonly email: string,
           public readonly firstname: string,
           public readonly lastname: string,
           public readonly username: string,

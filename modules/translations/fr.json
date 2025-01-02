@@ -68,6 +68,7 @@
      "bottom_bar_register": "Inscription",
      "bottom_bar_feed": "Feed",
      "bottom_bar_(offers)": "Offres",
+     "bottom_bar_(bookings)": "Réservations",
 
      "login_btn": "Connexion",
      "register_btn": "Inscription",
@@ -288,6 +289,10 @@
      },
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
+     "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
+     "bookings_tenant_empty_message": "Vous n'avez rien réservé pour le moment",
+
+     "bookings_fetch_error": "Erreur lors de la récupération des réservations",
 
      "validation_avatar_required": "Une photo de profil est requise.",
 
@@ -309,6 +314,8 @@
      "drawer_select_equipments": "Équipements",
      "drawer_select_boat": "Sélection du bateau",
      "drawer_my_offers": "Mes offres",
+     "drawer_my_bookings_as_renter": "Mes réservations",
+     "drawer_my_bookings_as_tenants": "Mes locations",
 
      "profile_title": "Mon profil",
 

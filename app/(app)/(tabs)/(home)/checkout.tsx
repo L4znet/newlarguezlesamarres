@@ -11,7 +11,7 @@ import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateTransaction } from "@/modules/hooks/rentals/useCreateTransaction"
 import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerifyAndInsertTransaction"
-import { useInsertReservation } from "@/modules/hooks/rentals/useInsertReservation"
+import { useInsertBooking } from "@/modules/hooks/rentals/useInsertBooking"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -21,7 +21,7 @@ export default function Checkout() {
 
      const { mutateAsync: createTransaction, isPending: creatingTransaction } = useCreateTransaction()
      const { mutateAsync: verifyAndInsertTransaction } = useVerifyAndInsertTransaction()
-     const { mutateAsync: insertReservation } = useInsertReservation()
+     const { mutateAsync: insertBooking } = useInsertBooking()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -97,7 +97,7 @@ export default function Checkout() {
                          userId: session.data.session?.user?.id as string,
                     })
 
-                    await insertReservation({
+                    await insertBooking({
                          accessToken,
                          offerId: currentOfferToRent?.id as string,
                          userId: session.data.session?.user?.id as string,

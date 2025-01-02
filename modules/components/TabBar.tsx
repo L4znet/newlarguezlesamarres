@@ -20,10 +20,9 @@ interface TabBarProps {
      descriptors: any
      navigation: any
      insets: any
-     isUserLoggedIn: boolean
 }
 
-const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets, isUserLoggedIn }) => {
+const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets }) => {
      const primaryColor = "#0891b2"
      const greyColor = "#737373"
 
@@ -49,16 +48,8 @@ const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation, insets,
           return descriptor?.options?.tabBarLabel ?? descriptor?.options?.title ?? route.title ?? route.name
      }
 
-     const filteredRoutes = state.routes.filter((route) => {
-          if (!isUserLoggedIn) {
-               return ![""].includes(route.name)
-          }
-          return true
-     })
-
      const filteredState = {
           ...state,
-          routes: filteredRoutes,
      }
 
      return <BottomNavigation.Bar navigationState={filteredState} safeAreaInsets={insets} onTabPress={handleTabPress} renderIcon={renderTabIcon} getLabelText={getTabLabel} />

@@ -22,7 +22,7 @@ export default class OfferEntity {
           public readonly profiles?: ProfileEntity
      ) {}
 
-     static fromSupabaseData(data: any): OfferEntity {
+     static fromSupabaseData(data: { profile_id: string; boat_id: string; title: string; description: string; price: string; is_available: boolean; frequency: number; equipments: Equipment[]; is_skipper_available: boolean; is_team_available: boolean; rental_period: RentalPeriod; location: Location; deleted_at: Date | null; id: string; boats?: BoatEntity; profiles?: ProfileEntity }): OfferEntity {
           const boats = data.boats ? BoatEntity.fromSupabaseData(data.boats) : undefined
 
           const profiles = data.profiles ? ProfileEntity.fromSupabaseUser(data.profiles) : undefined

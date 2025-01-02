@@ -38,8 +38,8 @@ export const createTransaction = async ({ accessToken, offerId, amount, userId }
      return response.json()
 }
 
-export const insertReservation = async ({ accessToken, offerId, userId, startDate, endDate }: { accessToken: string; offerId: string; userId: string; startDate: string; endDate: string }) => {
-     const url = `${API_URL}/reservations`
+export const insertBooking = async ({ accessToken, offerId, userId, startDate, endDate }: { accessToken: string; offerId: string; userId: string; startDate: string; endDate: string }) => {
+     const url = `${API_URL}/bookings`
 
      const response = await fetch(url, {
           method: "POST",
