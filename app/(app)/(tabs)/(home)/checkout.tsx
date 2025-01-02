@@ -84,6 +84,7 @@ export default function Checkout() {
      const handlePayment = async () => {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token as string
+          await initializePaymentSheet()
 
           try {
                const result = await presentPaymentSheet()
