@@ -1,6 +1,6 @@
-import { confirmPayment, useStripe } from "@stripe/stripe-react-native"
+import { confirmPayment, PaymentIntent, RetrievePaymentIntentResult, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
-import { Alert, StyleSheet, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
@@ -9,77 +9,71 @@ import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useCreateTransaction } from "@/modules/hooks/rentals/useCreateTransaction"
+import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerifyAndInsertTransaction"
+import { useInsertReservation } from "@/modules/hooks/rentals/useInsertReservation"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
-     const [paymentSheetParams, setPaymentSheetParams] = useState({
-          paymentIntent: "",
-          ephemeralKey: "",
-          customer: "",
-     })
-     const [loading, setLoading] = useState(false)
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
      const { showTranslatedFlashMessage } = useFlashMessage()
      const currentOfferToRent = useOfferStore((state) => state.currentOffer)
 
-     const fetchPaymentSheetParams = async () => {
+     const { mutateAsync: createTransaction, isPending: creatingTransaction } = useCreateTransaction()
+     const { mutateAsync: verifyAndInsertTransaction } = useVerifyAndInsertTransaction()
+     const { mutateAsync: insertReservation } = useInsertReservation()
+
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
+     const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string }, currentOfferToRent?.frequency as number)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string)
+     const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
+
+     const [paymentIntent, setPaymentIntent] = useState({
+          clientSecret: "",
+          ephemeralKey: "",
+          customer: "",
+          paymentIntent: "",
+     })
+
+     const initializePaymentSheet = async () => {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token as string
 
-          const { amountForStripe } = displayTotalPrice(
-               currentOfferToRent?.price as string,
-               currentOfferToRent?.rentalPeriod as {
-                    start: string
-                    end: string
-               },
-               currentOfferToRent?.frequency as number
-          )
-
-          const url = `${API_URL}/transactions`
-
-          const response = await fetch(url, {
-               method: "POST",
-               headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-               },
-               body: JSON.stringify({
-                    offerId: currentOfferToRent?.id,
-                    amount: amountForStripe,
-                    userId: session.data.session?.user?.id,
-               }),
+          const transactionData = await createTransaction({
+               accessToken,
+               offerId: currentOfferToRent?.id as string,
+               amount: amountForStripe,
+               userId: session.data.session?.user?.id as string,
           })
 
-          const data = await response.json()
+          const { paymentIntent, clientSecret, ephemeralKey, customer } = transactionData
 
-          console.log({ ...data })
-
-          return {
-               paymentIntent: data.clientSecret,
-               ephemeralKey: data.ephemeralKey,
-               customer: data.customer,
-          }
-     }
-
-     const initializePaymentSheet = async () => {
-          const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams()
-          setPaymentSheetParams({ paymentIntent, ephemeralKey, customer })
+          setPaymentIntent({
+               clientSecret,
+               ephemeralKey,
+               customer,
+               paymentIntent,
+          })
 
           const { error } = await initPaymentSheet({
                merchantDisplayName: "Example, Inc.",
                customerId: customer,
                customerEphemeralKeySecret: ephemeralKey,
-               paymentIntentClientSecret: paymentIntent,
+               paymentIntentClientSecret: clientSecret,
                allowsDelayedPaymentMethods: true,
                defaultBillingDetails: {
                     name: "Jane Doe",
                },
           })
-          console.log("error", error)
 
-          if (!error) {
-               console.log("Payment sheet initialized")
-               setLoading(true)
+          if (error) {
+               console.log("Error initializing payment sheet", error)
+
+               showTranslatedFlashMessage("danger", {
+                    title: "Payment Initialization Failed",
+                    description: error.message,
+               })
           }
      }
 
@@ -91,43 +85,50 @@ export default function Checkout() {
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token as string
 
-          console.log(accessToken)
-
           try {
-               const presentPaymentSheetResult = await presentPaymentSheet()
+               const result = await presentPaymentSheet()
 
-               if (!presentPaymentSheetResult.error) {
+               if (!result.error) {
+                    await verifyAndInsertTransaction({
+                         accessToken,
+                         paymentIntentId: paymentIntent.paymentIntent,
+                         offerId: currentOfferToRent?.id as string,
+                         userId: session.data.session?.user?.id as string,
+                    })
+
+                    await insertReservation({
+                         accessToken,
+                         offerId: currentOfferToRent?.id as string,
+                         userId: session.data.session?.user?.id as string,
+                         startDate: currentOfferToRent?.rentalPeriod.start as string,
+                         endDate: currentOfferToRent?.rentalPeriod.end as string,
+                    })
+
                     showTranslatedFlashMessage("success", {
-                         title: "flash_title_success",
-                         description: "Payment successful",
+                         title: "Payment Successful",
+                         description: "Your payment was successfully processed.",
+                    })
+               } else {
+                    showTranslatedFlashMessage("danger", {
+                         title: "Payment Failed",
+                         description: result.error.message,
                     })
                }
           } catch (e) {
-               console.log("Error", e)
+               console.log("Error during payment", e)
+               showTranslatedFlashMessage("danger", {
+                    title: "Payment Error",
+                    description: "An error occurred during payment. Please try again.",
+               })
           }
      }
-
-     const { locale } = useTranslation()
-     const t = getTranslator(locale)
-
-     const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
-
-     const { totalAmount } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string }, currentOfferToRent?.frequency as number)
-
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string)
 
      return (
           <View style={styles.container}>
                <Text style={styles.title} variant="headlineMedium">
                     {t("your_rental")}
                </Text>
-               <Text
-                    variant="bodyLarge"
-                    style={{
-                         marginTop: 16,
-                         fontWeight: "bold",
-                    }}
-               >
+               <Text style={{ marginTop: 16, fontWeight: "bold" }} variant="bodyLarge">
                     {currentOfferToRent?.title}
                </Text>
                <Text variant="bodyLarge">{currentOfferToRent?.description}</Text>
@@ -148,7 +149,7 @@ export default function Checkout() {
                          {totalAmount} €
                     </Text>
                </View>
-               <Button onPress={() => handlePayment()} mode={"contained"} disabled={!loading} loading={!loading}>
+               <Button onPress={() => handlePayment()} mode={"contained"} disabled={creatingTransaction || !currentOfferToRent} loading={creatingTransaction}>
                     {totalAmount} {t("money_symbol")}
                </Button>
           </View>
