@@ -17,6 +17,7 @@ export default function OfferDetail() {
           if (offerId) {
                const fetchOffer = async () => {
                     const offer = await getSingleOfferUseCase(offerId)
+
                     await setCurrentOffer(offer)
                }
                fetchOffer()

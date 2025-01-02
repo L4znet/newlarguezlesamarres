@@ -22,7 +22,7 @@ export default function createOffer() {
 
      const { getErrors, equipments, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setOfferField, resetStore } = useOfferStore()
 
-     const [frequency, setFrequency] = React.useState({
+     const [frequency, setFrequency] = useState({
           value: rentalFrequencyOptions[0].value,
           list: rentalFrequencyOptions,
           selectedList: [rentalFrequencyOptions[0]],

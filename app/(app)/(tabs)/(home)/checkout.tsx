@@ -1,4 +1,4 @@
-import { confirmPaymentSheetPayment, useStripe } from "@stripe/stripe-react-native"
+import { confirmPayment, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
 import { Alert, StyleSheet, View } from "react-native"
 import { Button, Text } from "react-native-paper"
@@ -9,19 +9,22 @@ import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { useStripePayment } from "@/modules/hooks/useStripePayment"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
+     const [paymentSheetParams, setPaymentSheetParams] = useState({
+          paymentIntent: "",
+          ephemeralKey: "",
+          customer: "",
+     })
      const [loading, setLoading] = useState(false)
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
      const { showTranslatedFlashMessage } = useFlashMessage()
      const currentOfferToRent = useOfferStore((state) => state.currentOffer)
-     const { mutate, data, isPending, error } = useStripePayment()
 
      const fetchPaymentSheetParams = async () => {
           const session = await getCurrentSessionUseCase()
-          const accessToken = session.data.session?.access_token
+          const accessToken = session.data.session?.access_token as string
 
           const { amountForStripe } = displayTotalPrice(
                currentOfferToRent?.price as string,
@@ -32,33 +35,50 @@ export default function Checkout() {
                currentOfferToRent?.frequency as number
           )
 
-          mutate({ accessToken: accessToken as string, offerId: currentOfferToRent?.id as string, currency: "eur", amount: amountForStripe, userId: session.data.session?.user.id as string })
+          const url = `${API_URL}/transactions`
+
+          const response = await fetch(url, {
+               method: "POST",
+               headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+               },
+               body: JSON.stringify({
+                    offerId: currentOfferToRent?.id,
+                    amount: amountForStripe,
+                    userId: session.data.session?.user?.id,
+               }),
+          })
+
+          const data = await response.json()
+
+          console.log({ ...data })
 
           return {
-               clientSecret: data?.clientSecret as string,
-               ephemeralKey: data?.ephemeralKey as string,
-               customer: data?.customer as string,
+               paymentIntent: data.clientSecret,
+               ephemeralKey: data.ephemeralKey,
+               customer: data.customer,
           }
      }
 
      const initializePaymentSheet = async () => {
-          const { clientSecret, ephemeralKey, customer } = await fetchPaymentSheetParams()
+          const { paymentIntent, ephemeralKey, customer } = await fetchPaymentSheetParams()
+          setPaymentSheetParams({ paymentIntent, ephemeralKey, customer })
 
           const { error } = await initPaymentSheet({
                merchantDisplayName: "Example, Inc.",
                customerId: customer,
                customerEphemeralKeySecret: ephemeralKey,
-               paymentIntentClientSecret: clientSecret,
+               paymentIntentClientSecret: paymentIntent,
                allowsDelayedPaymentMethods: true,
-               returnURL: "payments-example://stripe-redirect",
                defaultBillingDetails: {
                     name: "Jane Doe",
                },
           })
-          console.log("aaaa", {
-               error: error,
-          })
+          console.log("error", error)
+
           if (!error) {
+               console.log("Payment sheet initialized")
                setLoading(true)
           }
      }
@@ -68,32 +88,25 @@ export default function Checkout() {
      }, [])
 
      const handlePayment = async () => {
-          try {
-               await initializePaymentSheet()
-               const { error, paymentOption } = await presentPaymentSheet()
+          const session = await getCurrentSessionUseCase()
+          const accessToken = session.data.session?.access_token as string
 
-               confirmPayment()
+          console.log(accessToken)
+
+          try {
+               const presentPaymentSheetResult = await presentPaymentSheet()
+
+               if (!presentPaymentSheetResult.error) {
+                    showTranslatedFlashMessage("success", {
+                         title: "flash_title_success",
+                         description: "Payment successful",
+                    })
+               }
           } catch (e) {
                console.log("Error", e)
           }
      }
 
-     const confirmPayment = async () => {
-          await initializePaymentSheet()
-          const confirmPaymentSheetPaymentResult = await confirmPaymentSheetPayment()
-
-          if (confirmPaymentSheetPaymentResult.error) {
-               showTranslatedFlashMessage("danger", {
-                    title: "flash_title_payment_error",
-                    description: confirmPaymentSheetPaymentResult.error.message,
-               })
-          } else {
-               showTranslatedFlashMessage("success", {
-                    title: "flash_title_payment_success",
-                    description: "Payment successful",
-               })
-          }
-     }
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 

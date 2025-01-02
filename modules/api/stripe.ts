@@ -11,10 +11,9 @@ export const fetchPayment = async (
 }> => {
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 
-     if (!API_URL) {
-          throw new Error("Clé API TomTom manquante")
-     }
      const url = `${API_URL}/transactions`
+
+     console.log(url)
 
      const response = await fetch(url, {
           method: "POST",
@@ -29,5 +28,10 @@ export const fetchPayment = async (
           }),
      })
 
-     return await response.json()
+     const data = await response.json()
+     return {
+          clientSecret: data.clientSecret,
+          ephemeralKey: data.ephemeralKey,
+          customer: data.customer,
+     }
 }
