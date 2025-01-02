@@ -101,7 +101,38 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer fetch.")
      }
 
-     async getOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined> {
+     async getOffers(): Promise<OfferEntity[] | undefined> {
+          const { data: offerData, error: offerError } = await supabase
+               .from("offers")
+               .select(
+                    `
+            *,
+            boats (
+                id,
+                boat_name,
+                boat_images (url)
+            ),
+            profiles (
+                id,
+                firstname,
+                lastname,
+                username)
+        `
+               )
+               .eq("is_available", true)
+
+          if (offerError) {
+               throw new Error(`Error fetching offers: ${offerError.message}`)
+          }
+
+          if (offerData?.length) {
+               return offerData.map((offer: any) => OfferEntity.fromSupabaseData(offer))
+          }
+     }
+
+     async getOwnOffers({ profileId }: { profileId: string }): Promise<OfferEntity[] | undefined> {
+          console.log("profileId", profileId)
+
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .select(
@@ -126,6 +157,8 @@ class OfferRepositorySupabase implements OfferRepository {
           }
 
           if (offerData?.length) {
+               console.log(offerData)
+
                return offerData.map((offer: any) => OfferEntity.fromSupabaseData(offer))
           }
      }

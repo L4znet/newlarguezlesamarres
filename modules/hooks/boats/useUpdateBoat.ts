@@ -13,6 +13,7 @@ export function useUpdateBoat() {
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["boats"] })
                queryClient.invalidateQueries({ queryKey: ["offers"] })
+               queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
                     description: "Boat updated successfully!",

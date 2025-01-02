@@ -27,12 +27,12 @@ export function useUpdateOffer() {
                          showTranslatedFlashMessage
                     )
                } catch (error) {
-                    console.log("errorfsdffdssfd", error)
                     throw new Error((error as Error).message)
                }
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["offers"] })
+               queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
                     description: "Offer updated successfully!",

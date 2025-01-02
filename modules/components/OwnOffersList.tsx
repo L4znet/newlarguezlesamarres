@@ -1,28 +1,24 @@
 import React from "react"
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
 import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-paper"
-import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
-import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
+import { displayRentalFrequency, getRentalFrequency } from "@/constants/RentalFrequency"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import { deleteOfferUseCase } from "@/modules/application/offers/deleteOfferUseCase"
-import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
+import { useOwnOffers } from "@/modules/hooks/offers/useOwnOffers"
 
 const OwnOffersList = () => {
      const router = useRouter()
-     const { data: offers, isPending, error } = useOffers()
+     const { data: offers, isPending, error } = useOwnOffers()
      const { mutate: deleteOffer, isPending: isDeleting, error: deleteError } = useDeleteOffer()
      const theme = useTheme()
 
      const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
-
-     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)

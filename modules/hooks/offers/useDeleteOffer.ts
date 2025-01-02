@@ -17,6 +17,7 @@ export function useDeleteOffer() {
                })
 
                queryClient.invalidateQueries({ queryKey: ["offers"] })
+               queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
           },
           onError: (error) => {
                showTranslatedFlashMessage("danger", {

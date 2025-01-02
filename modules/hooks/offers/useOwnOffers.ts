@@ -1,17 +1,16 @@
 import { useQuery } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { getOffersUseCase } from "@/modules/application/offers/getOffersUseCase"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
+import { getOwnOffersUseCase } from "@/modules/application/offers/getOwnOffersUseCase"
 
-export function useOffers() {
+export function useOwnOffers() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     console.log("sfdmkjlklfsdjkjfdsl")
+     console.log("Je suis là")
 
      return useQuery<OfferEntity[]>({
-          queryKey: ["offers"],
-          queryFn: () => getOffersUseCase(showTranslatedFlashMessage),
+          queryKey: ["ownOffers"],
+          queryFn: () => getOwnOffersUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,

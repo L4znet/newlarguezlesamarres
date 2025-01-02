@@ -21,6 +21,7 @@ export const useCreateOffer = () => {
                resetStore()
 
                queryClient.invalidateQueries({ queryKey: ["offers"] })
+               queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
           },
           onError: (error) => {
                showTranslatedFlashMessage("danger", {
