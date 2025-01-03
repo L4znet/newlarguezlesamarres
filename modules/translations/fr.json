@@ -290,7 +290,21 @@
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
      "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
-     "bookings_tenant_empty_message": "Vous n'avez rien réservé pour le moment",
+     "bookings_tenant_pending_empty_message": "Aucune location en attente",
+     "bookings_tenant_cancelled_empty_message": "Aucune location annulée",
+     "bookings_tenant_confirmed_empty_message": "Aucune location confirmée",
+
+     "bookings_owners_pending_empty_message": "Aucune réservation en attente",
+     "bookings_owners_cancelled_empty_message": "Aucune réservation annulée",
+     "bookings_owners_confirmed_empty_message": "Aucune réservation confirmée",
+
+     "booking_cancelled_btn": "Annulées",
+     "booking_pending_btn": "En attente",
+     "booking_confirmed_btn": "Confirmées",
+
+     "booking_pending_chip": "En attente de confirmation",
+     "booking_confirmed_chip": "Confirmée",
+     "booking_cancelled_chip": "Annulée",
 
      "bookings_fetch_error": "Erreur lors de la récupération des réservations",
 

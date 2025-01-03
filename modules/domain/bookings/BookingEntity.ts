@@ -14,11 +14,13 @@ export default class BookingEntity {
           public readonly status: string,
           public readonly offerTitle: string,
           public readonly offerDescription: string,
+          public readonly offerPrice: string,
+          public readonly offerFrequency: number,
           public readonly boatName: string,
           public readonly boatImages: BoatImage[]
      ) {}
 
-     static fromSupabaseData(data: { id: string; offer_id: string; user_id: string; start_date: string; end_date: string; status: string; offer_title: string; offer_description: string; boat_name: string; boat_images: { id: string; url: string; caption: string | null }[] }): BookingEntity {
+     static fromSupabaseData(data: { id: string; offer_id: string; user_id: string; start_date: string; end_date: string; status: string; offer_title: string; offer_description: string; offer_price: string; offer_frequency: number; boat_name: string; boat_images: { id: string; url: string; caption: string | null }[] }): BookingEntity {
           return new BookingEntity(
                data.id,
                data.offer_id,
@@ -28,6 +30,8 @@ export default class BookingEntity {
                data.status,
                data.offer_title,
                data.offer_description,
+               data.offer_price,
+               data.offer_frequency,
                data.boat_name,
                data.boat_images.map((img) => ({
                     id: img.id,
@@ -47,6 +51,8 @@ export default class BookingEntity {
                status: data.status,
                offer_title: data.offerTitle,
                offer_description: data.offerDescription,
+               offer_price: data.offerPrice,
+               offer_frequency: data.offerFrequency,
                boat_name: data.boatName,
                boat_images: data.boatImages.map((img) => ({
                     id: img.id,
