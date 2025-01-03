@@ -108,7 +108,7 @@ class OfferRepositorySupabase implements OfferRepository {
             boats (
                 id,
                 boat_name,
-                boat_images (url)
+                boat_images (id, url, caption)
             ),
             profiles (
                 id,

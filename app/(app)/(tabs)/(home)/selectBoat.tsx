@@ -38,6 +38,8 @@ export default function SelectBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
+     console.log(boats)
+
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <Text style={[styles.title, { color: theme.colors.primary }]}>{t("select_boat")}</Text>

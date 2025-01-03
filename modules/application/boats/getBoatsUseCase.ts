@@ -26,6 +26,7 @@ export const getBoatsUseCase = async (
 
           return boats as BoatEntity[] | []
      } catch (error) {
+          console.log("error", error)
           throw new Error((error as Error).message)
      }
 }

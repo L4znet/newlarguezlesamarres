@@ -49,7 +49,27 @@ export default function createOffer() {
                title: title || "",
                description: description || "",
                price: price || "",
+               isAvailable: isAvailable || false,
+               isSkipperAvailable: isSkipperAvailable || false,
+               isTeamAvailable: isTeamAvailable || false,
+               equipments: equipments || [],
+               rentalPeriod: rentalPeriod || {},
+               location: location || {},
+               selectedBoatId: selectedBoatId || "",
           },
+     })
+
+     console.log({
+          rentalPeriod,
+          location,
+          selectedBoatId,
+          isAvailable,
+          isSkipperAvailable,
+          isTeamAvailable,
+          frequency: rentalFrequencyOptions[0]._id,
+          equipments,
+          deletedAt: null,
+          description,
      })
 
      const onSubmit = async (data: any) => {
@@ -72,6 +92,8 @@ export default function createOffer() {
                     description: t("offer_created_success"),
                })
           } catch (error) {
+               console.log("error", error)
+
                showTranslatedFlashMessage("danger", {
                     title: t("flash_title_error"),
                     description: t("offer_creation_error"),
@@ -81,6 +103,7 @@ export default function createOffer() {
 
      const onError = () => {
           console.log("fsdfsdqklmjsfqdkjlfsqdlkjm", getErrors("rentalPeriod"))
+          console.log("errors", errors)
           showTranslatedFlashMessage("danger", {
                title: t("flash_title_danger"),
                description: t("fix_errors_before_submitting"),
@@ -111,7 +134,16 @@ export default function createOffer() {
                               )}
                          />
 
-                         <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={description} onChangeText={(description) => setOfferField("description", description)} />
+                         <Controller
+                              name="description"
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                   <View>
+                                        <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={value} onChangeText={onChange} error={!!errors.description} />
+                                        {errors.description && <Text style={styles.errorText}>{t(errors.description.message as string)}</Text>}
+                                   </View>
+                              )}
+                         />
                          <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} onChangeText={(price) => setOfferField("price", price)} />
                          <PaperSelect
                               label={t("rental_frequency_placeholder")}

@@ -48,7 +48,7 @@ const BookingTenantList = () => {
                     start: item.startDate,
                     end: item.endDate,
                },
-               item.offerFrequency
+               item.offerFrequency as number
           )
 
           const { rentalStartDate, rentalEndDate } = displayRentalPeriod(item.startDate, item.endDate, locale, "short")
@@ -79,7 +79,7 @@ const BookingTenantList = () => {
                                    {totalAmount} {t("money_symbol")}
                               </Chip>
                               <Chip style={{ marginLeft: 10 }}>
-                                   {item.offerPrice} {t("money_symbol")} / {displayRentalFrequency(item.offerFrequency.toString(), locale).toLowerCase()}
+                                   {item.offerPrice} {t("money_symbol")} / {displayRentalFrequency(item.offerFrequency?.toString(), locale).toLowerCase()}
                               </Chip>
                          </View>
                     </Card.Content>

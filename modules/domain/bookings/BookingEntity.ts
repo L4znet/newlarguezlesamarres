@@ -29,7 +29,6 @@ export default class BookingEntity {
 
      static fromSupabaseData(data: { id: string; offer_id: string; user_id: string; start_date: string; end_date: string; status: string; offer_title: string; offer_description: string; offer_price: string; offer_frequency: number; offer_rentals: RentalPeriod; boat_name: string; boat_images: { id: string; url: string; caption: string | null }[]; profile_lastname: string; profile_firstname: string; profile_username: string; profile_email: string }): BookingEntity {
           return new BookingEntity(
-               data.id,
                data.offer_id,
                data.user_id,
                data.start_date,
@@ -49,7 +48,8 @@ export default class BookingEntity {
                data.profile_lastname,
                data.profile_firstname,
                data.profile_username,
-               data.profile_email
+               data.profile_email,
+               data.id
           )
      }
 

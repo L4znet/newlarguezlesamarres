@@ -1,17 +1,30 @@
 import React, { useState } from "react"
 import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, FlatList } from "react-native"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
 
 const { width } = Dimensions.get("window")
 
+interface BoatImage {
+     id: string
+     url: string
+     caption: string | null
+}
+
 interface SlideshowProps {
-     images: {
-          url: string
-     }[]
+     images?: BoatImage[]
 }
 
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
      const [currentIndex, setCurrentIndex] = useState(0)
+
+     console.log("Slideshow images", images)
+
+     if (!images) {
+          return (
+               <View style={styles.container}>
+                    <Text>No images</Text>
+               </View>
+          )
+     }
 
      const goToPrevious = () => {
           if (currentIndex > 0) {

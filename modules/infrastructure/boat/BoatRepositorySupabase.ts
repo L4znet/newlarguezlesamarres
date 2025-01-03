@@ -170,6 +170,7 @@ class BoatRepositorySupabase implements BoatRepository {
                     .eq("profile_id", profileId)
 
                if (boatError) {
+                    console.log("boatError", boatError)
                     throw new Error(`Error getting boats: ${boatError.message}`)
                }
 

@@ -11,7 +11,7 @@ import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatU
 import { useDeleteBoat } from "@/modules/hooks/boats/useDeleteBoat"
 
 const BoatList = () => {
-     const { data: boats, isPending } = useBoats()
+     const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
      const { setCurrentBoat } = useBoatStore()
 
@@ -26,6 +26,8 @@ const BoatList = () => {
           )
      }
 
+     console.log("error", error)
+
      const handleEditBoat = async (boatId: string) => {
           const boat = await getSingleBoatUseCase(boatId)
 
@@ -36,9 +38,17 @@ const BoatList = () => {
      const renderItem = ({ item }: { item: BoatEntity }) => {
           const boatType = displayBoatType(item.boatType as unknown as BoatType)
 
+          const boatImages = item.boatImages.map((image) => {
+               return {
+                    id: image.id as string,
+                    url: image.url as string,
+                    caption: image.caption as string,
+               }
+          })
+
           return (
                <Card key={item.id} style={styles.card}>
-                    <Slideshow images={item.boatImages} />
+                    <Slideshow images={boatImages} />
                     <Card.Title title={item.boatName} subtitle={item.boatDescription} />
                     <Card.Content>
                          <Text>ID : {item.id}</Text>

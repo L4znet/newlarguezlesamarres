@@ -49,19 +49,22 @@ const OffersList = () => {
           })
      }
 
+     console.log("RENDER")
+
      const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
           const frequency = displayRentalFrequency(item.frequency.toString(), locale)
           const username = item?.profiles?.username as string
-          const boatImages = item?.boats?.boatImages as unknown as [
-               {
-                    url: string
-                    caption: string
-               },
-          ]
+          const boatImages = item?.boats?.boatImages?.map((image) => {
+               return {
+                    id: image.id as string,
+                    url: image.url as string,
+                    caption: image.caption as string,
+               }
+          })
 
           return (
-               <Card key={item.id} style={[styles.card]} onPress={() => handleMoreDetails(item)}>
-                    <Slideshow images={boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
+               <Card key={item.id} style={[styles.card]}>
+                    <Slideshow images={boatImages} />
 
                     <Card.Title title={item.title} subtitle={item.description} />
 

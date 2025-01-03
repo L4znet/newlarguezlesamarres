@@ -5,7 +5,7 @@ export const OfferSchema = z
           id: z.string().uuid(),
           profileId: z.string().uuid(),
           title: z.string().nonempty("zod_rule_title_required").min(10, "zod_rule_title_min_length").max(100, "zod_rule_title_max_length"),
-          description: z.string().min(20, "zod_rule_description_min_length").max(500, "zod_rule_description_max_length"),
+          description: z.string().min(10, "zod_rule_description_min_length").max(500, "zod_rule_description_max_length"),
           price: z.number().min(0, "zod_rule_price_min_value"),
           isAvailable: z.boolean(),
           frequency: z.number(),
