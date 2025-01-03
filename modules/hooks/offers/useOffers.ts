@@ -7,8 +7,6 @@ import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
 export function useOffers() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     console.log("sfdmkjlklfsdjkjfdsl")
-
      return useQuery<OfferEntity[]>({
           queryKey: ["offers"],
           queryFn: () => getOffersUseCase(showTranslatedFlashMessage),

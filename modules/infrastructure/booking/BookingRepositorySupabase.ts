@@ -7,7 +7,7 @@ import supabaseClient from "@/supabaseClient"
 
 class BookingRepositorySupabase implements BookingRepository {
      async getTenantBookings(userId: string): Promise<BookingEntity[] | undefined> {
-          const { data: bookingData, error: bookingError } = await supabase.from("bookings").select(`*`).eq("user_id", userId)
+          const { data: bookingData, error: bookingError } = await supabase.from("bookings").select(`*, ...offers!inner(offer_title:title, offer_description:description, ...boats(boat_name,boat_images (id,caption,url)))`).eq("user_id", userId)
 
           if (bookingError) {
                throw new Error(`Error getting bookings tenants: ${bookingError.message}`)

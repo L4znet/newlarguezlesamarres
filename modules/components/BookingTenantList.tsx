@@ -1,11 +1,12 @@
 import React from "react"
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
-import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-paper"
+import { Text, ActivityIndicator, Card, Button, useTheme, Chip } from "react-native-paper"
 import { useRouter } from "expo-router"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import BookingEntity from "@/modules/domain/bookings/BookingEntity"
 import { useTenantBookings } from "@/modules/hooks/bookings/useTenantBookings"
 import { useOwnerBookings } from "@/modules/hooks/bookings/useOwnerBookings"
+import Slideshow from "@/modules/components/Slideshow"
 
 const BookingTenantList = () => {
      const router = useRouter()
@@ -34,11 +35,18 @@ const BookingTenantList = () => {
    }*/
 
      const renderCardItem = ({ item }: ListRenderItemInfo<BookingEntity>) => {
+          console.log(item)
+
           return (
                <Card key={item.id} style={[styles.card]}>
-                    <Card.Title title={"fdssdf"} subtitle={"fdssfd"} />
+                    <Slideshow images={item.boatImages} />
+                    <Card.Title title={item.offerTitle} subtitle={item.offerDescription} />
+                    <View></View>
 
                     <Card.Content>
+                         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                              <Chip onPress={() => console.log("Pressed")}>Pending</Chip>
+                         </View>
                          <Text>TOTO</Text>
                          <Text>TATA</Text>
                     </Card.Content>
