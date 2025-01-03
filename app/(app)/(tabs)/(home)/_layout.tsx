@@ -44,13 +44,6 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name="checkout"
-                         options={{
-                              title: t("drawer_checkout"),
-                              drawerItemStyle: { display: "none" },
-                         }}
-                    />
-                    <Drawer.Screen
                          name="selectLocation"
                          options={{
                               title: t("drawer_select_location"),

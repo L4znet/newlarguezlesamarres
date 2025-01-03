@@ -6,8 +6,6 @@ import { getOwnOffersUseCase } from "@/modules/application/offers/getOwnOffersUs
 export function useOwnOffers() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     console.log("Je suis là")
-
      return useQuery<OfferEntity[]>({
           queryKey: ["ownOffers"],
           queryFn: () => getOwnOffersUseCase(showTranslatedFlashMessage),

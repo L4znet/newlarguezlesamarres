@@ -105,7 +105,7 @@ export default function SelectRentalPeriod() {
           handleNavigation()
      }
 
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end, locale)
      const rentalPeriodErrors = getErrors("rentalPeriod")
 
      // @ts-ignore

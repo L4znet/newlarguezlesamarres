@@ -64,8 +64,6 @@ class OfferRepositorySupabase implements OfferRepository {
                     return OfferEntity.fromSupabaseData(offerData[0])
                }
           } catch (error) {
-               console.log(offerId)
-               console.log("sdffdsqsfdfdqqfsdsfdqsfd", error)
                throw new Error((error as Error).message)
           }
      }

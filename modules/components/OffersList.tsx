@@ -10,6 +10,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
+import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
 const OffersList = () => {
      const router = useRouter()
@@ -33,10 +34,18 @@ const OffersList = () => {
           )
      }
 
-     const handleMoreDetails = (offer: Offer) => {
+     const handleMoreDetails = async (offer: Offer) => {
+          const session = await getCurrentSessionUseCase()
+          const userId = session.data.session?.user.id
+
+          console.log({
+               offerId: offer.id,
+               userId: userId,
+          })
+
           router.navigate({
                pathname: "/(app)/(tabs)/(home)/offerDetail",
-               params: { offerId: offer.id },
+               params: { offerId: offer.id, userId: userId },
           })
      }
 

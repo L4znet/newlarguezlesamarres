@@ -21,7 +21,12 @@ export default function Layout() {
                          name="index"
                          options={{
                               headerShown: false,
-                              title: t("drawer_my_bookings_as_tenants"),
+                         }}
+                    />
+                    <Stack.Screen
+                         name="checkout"
+                         options={{
+                              headerShown: false,
                          }}
                     />
                </Stack>

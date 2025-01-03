@@ -41,17 +41,6 @@ const OwnOffersList = () => {
      }
 
      const handleUpdateOffer = async (offer: Offer) => {
-          console.log({
-               id: offer.id,
-               title: offer.title,
-               description: offer.description,
-               price: offer.price,
-               frequency: getRentalFrequency(offer.frequency.toString()),
-               isAvailable: offer.isAvailable,
-               isSkipperAvailable: offer.isSkipperAvailable,
-               isTeamAvailable: offer.isTeamAvailable,
-               boatId: offer.boatId,
-          })
           setOfferField({
                id: offer.id,
                title: offer.title,

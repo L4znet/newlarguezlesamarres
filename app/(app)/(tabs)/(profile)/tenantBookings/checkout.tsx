@@ -11,7 +11,6 @@ import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateTransaction } from "@/modules/hooks/rentals/useCreateTransaction"
 import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerifyAndInsertTransaction"
-import { useInsertBooking } from "@/modules/hooks/rentals/useInsertBooking"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -21,12 +20,11 @@ export default function Checkout() {
 
      const { mutateAsync: createTransaction, isPending: creatingTransaction } = useCreateTransaction()
      const { mutateAsync: verifyAndInsertTransaction } = useVerifyAndInsertTransaction()
-     const { mutateAsync: insertBooking } = useInsertBooking()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string }, currentOfferToRent?.frequency as number)
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string, locale)
      const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
 
      const [paymentIntent, setPaymentIntent] = useState({
@@ -95,14 +93,6 @@ export default function Checkout() {
                          paymentIntentId: paymentIntent.paymentIntent,
                          offerId: currentOfferToRent?.id as string,
                          userId: session.data.session?.user?.id as string,
-                    })
-
-                    await insertBooking({
-                         accessToken,
-                         offerId: currentOfferToRent?.id as string,
-                         userId: session.data.session?.user?.id as string,
-                         startDate: currentOfferToRent?.rentalPeriod.start as string,
-                         endDate: currentOfferToRent?.rentalPeriod.end as string,
                     })
 
                     showTranslatedFlashMessage("success", {

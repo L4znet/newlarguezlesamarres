@@ -21,11 +21,6 @@ const TabsComponent = ({ tabLabels, children }: { tabLabels: string[]; children:
           <View style={styles.container}>
                <Surface style={[styles.tabHeader, { backgroundColor: theme.colors.surface }]}>
                     {tabLabels.map((label, index) => {
-                         console.log({
-                              label,
-                              index,
-                         })
-
                          return (
                               <TouchableOpacity key={index} style={[styles.tabButton, activeIndex === index && { borderBottomColor: theme.colors.primary }]} onPress={() => handleTabPress(index)}>
                                    <Text style={[styles.tabText, activeIndex === index && { color: theme.colors.primary }]}>{label}</Text>
@@ -70,13 +65,13 @@ const styles = StyleSheet.create({
           height: 50,
      },
      tabText: {
-          fontSize: 16,
+          fontSize: 13,
           fontWeight: "600",
           color: "#666",
      },
      tabContent: {
           flexDirection: "row",
-          width: screenWidth * 3,
+          width: screenWidth * 5,
           flex: 1,
      },
 })

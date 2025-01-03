@@ -1,3 +1,5 @@
+import supabase from "@/supabaseClient"
+
 const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 
 export const verifyAndInsertTransaction = async ({ accessToken, paymentIntentId, offerId, userId }: { accessToken: string; paymentIntentId: string; offerId: string; userId: string }) => {
@@ -32,26 +34,6 @@ export const createTransaction = async ({ accessToken, offerId, amount, userId }
                offerId,
                amount,
                userId,
-          }),
-     })
-
-     return response.json()
-}
-
-export const insertBooking = async ({ accessToken, offerId, userId, startDate, endDate }: { accessToken: string; offerId: string; userId: string; startDate: string; endDate: string }) => {
-     const url = `${API_URL}/bookings`
-
-     const response = await fetch(url, {
-          method: "POST",
-          headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-               offerId,
-               userId,
-               startDate,
-               endDate,
           }),
      })
 
