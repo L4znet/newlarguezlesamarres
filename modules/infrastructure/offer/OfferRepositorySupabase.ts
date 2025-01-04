@@ -154,8 +154,6 @@ class OfferRepositorySupabase implements OfferRepository {
           }
 
           if (offerData?.length) {
-               console.log(offerData)
-
                return offerData.map((offer: any) => OfferEntity.fromSupabaseData(offer))
           }
      }

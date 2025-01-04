@@ -26,8 +26,6 @@ const BoatList = () => {
           )
      }
 
-     console.log("error", error)
-
      const handleEditBoat = async (boatId: string) => {
           const boat = await getSingleBoatUseCase(boatId)
 

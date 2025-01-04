@@ -11,7 +11,10 @@ export interface Offer {
      equipments: Equipment[] | []
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
-     rentalPeriod: RentalPeriod
+     rentalPeriod: {
+          start: string
+          end: string
+     }
      location: Location
      deletedAt?: Date | null
      id?: string

@@ -85,7 +85,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
      id: null,
      title: "",
      description: "",
-     price: "0",
+     price: "5",
      isAvailable: false,
      isSkipperAvailable: false,
      isTeamAvailable: false,
@@ -111,7 +111,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
           set((state) => ({
                equipments: state.equipments.filter((_, i) => i !== index),
           })),
-     setRentalPeriod: (start, end) => set(() => ({ rentalPeriod: { start, end } })),
+     setRentalPeriod: (start: string, end: string) => set(() => ({ rentalPeriod: { start, end } })),
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
      setOfferField: (fieldOrFields, value) => {
@@ -142,8 +142,6 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
           }),
      setCurrentOffer: async (offer) => {
           const resolvedOffer = offer instanceof Promise ? await offer : offer
-
-          console.log("resolvedOffer", resolvedOffer)
 
           set((state) => ({
                ...state,
@@ -181,7 +179,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
                id: null,
                title: "",
                description: "",
-               price: "0",
+               price: "5",
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,

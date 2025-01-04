@@ -55,7 +55,6 @@ export const updateOfferUseCase = async (
           })
           router.push("/(app)/(tabs)/(home)")
      } catch (error) {
-          console.log("aaaaa", error)
           throw new Error((error as Error).message)
      }
 }

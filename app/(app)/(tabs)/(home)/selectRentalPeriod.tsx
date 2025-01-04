@@ -9,6 +9,7 @@ import { useOfferStore } from "@/modules/stores/offerStore"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { PaperSelect } from "react-native-paper-select"
 import { displayRentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
+import { z } from "zod"
 
 export default function SelectRentalPeriod() {
      const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors, setFrequency, frequency } = useOfferStore()
@@ -23,7 +24,7 @@ export default function SelectRentalPeriod() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const theme = useTheme()
-     const { backPath } = useLocalSearchParams<{ backPath: string }>()
+     const { backPath, control, fieldId } = useLocalSearchParams<{ backPath: string; control: any; fieldId: string }>()
      const calendarRef = React.createRef<CalendarPicker>()
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
      const isInitialized = useRef(false)
@@ -36,6 +37,7 @@ export default function SelectRentalPeriod() {
                error: "",
                id: rentalFrequencyOptions[0]?._id || 0,
           })
+
           isInitialized.current = true
      }
 
@@ -100,11 +102,31 @@ export default function SelectRentalPeriod() {
                     break
           }
 
-          setRentalPeriod(startDate.toISOString().split("T")[0], endDate.toISOString().split("T")[0])
+          const startISO = startDate.toISOString().split("T")[0]
+          const endISO = endDate.toISOString().split("T")[0]
+
+          const schema = z.object({
+               start: z.string().refine((val) => !isNaN(Date.parse(val)), {
+                    message: t("invalid_date_start"),
+               }),
+               end: z.string().refine((val) => !isNaN(Date.parse(val)), {
+                    message: t("invalid_date_end"),
+               }),
+          })
+
+          const validationResult = schema.safeParse({ start: startISO, end: endISO })
+
+          if (!validationResult.success) {
+               console.log("ici")
+
+               const errors = validationResult.error.flatten()
+               setErrors("rentalPeriod", [...(errors.fieldErrors.start || []), ...(errors.fieldErrors.end || [])])
+               return
+          }
+
+          setRentalPeriod(startISO, endISO)
           clearErrors("rentalPeriod")
           handleNavigation()
-
-          console.log("fsdfdfsd", getErrors("rentalPeriod"))
      }
 
      const resetCalendar = () => {
@@ -132,9 +154,6 @@ export default function SelectRentalPeriod() {
                          label={t("rental_frequency_placeholder")}
                          value={frequency.value}
                          onSelection={(value: any) => {
-                              console.log("value", value.text)
-                              console.log("frequency.value", frequency)
-
                               setFrequency({
                                    list: frequency.list,
                                    value: value.text,
@@ -150,6 +169,7 @@ export default function SelectRentalPeriod() {
                     />
 
                     <CalendarPicker key={calendarKey} ref={calendarRef} initialDate={new Date()} selectedStartDate={startDate ? startDate.toString() : undefined} selectedEndDate={endDate ? endDate.toString() : undefined} weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]} months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]} previousTitle={t("previous")} nextTitle={t("next")} startFromMonday allowRangeSelection minDate={new Date()} todayBackgroundColor="#f2e6ff" selectedDayColor="#7300e6" textStyle={{ color: themeColor }} onDateChange={handleDateChange} selectedRangeStyle={{ backgroundColor: theme.colors.primary }} />
+
                     <View style={styles.selectedDates}>
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>
                               {t("start_date_label")}: {rentalStartDate}

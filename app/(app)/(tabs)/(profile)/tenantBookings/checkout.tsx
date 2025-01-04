@@ -66,8 +66,6 @@ export default function Checkout() {
           })
 
           if (error) {
-               console.log("Error initializing payment sheet", error)
-
                showTranslatedFlashMessage("danger", {
                     title: "Payment Initialization Failed",
                     description: error.message,
@@ -106,7 +104,6 @@ export default function Checkout() {
                     })
                }
           } catch (e) {
-               console.log("Error during payment", e)
                showTranslatedFlashMessage("danger", {
                     title: "Payment Error",
                     description: "An error occurred during payment. Please try again.",

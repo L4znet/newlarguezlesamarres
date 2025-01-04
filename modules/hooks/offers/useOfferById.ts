@@ -14,7 +14,6 @@ export function useOfferById(offerId: string) {
           refetchOnWindowFocus: false,
           staleTime: Infinity,
           onSuccess: (data: any) => {
-               console.log("sfdlmkjsdfjkl")
                setCurrentOffer(data)
           },
      } as UseQueryOptions<OfferEntity, Error>)

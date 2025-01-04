@@ -31,8 +31,6 @@ export const getOwnOffersUseCase = async (
 
           return offers as OfferEntity[] | []
      } catch (error) {
-          console.log(error)
-
           showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
 
           throw error as Error

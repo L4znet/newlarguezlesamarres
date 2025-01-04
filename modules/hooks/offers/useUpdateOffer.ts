@@ -39,8 +39,6 @@ export function useUpdateOffer() {
                })
           },
           onError: (error) => {
-               console.log(error)
-
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_danger",
                     description: (error as Error).message,

@@ -12,8 +12,6 @@ export const createBookingUseCase = async ({ offerId, userId, startDate, endDate
                status,
           })
 
-          console.log("response", response)
-
           return response
 
           //

@@ -94,15 +94,7 @@ class AuthRepositorySupabase implements AuthRepository {
                redirectTo: url + "/reset-password",
           })
 
-          console.log({
-               error,
-               data,
-          })
-
-          console.log("data", data)
-
           if (error) {
-               console.log(error)
                throw new Error("Erreur lors de la réinitialisation du mot de passe : " + error.message)
           }
      }
@@ -178,7 +170,6 @@ class AuthRepositorySupabase implements AuthRepository {
           const { data: subscription } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
                callback(session)
                if (event == "PASSWORD_RECOVERY") {
-                    console.log("password recovery event")
                     const newPassword = prompt("What would you like your new password to be?")
                     if (newPassword) {
                          const { data, error } = await supabase.auth.updateUser({ password: newPassword })

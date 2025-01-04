@@ -76,8 +76,6 @@ class BoatRepositorySupabase implements BoatRepository {
                          is_default: index === 0,
                          base64: image.base64,
                     })
-
-                    console.log(data, error)
                }
           } catch (error) {
                throw new Error(`Error in uploadImages: ${(error as Error).message}`)
@@ -124,8 +122,6 @@ class BoatRepositorySupabase implements BoatRepository {
                          is_default: image.isDefault,
                          base64: image.base64,
                     })
-
-                    console.log(data, error)
                }
           } catch (error) {
                throw new Error(`Error in uploadImages: ${(error as Error).message}`)
@@ -170,7 +166,6 @@ class BoatRepositorySupabase implements BoatRepository {
                     .eq("profile_id", profileId)
 
                if (boatError) {
-                    console.log("boatError", boatError)
                     throw new Error(`Error getting boats: ${boatError.message}`)
                }
 

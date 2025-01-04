@@ -41,8 +41,6 @@ export const getRentalFrequency = (value: string) => {
 }
 
 export const getFrequencyLabelByIndex = (index: number) => {
-     console.log(Object.keys(RentalFrequency).find((key) => RentalFrequency[key as keyof typeof RentalFrequency] === index.toString()))
-
      return Object.keys(RentalFrequency).find((key) => RentalFrequency[key as keyof typeof RentalFrequency] === index.toString())
 }
 

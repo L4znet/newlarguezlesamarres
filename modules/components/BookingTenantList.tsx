@@ -26,8 +26,6 @@ const BookingTenantList = () => {
      if (error) return <Text style={styles.centered}>Erreur lors de la récupération des données.</Text>
 
      const handleRentBooking = async (offer: any) => {
-          console.log("offer", offer)
-
           await setCurrentOffer(offer)
 
           router.push({

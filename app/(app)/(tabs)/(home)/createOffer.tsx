@@ -34,6 +34,7 @@ export default function createOffer() {
      const {
           control,
           handleSubmit,
+          trigger,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(OfferSchema),
@@ -45,12 +46,15 @@ export default function createOffer() {
                isSkipperAvailable: isSkipperAvailable || false,
                isTeamAvailable: isTeamAvailable || false,
                equipments: equipments || [],
-               rentalPeriod: rentalPeriod || { start: "", end: "" },
+               rentalPeriod: rentalPeriod,
                location: location || { city: "", address: "", country: "", zipcode: "" },
                selectedBoatId: selectedBoatId || "",
                frequency: frequency.value || "",
           },
      })
+
+     console.log("Erreurs zod", errors)
+     console.log("rentalPeriod", rentalPeriod)
 
      const onSubmit = async (data: any) => {
           try {
@@ -72,8 +76,6 @@ export default function createOffer() {
                     description: t("offer_created_success"),
                })
           } catch (error) {
-               console.log("error", error)
-
                showTranslatedFlashMessage("danger", {
                     title: t("flash_title_error"),
                     description: t("offer_creation_error"),
@@ -82,8 +84,6 @@ export default function createOffer() {
      }
 
      const onError = () => {
-          console.log("fsdfsdqklmjsfqdkjlfsqdlkjm", getErrors("rentalPeriod"))
-          console.log("errors", errors)
           showTranslatedFlashMessage("danger", {
                title: t("flash_title_danger"),
                description: t("fix_errors_before_submitting"),
@@ -91,7 +91,6 @@ export default function createOffer() {
      }
 
      const displayIcon = (errorLabel: string, isErrors: string[] | null) => {
-          console.log("isErrors", isErrors)
           if (isErrors) {
                return "close"
           } else {
@@ -99,7 +98,11 @@ export default function createOffer() {
           }
      }
 
-     console.log("frequency", frequency.selectedList[0].value)
+     const onBlurTrigger = async (field: any) => {
+          await trigger(field)
+     }
+
+     console.log('getErrors("rentalPeriod")', getErrors("rentalPeriod"))
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -132,7 +135,7 @@ export default function createOffer() {
                               render={({ field: { onChange, value } }) => {
                                    return (
                                         <View>
-                                             <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={value} onChangeText={onChange} error={!!errors.price} />
+                                             <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={value} onChangeText={onChange} onBlur={() => onBlurTrigger("price")} error={!!errors.price} />
                                              {errors.price && <Text style={styles.errorText}>{t(errors.price.message as string)}</Text>}
                                         </View>
                                    )
@@ -194,7 +197,11 @@ export default function createOffer() {
                                    handleNavigate("/selectRentalPeriod", {
                                         initialPeriod: rentalPeriod,
                                         backPath: "/createOffer",
-                                        frequency: frequency.id,
+                                        control: control,
+                                        fieldIds: {
+                                             rentalPeriod: "rentalPeriod",
+                                             frequency: "frequency",
+                                        },
                                    })
                               }
                               style={[styles.button, getErrors("rentalPeriod") ? styles.buttonError : ""]}

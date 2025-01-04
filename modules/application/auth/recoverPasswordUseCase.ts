@@ -7,8 +7,6 @@ export const recoverPasswordUseCase = async (email: string) => {
      try {
           await authRepository.resetPassword(email, url)
      } catch (error: any) {
-          console.log("error", error)
-
           throw new Error((error as Error).message)
      }
 }

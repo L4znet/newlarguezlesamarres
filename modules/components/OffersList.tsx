@@ -38,18 +38,11 @@ const OffersList = () => {
           const session = await getCurrentSessionUseCase()
           const userId = session.data.session?.user.id
 
-          console.log({
-               offerId: offer.id,
-               userId: userId,
-          })
-
           router.navigate({
                pathname: "/(app)/(tabs)/(home)/offerDetail",
                params: { offerId: offer.id, userId: userId },
           })
      }
-
-     console.log("RENDER")
 
      const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
           const frequency = displayRentalFrequency(item.frequency.toString(), locale)

@@ -13,8 +13,6 @@ export const fetchPayment = async (
 
      const url = `${API_URL}/transactions`
 
-     console.log(url)
-
      const response = await fetch(url, {
           method: "POST",
           headers: {

@@ -38,16 +38,12 @@ class BookingRepositorySupabase implements BookingRepository {
                throw new Error(`Error getting bookings tenants: ${bookingError.message}`)
           }
 
-          console.log("bookingData", bookingData)
-
           if (bookingData) {
                return bookingData?.map((booking) => BookingEntity.fromSupabaseData(booking))
           }
      }
 
      async getOwnerBookings(userId: string): Promise<BookingEntity[] | undefined> {
-          console.log("userId", userId)
-
           try {
                const { data, error } = await supabase
                     .from("bookings")

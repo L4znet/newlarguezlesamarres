@@ -16,8 +16,6 @@ interface SlideshowProps {
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
      const [currentIndex, setCurrentIndex] = useState(0)
 
-     console.log("Slideshow images", images)
-
      if (!images) {
           return (
                <View style={styles.container}>

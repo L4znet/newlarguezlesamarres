@@ -443,5 +443,7 @@
 
      "zod_rule_rental_period_invalid_days": "La période de location doit être comprise entre 1 et 7 jours inclus.",
      "zod_rule_rental_period_invalid_weeks": "La période de location doit être comprise entre 1 et 4 semaines inclues.",
-     "zod_rule_rental_period_invalid_months": "La période de location doit être comprise entre 1 et 12 mois inclus."
+     "zod_rule_rental_period_invalid_months": "La période de location doit être comprise entre 1 et 12 mois inclus.",
+
+     "zod_rule_price_min_value": "Le prix de l'annonce doit être supérieur ou égale à 5€"
 }
