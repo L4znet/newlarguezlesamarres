@@ -20,7 +20,7 @@ export default function createOffer() {
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const { getErrors, equipments, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setFrequency, frequency } = useOfferStore()
+     const { resetStore, getErrors, equipments, setRentalPeriod, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setFrequency, frequency } = useOfferStore()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
 
@@ -31,10 +31,25 @@ export default function createOffer() {
           })
      }
 
+     console.log("Les données du formulaire", {
+          title,
+          description,
+          price,
+          isAvailable,
+          isSkipperAvailable,
+          isTeamAvailable,
+          equipments,
+          rentalPeriod,
+          location,
+          selectedBoatId,
+     })
+
      const {
           control,
           handleSubmit,
           trigger,
+          setValue,
+          resetField,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(OfferSchema),
@@ -48,28 +63,39 @@ export default function createOffer() {
                equipments: equipments || [],
                rentalPeriod: rentalPeriod,
                location: location || { city: "", address: "", country: "", zipcode: "" },
-               selectedBoatId: selectedBoatId || "",
-               frequency: frequency.value || "",
+               boatId: selectedBoatId || "",
+               frequency: 1,
           },
      })
 
-     console.log("Erreurs zod", errors)
-     console.log("rentalPeriod", rentalPeriod)
+     if (location.zipcode && location.city && location.address && location.country) {
+          setValue("location", location)
+     }
+
+     if (selectedBoatId) {
+          setValue("boatId", selectedBoatId)
+     }
+
+     if (rentalPeriod.start && rentalPeriod.end && frequency.id && getErrors("rentalPeriod") === null) {
+          const frequencyId = parseInt(frequency.id)
+          setValue("rentalPeriod.start", rentalPeriod.start)
+          setValue("frequency", frequencyId)
+          setValue("rentalPeriod.end", rentalPeriod.end)
+     }
 
      const onSubmit = async (data: any) => {
           try {
                createOffer({
                     ...data,
-                    rentalPeriod,
-                    location,
-                    selectedBoatId,
-                    isAvailable,
-                    isSkipperAvailable,
-                    isTeamAvailable,
-                    frequency: rentalFrequencyOptions[0]._id,
-                    equipments,
-                    deletedAt: null,
                })
+
+               setValue("title", "")
+               setValue("description", "")
+               setValue("price", "")
+               setValue("isAvailable", false)
+               setValue("isSkipperAvailable", false)
+               setValue("isTeamAvailable", false)
+               setValue("equipments", [])
 
                showTranslatedFlashMessage("success", {
                     title: t("flash_title_success"),
@@ -102,6 +128,7 @@ export default function createOffer() {
           await trigger(field)
      }
 
+     console.log("Erreur ici", errors)
      console.log('getErrors("rentalPeriod")', getErrors("rentalPeriod"))
 
      return (
