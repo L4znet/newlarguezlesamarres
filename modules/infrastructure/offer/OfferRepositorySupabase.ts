@@ -77,7 +77,7 @@ class OfferRepositorySupabase implements OfferRepository {
             boats (
                 id,
                 boat_name,
-                boat_images (url)
+                boat_images (id, url, caption)
             ),
             profiles (
                 id,
@@ -130,8 +130,6 @@ class OfferRepositorySupabase implements OfferRepository {
      }
 
      async getOwnOffers(profileId: string): Promise<OfferEntity[] | undefined> {
-          console.log("profileId", profileId)
-
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .select(
@@ -140,7 +138,7 @@ class OfferRepositorySupabase implements OfferRepository {
             boats (
                 id,
                 boat_name,
-                boat_images (url)
+                boat_images (id, caption, url)
             ),
             profiles (
                 id,

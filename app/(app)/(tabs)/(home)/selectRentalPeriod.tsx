@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
@@ -7,9 +7,11 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { useTheme } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
+import { PaperSelect } from "react-native-paper-select"
+import { displayRentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 
 export default function SelectRentalPeriod() {
-     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors } = useOfferStore()
+     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors, setFrequency, frequency } = useOfferStore()
      const [calendarKey, setCalendarKey] = useState(0)
      const rawStartDate = rentalPeriod.start ? new Date(rentalPeriod.start) : null
      const rawEndDate = rentalPeriod.end ? new Date(rentalPeriod.end) : null
@@ -21,8 +23,21 @@ export default function SelectRentalPeriod() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const theme = useTheme()
-     const { backPath, frequency } = useLocalSearchParams<{ backPath: string; frequency: string }>()
+     const { backPath } = useLocalSearchParams<{ backPath: string }>()
      const calendarRef = React.createRef<CalendarPicker>()
+     const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
+     const isInitialized = useRef(false)
+
+     if (!isInitialized.current) {
+          setFrequency({
+               value: rentalFrequencyOptions[0]?.value || "",
+               list: rentalFrequencyOptions || [],
+               selectedList: [rentalFrequencyOptions[0]] || [],
+               error: "",
+               id: rentalFrequencyOptions[0]?._id || 0,
+          })
+          isInitialized.current = true
+     }
 
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
@@ -56,9 +71,7 @@ export default function SelectRentalPeriod() {
           const diffInHours = diffInMs / (1000 * 60 * 60)
           const diffInDays = diffInHours / 24
 
-          console.log("aaaa", frequency)
-
-          switch (frequency) {
+          switch (frequency.id) {
                case "1":
                     if (diffInDays > 6) {
                          const errorMessage = t("zod_rule_rental_period_invalid_days")
@@ -70,7 +83,6 @@ export default function SelectRentalPeriod() {
                     const diffInWeeks = diffInDays / 7
 
                     if (diffInWeeks < 1 || diffInWeeks > 4) {
-                         console.log("fsdfdfsd", diffInWeeks)
                          const errorMessage = t("zod_rule_rental_period_invalid_weeks")
                          setErrors("rentalPeriod", [errorMessage])
                          return
@@ -115,6 +127,28 @@ export default function SelectRentalPeriod() {
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <ScrollView contentContainerStyle={styles.content}>
                     <Text style={[styles.title, { color: theme.colors.primary }]}>{t("rental_period_title")}</Text>
+
+                    <PaperSelect
+                         label={t("rental_frequency_placeholder")}
+                         value={frequency.value}
+                         onSelection={(value: any) => {
+                              console.log("value", value.text)
+                              console.log("frequency.value", frequency)
+
+                              setFrequency({
+                                   list: frequency.list,
+                                   value: value.text,
+                                   selectedList: value.selectedList,
+                                   error: "",
+                                   id: value.selectedList[0]._id,
+                              })
+                         }}
+                         arrayList={[...frequency.list]}
+                         selectedArrayList={frequency.selectedList}
+                         errorText={frequency.error}
+                         multiEnable={false}
+                    />
+
                     <CalendarPicker key={calendarKey} ref={calendarRef} initialDate={new Date()} selectedStartDate={startDate ? startDate.toString() : undefined} selectedEndDate={endDate ? endDate.toString() : undefined} weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]} months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]} previousTitle={t("previous")} nextTitle={t("next")} startFromMonday allowRangeSelection minDate={new Date()} todayBackgroundColor="#f2e6ff" selectedDayColor="#7300e6" textStyle={{ color: themeColor }} onDateChange={handleDateChange} selectedRangeStyle={{ backgroundColor: theme.colors.primary }} />
                     <View style={styles.selectedDates}>
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>

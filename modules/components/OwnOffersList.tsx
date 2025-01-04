@@ -68,6 +68,7 @@ const OwnOffersList = () => {
           const username = item?.profiles?.username as string
           const boatImages = item?.boats?.boatImages as unknown as [
                {
+                    id: string
                     url: string
                     caption: string
                },
@@ -75,7 +76,7 @@ const OwnOffersList = () => {
 
           return (
                <Card key={item.id} style={[styles.card]}>
-                    <Slideshow images={boatImages.map((img: any) => ({ url: img.url, caption: img.caption || "Image" }))} />
+                    <Slideshow images={boatImages.map((img: any) => ({ id: img.id, url: img.url, caption: img.caption || "Image" }))} />
 
                     <Card.Title title={item.title} subtitle={item.description} />
 

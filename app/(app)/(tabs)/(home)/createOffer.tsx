@@ -6,7 +6,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { PaperSelect } from "react-native-paper-select"
 import { RelativePathString, useRouter } from "expo-router"
 import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
-import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
+import { displayRentalFrequency, RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
 import { Controller, useForm } from "react-hook-form"
@@ -20,15 +20,7 @@ export default function createOffer() {
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const { getErrors, equipments, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setOfferField, resetStore } = useOfferStore()
-
-     const [frequency, setFrequency] = useState({
-          value: rentalFrequencyOptions[0].value,
-          list: rentalFrequencyOptions,
-          selectedList: [rentalFrequencyOptions[0]],
-          error: "",
-          id: parseInt(RentalFrequency.Day),
-     })
+     const { getErrors, equipments, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setFrequency, frequency } = useOfferStore()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
 
@@ -53,23 +45,11 @@ export default function createOffer() {
                isSkipperAvailable: isSkipperAvailable || false,
                isTeamAvailable: isTeamAvailable || false,
                equipments: equipments || [],
-               rentalPeriod: rentalPeriod || {},
-               location: location || {},
+               rentalPeriod: rentalPeriod || { start: "", end: "" },
+               location: location || { city: "", address: "", country: "", zipcode: "" },
                selectedBoatId: selectedBoatId || "",
+               frequency: frequency.value || "",
           },
-     })
-
-     console.log({
-          rentalPeriod,
-          location,
-          selectedBoatId,
-          isAvailable,
-          isSkipperAvailable,
-          isTeamAvailable,
-          frequency: rentalFrequencyOptions[0]._id,
-          equipments,
-          deletedAt: null,
-          description,
      })
 
      const onSubmit = async (data: any) => {
@@ -110,7 +90,7 @@ export default function createOffer() {
           })
      }
 
-     const displayIcon = (errorLabel: string, isErrors: string[] | undefined) => {
+     const displayIcon = (errorLabel: string, isErrors: string[] | null) => {
           console.log("isErrors", isErrors)
           if (isErrors) {
                return "close"
@@ -118,6 +98,8 @@ export default function createOffer() {
                return "check"
           }
      }
+
+     console.log("frequency", frequency.selectedList[0].value)
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -144,36 +126,54 @@ export default function createOffer() {
                                    </View>
                               )}
                          />
-                         <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} onChangeText={(price) => setOfferField("price", price)} />
-                         <PaperSelect
-                              label={t("rental_frequency_placeholder")}
-                              value={frequency.value}
-                              onSelection={(value: any) => {
-                                   setFrequency({
-                                        ...frequency,
-                                        value: value.text,
-                                        selectedList: value.selectedList,
-                                        error: "",
-                                        id: parseInt(value.selectedList[0]._id),
-                                   })
+                         <Controller
+                              name="price"
+                              control={control}
+                              render={({ field: { onChange, value } }) => {
+                                   return (
+                                        <View>
+                                             <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={value} onChangeText={onChange} error={!!errors.price} />
+                                             {errors.price && <Text style={styles.errorText}>{t(errors.price.message as string)}</Text>}
+                                        </View>
+                                   )
                               }}
-                              arrayList={[...frequency.list]}
-                              selectedArrayList={frequency.selectedList}
-                              errorText={frequency.error}
-                              multiEnable={false}
                          />
-                         <View style={styles.inputRow}>
-                              <Text>{t("is_available_label")}</Text>
-                              <Switch value={isAvailable} onValueChange={(value) => setOfferField("isAvailable", value)} />
-                         </View>
-                         <View style={styles.inputRow}>
-                              <Text>{t("is_skipper_available_label")}</Text>
-                              <Switch value={isSkipperAvailable} onValueChange={(value) => setOfferField("isSkipperAvailable", value)} />
-                         </View>
-                         <View style={styles.inputRow}>
-                              <Text>{t("is_team_available_label")}</Text>
-                              <Switch value={isTeamAvailable} onValueChange={(value) => setOfferField("isTeamAvailable", value)} />
-                         </View>
+
+                         <Controller
+                              name="isAvailable"
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                   <View style={styles.inputRow}>
+                                        <Text>{t("is_available_label")}</Text>
+                                        <Switch value={value} onValueChange={onChange} />
+                                        {errors.isAvailable && <Text style={styles.errorText}>{t(errors.isAvailable.message as string)}</Text>}
+                                   </View>
+                              )}
+                         />
+
+                         <Controller
+                              name="isSkipperAvailable"
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                   <View style={styles.inputRow}>
+                                        <Text>{t("is_skipper_available_label")}</Text>
+                                        <Switch value={value} onValueChange={onChange} />
+                                        {errors.isSkipperAvailable && <Text style={styles.errorText}>{t(errors.isSkipperAvailable.message as string)}</Text>}
+                                   </View>
+                              )}
+                         />
+                         <Controller
+                              name="isTeamAvailable"
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                   <View style={styles.inputRow}>
+                                        <Text>{t("is_team_available_label")}</Text>
+                                        <Switch value={value} onValueChange={onChange} />
+                                        {errors.isTeamAvailable && <Text style={styles.errorText}>{t(errors.isTeamAvailable.message as string)}</Text>}
+                                   </View>
+                              )}
+                         />
+
                          <Button
                               icon={equipments.length > 0 ? "check" : "plus"}
                               mode="contained"
@@ -201,6 +201,7 @@ export default function createOffer() {
                          >
                               {t("select_rental_period_button")}
                          </Button>
+
                          {getErrors("rentalPeriod") &&
                               getErrors("rentalPeriod")?.map((error, index) => (
                                    <Text key={index} style={styles.errorText}>

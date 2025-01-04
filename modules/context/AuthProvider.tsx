@@ -7,6 +7,7 @@ import { router } from "expo-router"
 import supabase from "@/supabaseClient"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Session, UserMetadata } from "@supabase/supabase-js"
+import { queryClient } from "@/queryClient"
 
 type AuthContextType = {
      signUp: (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => Promise<void>
@@ -52,6 +53,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                await AsyncStorage.removeItem("supabase_session")
                setSession(null)
                setUser(null)
+
+               queryClient.clear()
+               await queryClient.invalidateQueries()
+
                showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })

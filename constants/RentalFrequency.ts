@@ -6,7 +6,6 @@ export enum RentalFrequency {
      Month = "3",
 }
 
-// Traductions statiques des fréquences
 const translations: Record<string, Record<RentalFrequency, string>> = {
      es: {
           [RentalFrequency.Day]: "Día",
@@ -41,7 +40,13 @@ export const getRentalFrequency = (value: string) => {
      return Object.keys(RentalFrequency).find((key) => RentalFrequency[key as keyof typeof RentalFrequency] === value)
 }
 
-export const displayRentalFrequency = (frequency: string | undefined, locale: string = "en") => {
+export const getFrequencyLabelByIndex = (index: number) => {
+     console.log(Object.keys(RentalFrequency).find((key) => RentalFrequency[key as keyof typeof RentalFrequency] === index.toString()))
+
+     return Object.keys(RentalFrequency).find((key) => RentalFrequency[key as keyof typeof RentalFrequency] === index.toString())
+}
+
+export const displayRentalFrequency = (frequency: string | undefined, locale: string = "fr") => {
      const currentTranslations = translations[locale] || translations.en
      return frequency && currentTranslations[frequency as RentalFrequency] ? currentTranslations[frequency as RentalFrequency] : currentTranslations[RentalFrequency.Day]
 }

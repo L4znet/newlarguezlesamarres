@@ -1,4 +1,4 @@
-interface Boat {
+export interface Boat {
      boatName: string
      boatDescription: string
      boatCapacity: string

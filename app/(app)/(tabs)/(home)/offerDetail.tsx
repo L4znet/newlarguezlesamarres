@@ -22,6 +22,12 @@ export default function OfferDetail() {
      const { data: isOfferReserved, isPending: isPendingIsOfferReserved, error: errorIsOfferReserved } = useIsOfferReserved(offerId)
      const { data: hasUserReservedOffer, isPending: isPendingHasUserReservedOffer, error: errorHasUserReservedOffer } = useHasUserReservedOffer(offerId, userId)
 
+     interface BoatImage {
+          id: string
+          url: string
+          caption: string | null
+     }
+
      useEffect(() => {
           if (offerId && offerById && !isPending && !error) {
                const fetchOffer = async () => {
@@ -53,9 +59,25 @@ export default function OfferDetail() {
      const frequencyParsed = displayRentalFrequency(currentOffer.frequency.toString(), locale)
      const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOffer.rentalPeriod.start, currentOffer.rentalPeriod.end, locale)
 
+     const getBoatsImages = () => {
+          const boatsImages = [] as { id: string; caption: string; url: string }[]
+
+          offerById?.boats?.boatImages.forEach((boatImage) => {
+               boatsImages.push({
+                    id: boatImage.id as string,
+                    caption: boatImage.caption as string,
+                    url: boatImage.url as string,
+               })
+          })
+
+          return boatsImages as BoatImage[]
+     }
+
+     let boatImages = getBoatsImages()
+
      return (
           <View style={styles.container}>
-               <Slideshow images={currentOffer.boatImages} />
+               <Slideshow images={boatImages} />
                <Text variant="headlineLarge" style={styles.title}>
                     {currentOffer.title}
                </Text>

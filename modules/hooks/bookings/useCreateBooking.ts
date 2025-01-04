@@ -21,6 +21,8 @@ export const useCreateBooking = () => {
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["bookings"] })
+               queryClient.invalidateQueries({ queryKey: ["isOfferReserved"] })
+               queryClient.invalidateQueries({ queryKey: ["hasUserReservedOffer"] })
                showTranslatedFlashMessage("success", {
                     title: "Booking Created",
                     description: "Your booking has been created successfully.",
