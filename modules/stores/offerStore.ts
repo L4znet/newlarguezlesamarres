@@ -23,20 +23,6 @@ interface Boat {
      boatImages: BoatImage[]
 }
 
-interface Frequency {
-     value: string
-     list: {
-          _id: RentalFrequency
-          value: string
-     }[]
-     selectedList: {
-          _id: RentalFrequency
-          value: string
-     }[]
-     error: string
-     id: RentalFrequency
-}
-
 interface OfferStore {
      profileId: string | null
      equipments: Equipment[]
@@ -50,7 +36,7 @@ interface OfferStore {
      isAvailable: boolean
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
-     frequency: Frequency
+     frequency: number
      boatId: string | null
      boatImages: BoatImage[]
      boat: Boat | null
@@ -61,7 +47,6 @@ interface OfferStore {
      removeEquipment: (index: number) => void
      setRentalPeriod: (start: string, end: string) => void
      setLocation: (location: Location) => void
-     setFrequency: (frequency: Frequency) => void
      selectBoat: (boatUid: string) => void
      setOfferField: (fieldOrFields: keyof OfferStore | Partial<OfferStore>, value?: any) => void
      setErrors: (field: string, errors: string[]) => void
@@ -89,13 +74,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
      isAvailable: false,
      isSkipperAvailable: false,
      isTeamAvailable: false,
-     frequency: {
-          value: getFrequencyLabelByIndex(parseInt(RentalFrequency.Day.valueOf())) as string,
-          list: [],
-          selectedList: [],
-          error: "",
-          id: RentalFrequency.Day,
-     },
+     frequency: 1,
      boatId: null,
      boatImages: [],
      boat: null,
@@ -163,7 +142,6 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
                },
           }))
      },
-     setFrequency: (frequency) => set(() => ({ frequency })),
      resetStore: () =>
           set(() => ({
                profileId: null,
@@ -183,13 +161,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,
-               frequency: {
-                    value: RentalFrequency.Day.valueOf(),
-                    list: [],
-                    selectedList: [],
-                    error: "",
-                    id: RentalFrequency.Day,
-               },
+               frequency: 1,
                boatId: null,
                boatImages: [],
                boat: null,

@@ -117,8 +117,6 @@ export default function SelectRentalPeriod() {
           const validationResult = schema.safeParse({ start: startISO, end: endISO })
 
           if (!validationResult.success) {
-               console.log("ici")
-
                const errors = validationResult.error.flatten()
                setErrors("rentalPeriod", [...(errors.fieldErrors.start || []), ...(errors.fieldErrors.end || [])])
                return
@@ -149,24 +147,6 @@ export default function SelectRentalPeriod() {
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <ScrollView contentContainerStyle={styles.content}>
                     <Text style={[styles.title, { color: theme.colors.primary }]}>{t("rental_period_title")}</Text>
-
-                    <PaperSelect
-                         label={t("rental_frequency_placeholder")}
-                         value={frequency.value}
-                         onSelection={(value: any) => {
-                              setFrequency({
-                                   list: frequency.list,
-                                   value: value.text,
-                                   selectedList: value.selectedList,
-                                   error: "",
-                                   id: value.selectedList[0]._id,
-                              })
-                         }}
-                         arrayList={[...frequency.list]}
-                         selectedArrayList={frequency.selectedList}
-                         errorText={frequency.error}
-                         multiEnable={false}
-                    />
 
                     <CalendarPicker key={calendarKey} ref={calendarRef} initialDate={new Date()} selectedStartDate={startDate ? startDate.toString() : undefined} selectedEndDate={endDate ? endDate.toString() : undefined} weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]} months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]} previousTitle={t("previous")} nextTitle={t("next")} startFromMonday allowRangeSelection minDate={new Date()} todayBackgroundColor="#f2e6ff" selectedDayColor="#7300e6" textStyle={{ color: themeColor }} onDateChange={handleDateChange} selectedRangeStyle={{ backgroundColor: theme.colors.primary }} />
 

@@ -20,9 +20,19 @@ export default function createOffer() {
 
      const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
-     const { resetStore, getErrors, equipments, setRentalPeriod, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable, setFrequency, frequency } = useOfferStore()
+     console.log("rentalFrequencyOptions", rentalFrequencyOptions)
+
+     const { resetStore, getErrors, equipments, setRentalPeriod, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
+
+     const [frequency, setFrequency] = useState({
+          value: rentalFrequencyOptions[0]?.value || "",
+          list: rentalFrequencyOptions || [],
+          selectedList: [rentalFrequencyOptions[0]] || [],
+          error: "",
+          id: rentalFrequencyOptions[0]?._id || 0,
+     })
 
      const handleNavigate = (path: string, params: any) => {
           router.push({
@@ -30,19 +40,6 @@ export default function createOffer() {
                params,
           })
      }
-
-     console.log("Les données du formulaire", {
-          title,
-          description,
-          price,
-          isAvailable,
-          isSkipperAvailable,
-          isTeamAvailable,
-          equipments,
-          rentalPeriod,
-          location,
-          selectedBoatId,
-     })
 
      const {
           control,
@@ -63,8 +60,8 @@ export default function createOffer() {
                equipments: equipments || [],
                rentalPeriod: rentalPeriod,
                location: location || { city: "", address: "", country: "", zipcode: "" },
-               boatId: selectedBoatId || "",
-               frequency: 1,
+               selectedBoatId: selectedBoatId || "",
+               frequency: rentalFrequencyOptions[0]._id,
           },
      })
 
@@ -73,13 +70,12 @@ export default function createOffer() {
      }
 
      if (selectedBoatId) {
-          setValue("boatId", selectedBoatId)
+          setValue("selectedBoatId", selectedBoatId)
      }
 
      if (rentalPeriod.start && rentalPeriod.end && frequency.id && getErrors("rentalPeriod") === null) {
-          const frequencyId = parseInt(frequency.id)
           setValue("rentalPeriod.start", rentalPeriod.start)
-          setValue("frequency", frequencyId)
+          setValue("frequency", frequency.id)
           setValue("rentalPeriod.end", rentalPeriod.end)
      }
 
@@ -167,6 +163,24 @@ export default function createOffer() {
                                         </View>
                                    )
                               }}
+                         />
+
+                         <PaperSelect
+                              label={t("rental_frequency_placeholder")}
+                              value={frequency.value}
+                              onSelection={(value: any) => {
+                                   setFrequency({
+                                        list: frequency.list,
+                                        value: value.text,
+                                        selectedList: value.selectedList,
+                                        error: "",
+                                        id: value.selectedList[0]._id,
+                                   })
+                              }}
+                              arrayList={[...frequency.list]}
+                              selectedArrayList={frequency.selectedList}
+                              errorText={frequency.error}
+                              multiEnable={false}
                          />
 
                          <Controller

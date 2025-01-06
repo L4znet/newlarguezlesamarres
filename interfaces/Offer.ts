@@ -7,7 +7,7 @@ export interface Offer {
      description: string
      price: string
      isAvailable: boolean
-     frequency: Frequency
+     frequency: number
      equipments: Equipment[] | []
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
