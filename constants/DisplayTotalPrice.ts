@@ -3,30 +3,21 @@ export const displayTotalPrice = (
      rentalPeriod: {
           start: string
           end: string
-     },
-     frequency: number
+     }
 ): {
      amountForStripe: number
      unitAmount: number
      totalAmount: number
 } => {
      let amountForStripe = 0
-     if (frequency === 0) {
-          const startDate = new Date(rentalPeriod.start)
-          const endDate = new Date(rentalPeriod.end)
-          const diffHours = Math.ceil(Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60))
-          const totalAmount = diffHours * parseInt(price)
-          amountForStripe = convertAmountForStripe(totalAmount)
-     } else {
-          const days = getHowManyDays(rentalPeriod.start, rentalPeriod.end)
-          const totalAmount = days * parseInt(price)
-          amountForStripe = convertAmountForStripe(totalAmount)
-     }
+     const days = getHowManyDays(rentalPeriod.start, rentalPeriod.end)
+     const totalAmount = days * parseInt(price)
+     amountForStripe = convertAmountForStripe(totalAmount)
 
      return {
           amountForStripe: amountForStripe,
           unitAmount: parseInt(price),
-          totalAmount: parseInt(price) * getHowManyDays(rentalPeriod.start, rentalPeriod.end),
+          totalAmount: totalAmount,
      }
 }
 const convertAmountForStripe = (amount: number) => amount * 100
