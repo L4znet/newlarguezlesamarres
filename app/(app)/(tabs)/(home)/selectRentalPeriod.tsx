@@ -10,7 +10,7 @@ import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { z } from "zod"
 
 export default function SelectRentalPeriod() {
-     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors } = useOfferStore()
+     const { rentalPeriod, setRentalPeriod, setTemporaryStartDate, setTemporaryEndDate, temporaryEndDate, temporaryStartDate, setErrors, clearErrors, getErrors } = useOfferStore()
      const [calendarKey, setCalendarKey] = useState(0)
 
      const router = useRouter()
@@ -23,23 +23,22 @@ export default function SelectRentalPeriod() {
      const [startDate, setStartDate] = useState<Date | null>(null)
      const [endDate, setEndDate] = useState<Date | null>(null)
 
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(startDate, endDate, locale)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(temporaryStartDate, temporaryEndDate, locale)
 
      const rentalPeriodErrors = getErrors("rentalPeriod")
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           console.log("Date change", {
-               start: startDate,
+               start: temporaryStartDate,
                end: endDate,
           })
 
           if (type === "END_DATE") {
                console.log("Setting end date", date)
-
-               setEndDate(date)
+               setTemporaryEndDate(date)
                clearErrors("rentalPeriod")
           } else {
-               setStartDate(date)
-               setEndDate(null)
+               setTemporaryStartDate(date)
+               setTemporaryEndDate(null)
                clearErrors("rentalPeriod")
           }
      }
@@ -61,22 +60,17 @@ export default function SelectRentalPeriod() {
                return
           }
 
-          const startDateParsed = startDate ? startDate?.toISOString().split("T")[0] : ""
-          const endDateParsed = endDate ? endDate?.toISOString().split("T")[0] : ""
+          const startDateParsed = temporaryStartDate ? temporaryStartDate?.toISOString().split("T")[0] : ""
+          const endDateParsed = temporaryEndDate ? temporaryEndDate?.toISOString().split("T")[0] : ""
 
           const schema = z
                .object({
-                    start: z.string().refine((value) => value !== "", { message: t("zod_rule_start_date_required") }),
+                    start: z.string().refine((value) => value !== "", { message: t("zod_rule_rental_period_required") }),
                     end: z.string().refine((value) => value !== "", { message: t("zod_rule_end_date_required") }),
                })
                .refine(
                     (value) => {
                          const { start, end } = value
-
-                         console.log("Period", {
-                              start,
-                              end,
-                         })
 
                          const startDate = new Date(start)
                          const endDate = new Date(end)
@@ -84,8 +78,6 @@ export default function SelectRentalPeriod() {
                          const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
 
                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-                         console.log("Diff days", typeof diffDays)
 
                          return diffDays >= 2
                     },
@@ -106,8 +98,8 @@ export default function SelectRentalPeriod() {
      }
 
      const resetCalendar = () => {
-          setStartDate(null)
-          setEndDate(null)
+          setTemporaryStartDate(null)
+          setTemporaryEndDate(null)
           clearErrors("rentalPeriod")
           setRentalPeriod("", "")
 
@@ -125,7 +117,25 @@ export default function SelectRentalPeriod() {
                <ScrollView contentContainerStyle={styles.content}>
                     <Text style={[styles.title, { color: theme.colors.primary }]}>{t("rental_period_title")}</Text>
 
-                    <CalendarPicker key={calendarKey} ref={calendarRef} initialDate={new Date()} selectedStartDate={startDate ? startDate.toString() : undefined} selectedEndDate={endDate ? endDate.toString() : undefined} weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]} months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]} previousTitle={t("previous")} nextTitle={t("next")} startFromMonday allowRangeSelection minDate={new Date()} todayBackgroundColor="#f2e6ff" selectedDayColor="#7300e6" textStyle={{ color: themeColor }} onDateChange={handleDateChange} selectedRangeStyle={{ backgroundColor: theme.colors.primary }} />
+                    <CalendarPicker
+                         key={calendarKey}
+                         ref={calendarRef}
+                         initialDate={new Date()}
+                         selectedStartDate={temporaryStartDate ? temporaryStartDate.toString() : undefined}
+                         selectedEndDate={temporaryEndDate ? temporaryEndDate.toString() : undefined}
+                         weekdays={[t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]}
+                         months={[t("january"), t("february"), t("march"), t("april"), t("may"), t("june"), t("july"), t("august"), t("september"), t("october"), t("november"), t("december")]}
+                         previousTitle={t("previous")}
+                         nextTitle={t("next")}
+                         startFromMonday
+                         allowRangeSelection
+                         minDate={new Date()}
+                         todayBackgroundColor="#f2e6ff"
+                         selectedDayColor="#7300e6"
+                         textStyle={{ color: themeColor }}
+                         onDateChange={handleDateChange}
+                         selectedRangeStyle={{ backgroundColor: theme.colors.primary }}
+                    />
 
                     <View style={styles.selectedDates}>
                          <Text style={[styles.dateText, { color: theme.colors.primary }]}>

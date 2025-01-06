@@ -11,6 +11,7 @@ import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useCreateBooking } from "@/modules/hooks/bookings/useCreateBooking"
 import { useIsOfferReserved } from "@/modules/hooks/bookings/useIsOfferReserved"
 import { useHasUserReservedOffer } from "@/modules/hooks/bookings/useHasUserReservedOffer"
+import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 
 export default function OfferDetail() {
      const { offerId, userId } = useLocalSearchParams<{ offerId: string; userId: string }>()
@@ -55,7 +56,8 @@ export default function OfferDetail() {
      }
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOffer.rentalPeriod.start, currentOffer.rentalPeriod.end, locale)
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(currentOffer.rentalPeriod.start), new Date(currentOffer.rentalPeriod.end), locale)
+     const { totalAmount } = displayTotalPrice(currentOffer.price as string, currentOffer.rentalPeriod as { start: string; end: string })
 
      const getBoatsImages = () => {
           const boatsImages = [] as { id: string; caption: string; url: string }[]
@@ -86,7 +88,7 @@ export default function OfferDetail() {
                     {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
                </Text>
                <Text style={styles.price}>
-                    {currentOffer.price} {t("money_symbol")}
+                    {currentOffer.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
                </Text>
                <Button mode="contained" style={styles.button} onPress={handleBookOffer} disabled={hasUserReservedOffer || isOfferReserved}>
                     {hasUserReservedOffer ? t("already_reserved") : t("book_offer")}

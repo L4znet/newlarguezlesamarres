@@ -12,8 +12,9 @@ interface Equipment {
 }
 
 export default function selectEquipments() {
-     const { equipments, addEquipment, removeEquipment, emptyEquipments, setErrors, getErrors, setEquipments } = useOfferStore()
+     const { equipments, removeEquipment, setErrors, getErrors, setEquipments } = useOfferStore()
      const [newEquipment, setNewEquipment] = useState({ equipmentName: "", equipmentQuantity: "1" })
+
      const router = useRouter()
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
      const theme = useTheme()

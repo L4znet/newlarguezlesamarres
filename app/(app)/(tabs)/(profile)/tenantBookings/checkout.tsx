@@ -31,7 +31,8 @@ export default function Checkout() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string })
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string, locale)
+
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(currentOfferToRent?.rentalPeriod.start as string), new Date(currentOfferToRent?.rentalPeriod.end as string), locale)
 
      const [paymentIntent, setPaymentIntent] = useState({
           clientSecret: "",
@@ -98,9 +99,6 @@ export default function Checkout() {
                          offerId: currentOfferToRent?.id as string,
                          userId: session.data.session?.user?.id as string,
                     })
-
-                    // pass available to false
-                    // update the booking status to rented
 
                     updateOfferAvailability({
                          offerId: currentOfferToRent?.id as string,

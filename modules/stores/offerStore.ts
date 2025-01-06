@@ -23,7 +23,7 @@ interface Boat {
 
 interface OfferStore {
      profileId: string | null
-     equipments: Equipment[]
+     equipments: Equipment[] | []
      rentalPeriod: RentalPeriod
      location: Location
      selectedBoatId: string | null
@@ -39,6 +39,12 @@ interface OfferStore {
      boat: Boat | null
      errors: Record<string, string[]>
      currentOffer: Offer | null
+     temporaryLocation: Location
+     temporaryBoatId: string | null
+     temporaryEquipments: Equipment[]
+     temporaryStartDate: Date | null
+     temporaryEndDate: Date | null
+
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
      emptyEquipments: () => void
@@ -52,6 +58,11 @@ interface OfferStore {
      clearErrors: (field?: string) => void
      setCurrentOffer: (offer: Promise<Partial<Offer>> | Partial<Offer>) => Promise<void>
      resetStore: () => void
+     setTemporaryLocation: (location: Location) => void
+     setTemporaryBoatId: (boatId: string) => void
+     setTemporaryEquipments: (equipments: Equipment[]) => void
+     setTemporaryStartDate: (start: Date | null) => void
+     setTemporaryEndDate: (end: Date | null) => void
 }
 
 export const useOfferStore = create<OfferStore>((set, get) => ({
@@ -77,6 +88,16 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
      boat: null,
      currentOffer: null,
      errors: {},
+     temporaryStartDate: null,
+     temporaryEndDate: null,
+     temporaryLocation: {
+          city: "",
+          country: "",
+          address: "",
+          zipcode: "",
+     },
+     temporaryBoatId: null,
+     temporaryEquipments: [],
 
      setEquipments: (equipments) => set(() => ({ equipments })),
      addEquipment: (equipment) =>
@@ -89,6 +110,12 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
           })),
      emptyEquipments: () => set(() => ({ equipments: [] })),
      setRentalPeriod: (start: string, end: string) => set(() => ({ rentalPeriod: { start, end } })),
+     setTemporaryStartDate: (start: Date | null) => set(() => ({ temporaryStartDate: start })),
+     setTemporaryEndDate: (end: Date | null) => set(() => ({ temporaryEndDate: end })),
+
+     setTemporaryLocation: (temporaryLocation) => set(() => ({ temporaryLocation })),
+     setTemporaryBoatId: (boatId: string) => set(() => ({ selectedBoatId: boatId })),
+     setTemporaryEquipments: (equipments) => set(() => ({ equipments })),
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
      setOfferField: (fieldOrFields, value) => {

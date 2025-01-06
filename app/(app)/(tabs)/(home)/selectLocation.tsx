@@ -9,16 +9,10 @@ import { z } from "zod"
 
 export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
-     const { setLocation, location, setErrors, getErrors } = useOfferStore()
+     const { setLocation, setErrors, getErrors, setTemporaryLocation, temporaryLocation } = useOfferStore()
      const [validationError, setValidationError] = useState<string | null>(null)
-     const [selectedLocation, setSelectedLocation] = useState<{
-          city: string
-          country: string
-          zipcode: string
-          address: string
-     } | null>(null)
 
-     const { mutate, data, isPending, error, reset } = useLocationSearch()
+     const { mutate, data, isPending, error: errorFromFetch, reset } = useLocationSearch()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -30,7 +24,7 @@ export default function SelectLocation() {
      const resetScreen = () => {
           setSearchTerm("")
           setValidationError(null)
-          setSelectedLocation({
+          setTemporaryLocation({
                city: "",
                country: "",
                zipcode: "",
@@ -54,15 +48,41 @@ export default function SelectLocation() {
      const handleSelectLocation = (location: any) => {
           const { streetNumber, streetName, municipality, country, postalCode } = location.address
 
-          console.log(selectedLocation)
+          const schema = z.object({
+               city: z.string({ message: t("zod_rule_city_required") }),
+               country: z.string({ message: t("zod_rule_country_required") }),
+               streetNumber: z.string({ message: t("zod_rule_address_required") }),
+               zipcode: z
+                    .string({ message: t("zod_rule_zipcode_required") })
+                    .nonempty({ message: t("zod_rule_zipcode_required") })
+                    .regex(/^\d+$/, { message: t("zod_rule_zipcode_invalid") })
+                    .length(5, { message: t("zod_rule_zipcode_too_short") }),
 
-          setSelectedLocation({ city: municipality, country: country, zipcode: postalCode, address: streetNumber + " " + streetName })
-          setSearchTerm("")
+               address: z.string({ message: t("zod_rule_address_required") }),
+          })
+
+          const validationResult = schema.safeParse({
+               city: municipality,
+               country: country,
+               zipcode: postalCode,
+               streetNumber: streetNumber,
+               address: `${streetNumber} ${streetName}`,
+          })
+
           mutate("", {
                onSuccess: () => {
                     reset()
                },
           })
+
+          if (!validationResult.success) {
+               const errors = validationResult.error.flatten()
+               setErrors("location", [...(errors.fieldErrors.streetNumber || []), ...(errors.fieldErrors.zipcode || []), ...(errors.fieldErrors.address || []), ...(errors.fieldErrors.city || []), ...(errors.fieldErrors.country || []), ...(errors.formErrors || [])])
+          } else {
+               setErrors("location", [])
+               setSearchTerm("")
+               setTemporaryLocation({ city: municipality, country: country, zipcode: postalCode, address: streetNumber + " " + streetName })
+          }
      }
 
      const handleNavigation = () => {
@@ -75,45 +95,17 @@ export default function SelectLocation() {
      }
 
      const confirmSelection = () => {
-          if (selectedLocation) {
-               const schema = z.object({
-                    city: z.string().nonempty(),
-                    country: z.string().nonempty(),
-                    zipcode: z
-                         .string()
-                         .nonempty()
-                         .length(5, { message: t("zod_rule_zipcode_too_short") })
-                         .regex(/^\d+$/, { message: t("zod_rule_zipcode_invalid") }),
-                    address: z.string().nonempty(),
-               })
-
-               const validationResult = schema.safeParse({
-                    city: selectedLocation?.city,
-                    country: selectedLocation?.country,
-                    zipcode: selectedLocation?.zipcode,
-                    address: selectedLocation?.address,
-               })
-
-               if (!validationResult.success) {
-                    console.log("Validation error", validationResult.error)
-
-                    const errors = validationResult.error.flatten()
-                    setErrors("rentalPeriod", [...(errors.fieldErrors.zipcode || []), ...(errors.fieldErrors.address || []), ...(errors.fieldErrors.city || []), ...(errors.fieldErrors.country || []), ...(errors.formErrors || [])])
-                    return
-               }
-               console.log("----------------------------------------------------")
-               console.log("fffffffff", validationResult.success)
-               console.log("dfsfdssfdq", selectedLocation)
-
-               setLocation(selectedLocation)
+          if (temporaryLocation) {
+               setErrors("location", [])
+               setLocation(temporaryLocation)
                handleNavigation()
           }
      }
 
      let currentSelection = ""
 
-     if (selectedLocation?.country && selectedLocation?.city && selectedLocation?.zipcode && selectedLocation?.address) {
-          currentSelection = `${selectedLocation?.address}, ${selectedLocation?.zipcode} ${selectedLocation?.city}, ${selectedLocation?.country}`
+     if (temporaryLocation.country && temporaryLocation.city && temporaryLocation.zipcode && temporaryLocation.address) {
+          currentSelection = `${temporaryLocation.address}, ${temporaryLocation.zipcode} ${temporaryLocation.city}, ${temporaryLocation.country}`
      } else {
           currentSelection = t("location_not_specified")
      }
@@ -125,7 +117,7 @@ export default function SelectLocation() {
 
                     {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
-                    {error && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
+                    {errorFromFetch && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
                     {data && data.length > 0 && (
                          <FlatList
                               data={data}
@@ -137,12 +129,18 @@ export default function SelectLocation() {
                               )}
                          />
                     )}
+                    {getErrors("location") &&
+                         getErrors("location")?.map((error, index) => (
+                              <Text key={index} style={[styles.errorText, { color: theme.colors.error }]}>
+                                   {error}
+                              </Text>
+                         ))}
 
                     {!isPending && data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
 
                     {data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
 
-                    {selectedLocation?.address && selectedLocation.country && selectedLocation.zipcode && selectedLocation.city && (
+                    {temporaryLocation.address && temporaryLocation.country && temporaryLocation.zipcode && temporaryLocation.city && (
                          <View style={styles.selectionContainer}>
                               <Text style={styles.selectionTitle}>{t("your_selection")}</Text>
                               <Card style={styles.selectionCard}>
@@ -187,10 +185,7 @@ const styles = StyleSheet.create({
           fontSize: 16,
      },
      errorText: {
-          textAlign: "center",
-          marginTop: 20,
-          color: "red",
-          fontSize: 16,
+          marginTop: 5,
      },
      loading: {
           marginVertical: 20,

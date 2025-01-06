@@ -15,18 +15,19 @@ export const OfferSchema = z
                }
           ),
           isAvailable: z.boolean(),
-          equipments: z.array(
-               z.object({
-                    id: z.string().uuid(),
-                    name: z.string(),
-                    description: z.string(),
-               })
-          ),
+          equipments: z
+               .array(
+                    z.object({
+                         equipmentName: z.string(),
+                         equipmentQuantity: z.string(),
+                    })
+               )
+               .optional(),
           isSkipperAvailable: z.boolean(),
           isTeamAvailable: z.boolean(),
           rentalPeriod: z
                .object({
-                    start: z.string().nonempty("zod_rule_start_date_required"),
+                    start: z.string().nonempty("zod_rule_rental_period_required"),
                     end: z.string().nonempty("zod_rule_end_date_required"),
                })
                .refine(

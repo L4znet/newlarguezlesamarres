@@ -18,12 +18,14 @@ export const displayRentalPeriod = (start: Date | null, end: Date | null, locale
           dateFormat = "dd/MM/yyyy"
      }
 
-     const parsedStartDate = start ? new Date(start) : null
-     const parsedEndDate = end ? new Date(end) : null
+     const rentalStartDate = start && isValid(start) ? format(start, dateFormat, { locale: localeMap[locale] || fr }) : t("not_specified")
 
-     const rentalStartDate = parsedStartDate && isValid(parsedStartDate) ? format(parsedStartDate, dateFormat, { locale: localeMap[locale] || fr }) : t("not_specified")
+     const rentalEndDate = end && isValid(end) ? format(end, dateFormat, { locale: localeMap[locale] || fr }) : t("not_specified")
 
-     const rentalEndDate = parsedEndDate && isValid(parsedEndDate) ? format(parsedEndDate, dateFormat, { locale: localeMap[locale] || fr }) : t("not_specified")
+     console.log({
+          rentalStartDate,
+          rentalEndDate,
+     })
 
      return {
           rentalStartDate,

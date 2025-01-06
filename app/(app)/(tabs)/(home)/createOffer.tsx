@@ -18,7 +18,7 @@ export default function createOffer() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     const { resetStore, getErrors, equipments, setRentalPeriod, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
+     const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
 
@@ -39,27 +39,33 @@ export default function createOffer() {
      } = useForm({
           resolver: zodResolver(OfferSchema),
           defaultValues: {
-               title: title || "",
-               description: description || "",
-               price: price || "",
-               isAvailable: isAvailable || false,
-               isSkipperAvailable: isSkipperAvailable || false,
-               isTeamAvailable: isTeamAvailable || false,
-               equipments: equipments || [],
-               rentalPeriod: rentalPeriod,
-               location: location || {
+               title: "",
+               description: "",
+               price: "",
+               isAvailable: false,
+               isSkipperAvailable: false,
+               isTeamAvailable: false,
+               equipments: [
+                    {
+                         equipmentName: "",
+                         equipmentQuantity: "",
+                    },
+               ],
+               rentalPeriod: {
+                    start: "",
+                    end: "",
+               },
+               location: {
                     city: "",
                     country: "",
                     address: "",
                     zipcode: "",
                },
-               selectedBoatId: selectedBoatId || null,
+               selectedBoatId: "",
           },
      })
 
      if (location.zipcode && location.city && location.address && location.country) {
-          console.log("sfdmlfsd")
-
           setValue("location", location)
           resetField("location")
      } else {
@@ -73,10 +79,6 @@ export default function createOffer() {
      }
 
      if (selectedBoatId) {
-          console.log("SELECTED BOAT ID")
-
-          console.log(selectedBoatId)
-
           resetField("selectedBoatId")
           setValue("selectedBoatId", selectedBoatId)
      } else {
@@ -89,9 +91,11 @@ export default function createOffer() {
           setValue("rentalPeriod.end", rentalPeriod.end)
      }
 
-     const onSubmit = async (data: any) => {
-          console.log("dsfdsffd", data)
+     if (equipments.length > 0) {
+          setValue("equipments", equipments)
+     }
 
+     const onSubmit = async (data: any) => {
           try {
                createOffer({
                     ...data,
@@ -112,15 +116,25 @@ export default function createOffer() {
                     zipcode: "",
                })
                setValue("selectedBoatId", "")
-
-               showTranslatedFlashMessage("success", {
-                    title: t("flash_title_success"),
-                    description: t("offer_created_success"),
+               setRentalPeriod("", "")
+               setTemporaryStartDate(null)
+               setTemporaryEndDate(null)
+               setTemporaryLocation({
+                    city: "",
+                    country: "",
+                    address: "",
+                    zipcode: "",
+               })
+               setLocation({
+                    city: "",
+                    country: "",
+                    address: "",
+                    zipcode: "",
                })
           } catch (error) {
                showTranslatedFlashMessage("danger", {
                     title: t("flash_title_error"),
-                    description: t("offer_creation_error"),
+                    description: t("supabase_offer_error_added_offer"),
                })
           }
      }
@@ -143,8 +157,6 @@ export default function createOffer() {
      const onBlurTrigger = async (field: any) => {
           await trigger(field)
      }
-
-     console.log(errors.location)
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>

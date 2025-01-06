@@ -9,6 +9,7 @@ import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-
 import Slideshow from "@/modules/components/Slideshow"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateBoat } from "@/modules/hooks/boats/useCreateBoat"
+import { Boat } from "@/interfaces/Boat"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {

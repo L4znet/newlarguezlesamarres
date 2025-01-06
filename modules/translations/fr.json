@@ -96,6 +96,7 @@
      "price": "Prix",
      "pay": "Payer",
      "add": "Ajouter",
+     "days": "jours",
      "unit_price": "Prix unitaire",
      "moreDetails": "Voir plus de détails",
      "rental_date": "Date de réservation",
@@ -441,5 +442,10 @@
      "zod_rule_equipment_quantity_required": "La quantité d'équipements est requise.",
      "zod_rule_equipment_quantity_invalid": "La quantité d'équipements ne peut pas être en dessous de 1",
 
-     "zod_rule_price_min_value": "Le prix de l'annonce doit être supérieur ou égale à 5€"
+     "zod_rule_price_min_value": "Le prix de l'annonce doit être supérieur ou égale à 5€",
+
+     "zod_rule_address_required": "L'adresse est requise.",
+     "zod_rule_city_required": "La ville est requise.",
+     "zod_rule_country_required": "Le pays est requis.",
+     "zod_rule_zipcode_required": "Le code postal est requis."
 }

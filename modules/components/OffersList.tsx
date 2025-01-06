@@ -10,6 +10,8 @@ import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
+import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 
 const OffersList = () => {
      const router = useRouter()
@@ -53,6 +55,9 @@ const OffersList = () => {
                }
           })
 
+          const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(item.rentalPeriod.start), new Date(item.rentalPeriod.end), locale)
+          const { totalAmount } = displayTotalPrice(item.price as string, item?.rentalPeriod as { start: string; end: string })
+
           return (
                <Card key={item.id} style={[styles.card]}>
                     <Slideshow images={boatImages} />
@@ -63,8 +68,12 @@ const OffersList = () => {
                          <Text>
                               {t("published_by")} {username}
                          </Text>
+
                          <Text>
-                              {t("price")} : {item.price} {t("money_symbol")}
+                              {t("price")} : {item.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
+                         </Text>
+                         <Text style={styles.period}>
+                              {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
                          </Text>
                     </Card.Content>
 
@@ -89,6 +98,10 @@ const styles = StyleSheet.create({
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
+     },
+     period: {
+          marginTop: 8,
+          color: "#666",
      },
 })
 

@@ -5,7 +5,7 @@ export interface Offer {
      description: string
      price: string
      isAvailable: boolean
-     equipments: Equipment[] | []
+     equipments: Equipment[]
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
      rentalPeriod: {
