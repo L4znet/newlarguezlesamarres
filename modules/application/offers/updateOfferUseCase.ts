@@ -1,5 +1,5 @@
 import { MessageType } from "react-native-flash-message"
-import { Offer, RentalPeriod } from "@/interfaces/Offer"
+import { Equipment, Offer, RentalPeriod } from "@/interfaces/Offer"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { router } from "expo-router"
 
@@ -11,7 +11,6 @@ export const updateOfferUseCase = async (
           description,
           price,
           isAvailable,
-          frequency,
           equipments,
           isSkipperAvailable,
           isTeamAvailable,
@@ -24,8 +23,7 @@ export const updateOfferUseCase = async (
           description: string
           price: string
           isAvailable: boolean
-          frequency: number
-          equipments: { name: string; quantity: string }[]
+          equipments: Equipment[]
           isSkipperAvailable: boolean
           isTeamAvailable: boolean
           rentalPeriod: RentalPeriod
@@ -34,26 +32,19 @@ export const updateOfferUseCase = async (
      showTranslatedFlashMessage: (type: MessageType, message: { title: string; description: string }) => void
 ): Promise<void> => {
      try {
-          const updatedBoat = await OfferRepositorySupabase.updateOffer({
+          const updatedOffer = await OfferRepositorySupabase.updateOffer({
                offerId: id,
                boatId: boatId,
                title: title,
                description: description,
                price: price,
                isAvailable: isAvailable,
-               frequency: frequency,
                equipments: equipments,
                isSkipperAvailable: isSkipperAvailable,
                isTeamAvailable: isTeamAvailable,
                rentalPeriod: rentalPeriod,
                location: location,
           })
-
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Offer updated successfully!",
-          })
-          router.push("/(app)/(tabs)/(home)")
      } catch (error) {
           throw new Error((error as Error).message)
      }

@@ -15,7 +15,6 @@ export const OfferSchema = z
                }
           ),
           isAvailable: z.boolean(),
-          frequency: z.number(),
           equipments: z.array(
                z.object({
                     id: z.string().uuid(),
@@ -27,37 +26,50 @@ export const OfferSchema = z
           isTeamAvailable: z.boolean(),
           rentalPeriod: z
                .object({
-                    start: z.string().refine((val) => {
-                         console.log("start", val)
-                         return true
-                    }),
-                    end: z.string().refine((val) => {
-                         console.log("end", val)
-                         return true
-                    }),
+                    start: z.string().nonempty("zod_rule_start_date_required"),
+                    end: z.string().nonempty("zod_rule_end_date_required"),
                })
-               .refine((val) => {
-                    console.log("object", val)
-                    return true
-               }),
-          location: z.object({
-               city: z.string(),
-               country: z.string(),
-               zipcode: z.string(),
-               address: z.string(),
-          }),
+               .refine(
+                    (value) => {
+                         return !(value.start === "" || value.end === "")
+                    },
+                    {
+                         message: "zod_rule_rental_period_required",
+                    }
+               ),
+          location: z
+               .object({
+                    city: z.string().nonempty("zod_rule_city_required"),
+                    country: z.string().nonempty("zod_rule_country_required"),
+                    address: z.string().nonempty("zod_rule_address_required"),
+                    zipcode: z.string().nonempty("zod_rule_zipcode_required").length(5, { message: "zod_rule_zipcode_too_short" }).regex(/^\d+$/, { message: "zod_rule_zipcode_invalid" }),
+               })
+               .refine(
+                    (value) => {
+                         return !(value.city === "" || value.country === "" || value.address === "" || value.zipcode === "")
+                    },
+                    {
+                         message: "zod_rule_location_required",
+                    }
+               ),
+          selectedBoatId: z.string().refine(
+               (val) => {
+                    return !(val === "")
+               },
+               { message: "zod_rule_boat_required" }
+          ),
      })
      .transform((data) => ({
           title: data.title,
           description: data.description,
           price: data.price,
-          is_available: data.isAvailable,
-          frequency: data.frequency,
+          isAvailable: data.isAvailable,
           equipments: data.equipments,
-          is_skipper_available: data.isSkipperAvailable,
-          is_team_available: data.isTeamAvailable,
-          rental_period: data.rentalPeriod,
+          isSkipperAvailable: data.isSkipperAvailable,
+          isTeamAvailable: data.isTeamAvailable,
+          rentalPeriod: data.rentalPeriod,
           location: data.location,
+          boatId: data.selectedBoatId,
      }))
 
 export type Offer = z.infer<typeof OfferSchema>

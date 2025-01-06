@@ -24,7 +24,8 @@ export default function SelectBoat() {
 
      const handleCancelSelection = () => {
           handleNavigation()
-          setNewSelectedBoat(selectedBoatId as string)
+          setNewSelectedBoat(null)
+          selectBoat(null)
      }
 
      const handleConfirmSelection = () => {
@@ -38,6 +39,14 @@ export default function SelectBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
+     const EmptyList = () => {
+          return (
+               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ color: themeColorText }}>{t("select_boat_empty_message")}</Text>
+               </View>
+          )
+     }
+
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <Text style={[styles.title, { color: theme.colors.primary }]}>{t("select_boat")}</Text>
@@ -45,6 +54,7 @@ export default function SelectBoat() {
                {error && <Text style={styles.errorText}>Une erreur est survenue lors de la récupération des bateaux.</Text>}
                {boats && (
                     <FlatList
+                         ListEmptyComponent={EmptyList}
                          data={boats}
                          keyExtractor={(item) => item.id}
                          renderItem={({ item }) => {
@@ -56,11 +66,11 @@ export default function SelectBoat() {
                          }}
                     />
                )}
-               <Button mode="contained" onPress={() => handleConfirmSelection()} style={styles.cancelButton}>
-                    Confirmer
+               <Button mode="contained" onPress={() => handleConfirmSelection()} style={styles.button}>
+                    {t("confirm_button")}
                </Button>
-               <Button mode="outlined" onPress={() => handleCancelSelection()} style={styles.cancelButton}>
-                    Annuler
+               <Button mode="outlined" onPress={() => handleCancelSelection()} style={styles.button}>
+                    {t("cancel_button")}
                </Button>
           </SafeAreaView>
      )
@@ -99,7 +109,7 @@ const styles = StyleSheet.create({
           textAlign: "center",
           marginBottom: 20,
      },
-     cancelButton: {
+     button: {
           marginTop: 20,
      },
 })

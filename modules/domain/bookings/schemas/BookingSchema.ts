@@ -8,7 +8,6 @@ export const BookingSchema = z
           description: z.string().min(20, "zod_rule_description_min_length").max(500, "zod_rule_description_max_length"),
           price: z.number().min(0, "zod_rule_price_min_value"),
           isAvailable: z.boolean(),
-          frequency: z.number(),
           equipments: z.array(
                z.object({
                     id: z.string().uuid(),
@@ -39,7 +38,6 @@ export const BookingSchema = z
           description: data.description,
           price: data.price,
           is_available: data.isAvailable,
-          frequency: data.frequency,
           equipments: data.equipments,
           is_skipper_available: data.isSkipperAvailable,
           is_team_available: data.isTeamAvailable,

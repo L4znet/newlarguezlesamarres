@@ -8,7 +8,6 @@ import Slideshow from "@/modules/components/Slideshow"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
-import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { useRouter } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 
@@ -25,11 +24,14 @@ const BookingTenantList = () => {
      if (isPending) return <ActivityIndicator size="large" />
      if (error) return <Text style={styles.centered}>Erreur lors de la récupération des données.</Text>
 
-     const handleRentBooking = async (offer: any) => {
+     const handleRentBooking = async (offer: any, bookingId: string) => {
           await setCurrentOffer(offer)
 
           router.push({
                pathname: "/(app)/(tabs)/(profile)/tenantBookings/checkout",
+               params: {
+                    bookingId: bookingId,
+               },
           })
      }
 
@@ -40,14 +42,10 @@ const BookingTenantList = () => {
      const filterReservations = (status: string) => tenantBookings.filter((item) => item.status === status)
 
      const renderCardItem = ({ item }: { item: BookingEntity }) => {
-          const { totalAmount } = displayTotalPrice(
-               item.offerPrice as string,
-               {
-                    start: item.startDate,
-                    end: item.endDate,
-               },
-               item.offerFrequency as number
-          )
+          const { totalAmount } = displayTotalPrice(item.offerPrice as string, {
+               start: item.startDate,
+               end: item.endDate,
+          })
 
           const { rentalStartDate, rentalEndDate } = displayRentalPeriod(item.startDate, item.endDate, locale, "short")
 
@@ -77,7 +75,7 @@ const BookingTenantList = () => {
                                    {totalAmount} {t("money_symbol")}
                               </Chip>
                               <Chip style={{ marginLeft: 10 }}>
-                                   {item.offerPrice} {t("money_symbol")} / {displayRentalFrequency(item.offerFrequency?.toString(), locale).toLowerCase()}
+                                   {item.offerPrice} {t("money_symbol")}
                               </Chip>
                          </View>
                     </Card.Content>
@@ -86,18 +84,20 @@ const BookingTenantList = () => {
                               mode="contained"
                               style={styles.button}
                               onPress={() =>
-                                   handleRentBooking({
-                                        id: item.offerId,
-                                        title: item.offerTitle,
-                                        description: item.offerDescription,
-                                        price: item.offerPrice,
-                                        frequency: item.offerFrequency,
-                                        rentalPeriod: {
-                                             start: item.startDate,
-                                             end: item.endDate,
+                                   handleRentBooking(
+                                        {
+                                             id: item.offerId,
+                                             title: item.offerTitle,
+                                             description: item.offerDescription,
+                                             price: item.offerPrice,
+                                             rentalPeriod: {
+                                                  start: item.startDate,
+                                                  end: item.endDate,
+                                             },
+                                             userId: item.userId,
                                         },
-                                        userId: item.userId,
-                                   })
+                                        item.id
+                                   )
                               }
                          >
                               {t("pay_booking")}
@@ -110,7 +110,7 @@ const BookingTenantList = () => {
           )
      }
 
-     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
+     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
           <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>

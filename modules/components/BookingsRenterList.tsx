@@ -8,7 +8,6 @@ import Slideshow from "@/modules/components/Slideshow"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
-import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { useOwnerBookings } from "@/modules/hooks/bookings/useOwnerBookings"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
 
@@ -35,16 +34,16 @@ const BookingTenantList = () => {
      const filterReservations = (status: string) => ownerBookings.filter((item) => item.status === status)
 
      const renderCardItem = ({ item }: { item: BookingEntity }) => {
-          const { totalAmount } = displayTotalPrice(
-               item.offerPrice as string,
-               {
-                    start: item.startDate,
-                    end: item.endDate,
-               },
-               item.offerFrequency
-          )
+          const { totalAmount } = displayTotalPrice(item.offerPrice as string, {
+               start: item.startDate,
+               end: item.endDate,
+          })
 
           const { rentalStartDate, rentalEndDate } = displayRentalPeriod(item.startDate, item.endDate, locale, "short")
+
+          if (!item.id) {
+               return null
+          }
 
           return (
                <Card key={item.id} style={[styles.card]}>
@@ -70,17 +69,17 @@ const BookingTenantList = () => {
                                    {totalAmount} {t("money_symbol")}
                               </Chip>
                               <Chip style={{ marginLeft: 10 }}>
-                                   {item.offerPrice} {t("money_symbol")} / {displayRentalFrequency(item.offerFrequency.toString(), locale).toLowerCase()}
+                                   {item.offerPrice} {t("money_symbol")}
                               </Chip>
                          </View>
                     </Card.Content>
 
                     {item.status === "pending" && (
                          <Card.Actions>
-                              <Button mode={"outlined"} onPress={() => handleBookingDecline(item.id)}>
+                              <Button mode={"outlined"} onPress={() => handleBookingDecline(item.id as string)}>
                                    {t("booking_decline_btn")}
                               </Button>
-                              <Button mode={"contained"} onPress={() => handleBookingConfirm(item.id)}>
+                              <Button mode={"contained"} onPress={() => handleBookingConfirm(item.id as string)}>
                                    {t("booking_confirm_btn")}
                               </Button>
                          </Card.Actions>
@@ -89,7 +88,7 @@ const BookingTenantList = () => {
           )
      }
 
-     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
+     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
           <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>

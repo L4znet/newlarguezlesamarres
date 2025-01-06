@@ -23,7 +23,6 @@ class BookingRepositorySupabase implements BookingRepository {
                           offer_title:title,
                           offer_description:description,
                           offer_price:price,
-                          offer_frequency:frequency,
                           offer_rentals:rental_period,
                           ...boats!inner(
                             boat_name,
@@ -61,7 +60,6 @@ class BookingRepositorySupabase implements BookingRepository {
                           offer_title:title,
                           offer_description:description,
                           offer_price:price,
-                          offer_frequency:frequency,
                           offer_rentals:rental_period,
                           ...boats!inner(
                             boat_name,

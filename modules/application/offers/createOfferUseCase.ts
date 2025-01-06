@@ -5,44 +5,7 @@ import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentS
 import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
 
-export const createOfferUseCase = async (
-     {
-          boatId,
-          title,
-          description,
-          price,
-          isAvailable,
-          frequency,
-          equipments,
-          isSkipperAvailable,
-          isTeamAvailable,
-          rentalPeriod,
-          location,
-          deletedAt = null,
-     }: {
-          boatId: string
-          title: string
-          description: string
-          price: string
-          isAvailable: boolean
-          frequency: number
-          equipments: Equipment[] | []
-          isSkipperAvailable: boolean
-          isTeamAvailable: boolean
-          rentalPeriod: RentalPeriod
-          location: Location
-          deletedAt: Date | null
-     },
-
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
-          locale?: string
-     ) => void
-): Promise<OfferEntity | undefined> => {
+export const createOfferUseCase = async ({ boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> => {
      try {
           if (!title) {
                throw new Error("Le titre est requis.")
@@ -58,6 +21,21 @@ export const createOfferUseCase = async (
                throw new Error("User session not found.")
           }
 
+          console.log("LES DATAS", {
+               profileId,
+               boatId,
+               title,
+               description,
+               price,
+               isAvailable,
+               equipments,
+               isSkipperAvailable,
+               isTeamAvailable,
+               rentalPeriod,
+               location,
+               deletedAt,
+          })
+
           await OfferRepositorySupabase.createOffer({
                profileId,
                boatId,
@@ -65,7 +43,6 @@ export const createOfferUseCase = async (
                description,
                price,
                isAvailable,
-               frequency,
                equipments,
                isSkipperAvailable,
                isTeamAvailable,
@@ -82,7 +59,6 @@ export const createOfferUseCase = async (
                description,
                price,
                isAvailable,
-               frequency,
                equipments,
                isSkipperAvailable,
                isTeamAvailable,

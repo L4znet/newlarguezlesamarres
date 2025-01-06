@@ -4,7 +4,6 @@ import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-pa
 import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
-import { displayRentalFrequency, getRentalFrequency, RentalFrequency } from "@/constants/RentalFrequency"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useOfferStore } from "@/modules/stores/offerStore"
@@ -45,7 +44,6 @@ const OffersList = () => {
      }
 
      const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
-          const frequency = displayRentalFrequency(item.frequency.toString(), locale)
           const username = item?.profiles?.username as string
           const boatImages = item?.boats?.boatImages?.map((image) => {
                return {
@@ -66,7 +64,7 @@ const OffersList = () => {
                               {t("published_by")} {username}
                          </Text>
                          <Text>
-                              {t("price")} : {item.price} {t("money_symbol")} / {frequency}
+                              {t("price")} : {item.price} {t("money_symbol")}
                          </Text>
                     </Card.Content>
 

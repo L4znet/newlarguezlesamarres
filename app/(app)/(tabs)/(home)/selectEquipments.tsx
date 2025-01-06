@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import { View, StyleSheet, FlatList, Text, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from "react-native"
-import { Button, TextInput, Text as TextPaper } from "react-native-paper"
+import { Button, TextInput, Text as TextPaper, useTheme, Switch } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { z } from "zod"
 
 interface Equipment {
      name: string
@@ -11,22 +12,57 @@ interface Equipment {
 }
 
 export default function selectEquipments() {
-     const { equipments, addEquipment, removeEquipment } = useOfferStore()
-     const [newEquipment, setNewEquipment] = useState({ name: "", quantity: "" })
+     const { equipments, addEquipment, removeEquipment, emptyEquipments, setErrors, getErrors, setEquipments } = useOfferStore()
+     const [newEquipment, setNewEquipment] = useState({ equipmentName: "", equipmentQuantity: "1" })
      const router = useRouter()
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
+     const theme = useTheme()
+     const equipmentsErrors = getErrors("equipments")
+     const schema = z.object({
+          equipmentName: z
+               .string()
+               .nonempty("zod_rule_equipment_name_required")
+               .refine((value) => value.length >= 3, { message: "zod_rule_equipment_name_too_short" }),
+          equipmentQuantity: z
+               .string()
+               .nonempty("zod_rule_equipment_quantity_required")
+               .refine(
+                    (value) => {
+                         console.log("value", value)
+                         return parseInt(value) > 0
+                    },
+                    { message: "zod_rule_equipment_quantity_invalid" }
+               ),
+     })
 
      const handleAddEquipment = () => {
-          if (newEquipment.name.trim() && newEquipment.quantity.trim()) {
-               addEquipment(newEquipment)
-               setNewEquipment({ name: "", quantity: "" })
+          const validationResult = schema.safeParse({
+               equipmentName: newEquipment.equipmentName,
+               equipmentQuantity: newEquipment.equipmentQuantity,
+          })
+
+          if (!validationResult.success) {
+               const errors = validationResult.error.flatten()
+               setErrors("equipments", [...(errors.fieldErrors.equipmentName || []), ...(errors.fieldErrors.equipmentQuantity || []), ...(errors.formErrors || [])])
+               return
+          } else {
+               setNewEquipment({ equipmentName: "", equipmentQuantity: "1" })
+
+               setEquipments([...equipments, { equipmentName: newEquipment.equipmentName, equipmentQuantity: newEquipment.equipmentQuantity }])
+               setErrors("equipments", [])
           }
      }
 
      const handleNavigation = () => {
           router.navigate({ pathname: backPath as RelativePathString })
      }
-     const cancelSelection = () => {
+
+     const handleConfirm = () => {
+          setErrors("equipments", [])
+          router.navigate({ pathname: backPath as RelativePathString })
+     }
+     const handleCancel = () => {
+          setErrors("equipments", [])
           handleNavigation()
      }
 
@@ -38,7 +74,7 @@ export default function selectEquipments() {
                <SafeAreaView>
                     <ScrollView style={styles.safearea}>
                          <TextPaper style={{ textAlign: "center" }} variant={"titleLarge"}>
-                              {t("add_enquipments_include")}
+                              {t("equipment_title")}
                          </TextPaper>
                          <TextPaper
                               style={{
@@ -47,12 +83,23 @@ export default function selectEquipments() {
                               }}
                               variant={"titleSmall"}
                          >
-                              {t("add_equipments_description")}
+                              {t("equipment_description")}
                          </TextPaper>
 
                          <View style={styles.inputContainer}>
-                              <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.name} onChangeText={(name) => setNewEquipment({ ...newEquipment, name: name })} />
-                              <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.quantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, quantity: quantity })} />
+                              <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.equipmentName} onChangeText={(name) => setNewEquipment({ ...newEquipment, equipmentName: name })} />
+
+                              <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.equipmentQuantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, equipmentQuantity: quantity })} />
+
+                              {equipmentsErrors &&
+                                   equipmentsErrors.map((err, index) => {
+                                        return (
+                                             <Text key={index} style={[styles.errorText, { color: theme.colors.error }]}>
+                                                  {t(err)}
+                                             </Text>
+                                        )
+                                   })}
+
                               <Button mode="contained" onPress={handleAddEquipment} style={styles.addButton}>
                                    {t("add")}
                               </Button>
@@ -64,7 +111,12 @@ export default function selectEquipments() {
                                    keyExtractor={(item, index) => index.toString()}
                                    renderItem={({ item, index }) => (
                                         <View style={styles.listItem}>
-                                             <Text style={styles.listText}>{item.quantity === "1" ? item.name : `${item.quantity} ${item.name}`}</Text>
+                                             <View style={styles.rowItem}>
+                                                  <Text style={{ color: theme.colors.primary }}>{item.equipmentName}</Text>
+                                                  <Text style={{ color: theme.colors.primary }}> - </Text>
+                                                  <Text style={{ color: theme.colors.primary }}> {item.equipmentQuantity}</Text>
+                                             </View>
+
                                              <Button mode="text" onPress={() => removeEquipment(index)}>
                                                   {t("delete")}
                                              </Button>
@@ -73,8 +125,11 @@ export default function selectEquipments() {
                               />
                          </View>
 
-                         <Button mode="contained" onPress={handleNavigation} style={styles.saveButton}>
+                         <Button mode="contained" onPress={handleConfirm} style={styles.saveButton}>
                               {t("save")}
+                         </Button>
+                         <Button mode="outlined" onPress={handleCancel} style={styles.cancelButton}>
+                              {t("cancel")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
@@ -137,6 +192,12 @@ const styles = StyleSheet.create({
      safearea: {
           marginTop: 30,
      },
+     rowItem: {
+          flexDirection: "row",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+     },
      inputContainer: {
           marginTop: 30,
      },
@@ -151,5 +212,9 @@ const styles = StyleSheet.create({
      cancelButton: {
           borderRadius: 8,
           marginTop: 10,
+     },
+     errorText: {
+          color: "#ea5555",
+          fontSize: 16,
      },
 })

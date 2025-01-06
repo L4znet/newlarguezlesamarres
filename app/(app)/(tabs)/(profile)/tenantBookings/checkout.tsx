@@ -5,12 +5,15 @@ import { Button, Text } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateTransaction } from "@/modules/hooks/rentals/useCreateTransaction"
 import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerifyAndInsertTransaction"
+import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
+import { useUpdateOfferAvailability } from "@/modules/hooks/offers/useUpdateOfferAvailability"
+import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
+import { useLocalSearchParams } from "expo-router"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -20,12 +23,15 @@ export default function Checkout() {
 
      const { mutateAsync: createTransaction, isPending: creatingTransaction } = useCreateTransaction()
      const { mutateAsync: verifyAndInsertTransaction } = useVerifyAndInsertTransaction()
+     const { mutate: updateOfferAvailability } = useUpdateOfferAvailability()
+     const { mutate: updateBookingStatus } = useUpdateBookingStatus()
+
+     const { bookingId } = useLocalSearchParams<{ bookingId: string }>()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string }, currentOfferToRent?.frequency as number)
+     const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string })
      const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOfferToRent?.rentalPeriod.start as string, currentOfferToRent?.rentalPeriod.end as string, locale)
-     const frequencyParsed = displayRentalFrequency(currentOfferToRent?.frequency.toString(), locale)
 
      const [paymentIntent, setPaymentIntent] = useState({
           clientSecret: "",
@@ -93,6 +99,19 @@ export default function Checkout() {
                          userId: session.data.session?.user?.id as string,
                     })
 
+                    // pass available to false
+                    // update the booking status to rented
+
+                    updateOfferAvailability({
+                         offerId: currentOfferToRent?.id as string,
+                         isAvailable: false,
+                    })
+
+                    updateBookingStatus({
+                         bookingId: bookingId as string,
+                         status: "rented",
+                    })
+
                     showTranslatedFlashMessage("success", {
                          title: "Payment Successful",
                          description: "Your payment was successfully processed.",
@@ -127,7 +146,7 @@ export default function Checkout() {
                <Text variant="bodyMedium">Au {rentalEndDate}</Text>
                <Text variant="titleSmall">
                     {t("unit_price")} : {currentOfferToRent?.price}
-                    {t("money_symbol")} / {frequencyParsed.toLowerCase()}
+                    {t("money_symbol")}
                </Text>
                <View style={styles.totalAmount}>
                     <Text style={styles.title} variant="headlineSmall">

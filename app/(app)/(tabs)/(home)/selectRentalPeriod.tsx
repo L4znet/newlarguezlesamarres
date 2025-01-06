@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { createRef, useState } from "react"
 import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native"
 import { Button, Text } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
@@ -7,42 +7,34 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { useTheme } from "react-native-paper"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
-import { PaperSelect } from "react-native-paper-select"
-import { displayRentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { z } from "zod"
 
 export default function SelectRentalPeriod() {
-     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors, setFrequency, frequency } = useOfferStore()
+     const { rentalPeriod, setRentalPeriod, setErrors, clearErrors, getErrors } = useOfferStore()
      const [calendarKey, setCalendarKey] = useState(0)
-     const rawStartDate = rentalPeriod.start ? new Date(rentalPeriod.start) : null
-     const rawEndDate = rentalPeriod.end ? new Date(rentalPeriod.end) : null
-
-     const [startDate, setStartDate] = useState<Date | null>(rawStartDate)
-     const [endDate, setEndDate] = useState<Date | null>(rawEndDate)
 
      const router = useRouter()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const theme = useTheme()
-     const { backPath, control, fieldId } = useLocalSearchParams<{ backPath: string; control: any; fieldId: string }>()
-     const calendarRef = React.createRef<CalendarPicker>()
-     const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
-     const isInitialized = useRef(false)
+     const { backPath } = useLocalSearchParams<{ backPath: string }>()
+     const calendarRef = createRef<CalendarPicker>()
 
-     if (!isInitialized.current) {
-          setFrequency({
-               value: rentalFrequencyOptions[0]?.value || "",
-               list: rentalFrequencyOptions || [],
-               selectedList: [rentalFrequencyOptions[0]] || [],
-               error: "",
-               id: rentalFrequencyOptions[0]?._id || 0,
+     const [startDate, setStartDate] = useState<Date | null>(null)
+     const [endDate, setEndDate] = useState<Date | null>(null)
+
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(startDate, endDate, locale)
+
+     const rentalPeriodErrors = getErrors("rentalPeriod")
+     const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
+          console.log("Date change", {
+               start: startDate,
+               end: endDate,
           })
 
-          isInitialized.current = true
-     }
-
-     const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
           if (type === "END_DATE") {
+               console.log("Setting end date", date)
+
                setEndDate(date)
                clearErrors("rentalPeriod")
           } else {
@@ -57,88 +49,73 @@ export default function SelectRentalPeriod() {
      }
 
      const handleConfirm = () => {
-          if (!startDate) {
-               const errorMessage = t("start_date_required")
+          if (!rentalStartDate) {
+               const errorMessage = t("zod_rule_rental_period_required")
                setErrors("rentalPeriod", [errorMessage])
                return
           }
 
-          if (!endDate) {
-               const errorMessage = t("end_date_required")
+          if (!rentalEndDate) {
+               const errorMessage = t("zod_rule_end_date_required")
                setErrors("rentalPeriod", [errorMessage])
                return
           }
 
-          const diffInMs = endDate.getTime() - startDate.getTime()
-          const diffInHours = diffInMs / (1000 * 60 * 60)
-          const diffInDays = diffInHours / 24
+          const startDateParsed = startDate ? startDate?.toISOString().split("T")[0] : ""
+          const endDateParsed = endDate ? endDate?.toISOString().split("T")[0] : ""
 
-          switch (frequency.id) {
-               case "1":
-                    if (diffInDays > 6) {
-                         const errorMessage = t("zod_rule_rental_period_invalid_days")
-                         setErrors("rentalPeriod", [errorMessage])
-                         return
-                    }
-                    break
-               case "2":
-                    const diffInWeeks = diffInDays / 7
+          const schema = z
+               .object({
+                    start: z.string().refine((value) => value !== "", { message: t("zod_rule_start_date_required") }),
+                    end: z.string().refine((value) => value !== "", { message: t("zod_rule_end_date_required") }),
+               })
+               .refine(
+                    (value) => {
+                         const { start, end } = value
 
-                    if (diffInWeeks < 1 || diffInWeeks > 4) {
-                         const errorMessage = t("zod_rule_rental_period_invalid_weeks")
-                         setErrors("rentalPeriod", [errorMessage])
-                         return
-                    }
-                    break
-               case "3":
-                    const diffInMonths = diffInDays / 30
-                    if (diffInMonths < 2 || diffInMonths > 12) {
-                         const errorMessage = t("zod_rule_rental_period_invalid_months")
-                         setErrors("rentalPeriod", [errorMessage])
-                         return
-                    }
-                    break
-               default:
-                    break
-          }
+                         console.log("Period", {
+                              start,
+                              end,
+                         })
 
-          const startISO = startDate.toISOString().split("T")[0]
-          const endISO = endDate.toISOString().split("T")[0]
+                         const startDate = new Date(start)
+                         const endDate = new Date(end)
 
-          const schema = z.object({
-               start: z.string().refine((val) => !isNaN(Date.parse(val)), {
-                    message: t("invalid_date_start"),
-               }),
-               end: z.string().refine((val) => !isNaN(Date.parse(val)), {
-                    message: t("invalid_date_end"),
-               }),
-          })
+                         const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
 
-          const validationResult = schema.safeParse({ start: startISO, end: endISO })
+                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+                         console.log("Diff days", typeof diffDays)
+
+                         return diffDays >= 2
+                    },
+                    { message: t("zod_rule_period_too_short") }
+               )
+
+          const validationResult = schema.safeParse({ start: startDateParsed, end: endDateParsed })
 
           if (!validationResult.success) {
                const errors = validationResult.error.flatten()
-               setErrors("rentalPeriod", [...(errors.fieldErrors.start || []), ...(errors.fieldErrors.end || [])])
+               setErrors("rentalPeriod", [...(errors.fieldErrors.start || []), ...(errors.fieldErrors.end || []), ...(errors.formErrors || [])])
                return
           }
 
-          setRentalPeriod(startISO, endISO)
+          setRentalPeriod(startDateParsed, endDateParsed)
           clearErrors("rentalPeriod")
           handleNavigation()
      }
 
      const resetCalendar = () => {
-          setStartDate(rawStartDate)
-          setEndDate(rawEndDate)
+          setStartDate(null)
+          setEndDate(null)
+          clearErrors("rentalPeriod")
+          setRentalPeriod("", "")
 
           calendarRef.current?.resetSelections()
 
           setCalendarKey((prev) => prev + 1)
           handleNavigation()
      }
-
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(rentalPeriod.start, rentalPeriod.end, locale)
-     const rentalPeriodErrors = getErrors("rentalPeriod")
 
      // @ts-ignore
      const themeColor = theme.colors.text
@@ -212,7 +189,7 @@ const styles = StyleSheet.create({
      },
      cancelButton: {
           flex: 1,
-          marginRight: 10,
+          marginLeft: 10,
      },
      confirmButton: {
           flex: 1,

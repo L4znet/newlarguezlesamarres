@@ -30,7 +30,6 @@ export default function Index() {
                description: "",
                price: "0",
                boatId: "",
-               frequency: 0,
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,

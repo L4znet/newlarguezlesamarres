@@ -5,20 +5,18 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
 import { RelativePathString, useRouter } from "expo-router"
-import { RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import title from "react-native-paper/src/components/Typography/v2/Title"
 
 export default function EditOffer() {
      const router = useRouter()
-     const { id, title, description, frequency, isTeamAvailable, isAvailable, isSkipperAvailable, price, setOfferField, location, equipments, rentalPeriod, selectedBoatId } = useOfferStore()
+     const { id, title, description, isTeamAvailable, isAvailable, isSkipperAvailable, price, setOfferField, location, equipments, rentalPeriod, selectedBoatId } = useOfferStore()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
      const { mutate: updateOffer } = useUpdateOffer()
-     const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
 
      const handleNavigate = (path: string, params: any) => {
           router.push({
@@ -26,8 +24,6 @@ export default function EditOffer() {
                params,
           })
      }
-
-     const frequencyParsed = rentalFrequencyOptions.find((option) => option._id === frequency.toString()) || rentalFrequencyOptions[0]
 
      const handleSave = () => {
           if (!title || !description || !price) {
@@ -43,7 +39,7 @@ export default function EditOffer() {
                     title: "flash_title_error",
                     description: "Offers not found",
                })
-               router.push("/(app)/(tabs)/(home)")
+               router.push("/(app)/(tabs)/(offers)")
                return
           }
 
@@ -53,7 +49,6 @@ export default function EditOffer() {
                description,
                price,
                isAvailable,
-               frequency,
                equipments,
                isSkipperAvailable,
                isTeamAvailable,
@@ -70,7 +65,6 @@ export default function EditOffer() {
                          <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={title} onChangeText={(text) => setOfferField("title", text)} />
                          <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={description} onChangeText={(text) => setOfferField("description", text)} />
                          <TextInput style={styles.input} placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={price} keyboardType="decimal-pad" onChangeText={(text) => setOfferField("price", text)} />
-                         <PaperSelect label={t("rental_frequency_placeholder")} value={frequencyParsed.value} onSelection={(value: any) => setOfferField("frequency", value.selectedList[0]._id)} arrayList={rentalFrequencyOptions} selectedArrayList={[frequencyParsed]} errorText="" multiEnable={false} />
                          <View style={styles.inputRow}>
                               <Text>{t("is_available_label")}</Text>
                               <Switch value={isAvailable} onValueChange={(value) => setOfferField("isAvailable", value)} />

@@ -1,5 +1,3 @@
-import { RentalFrequency } from "@/constants/RentalFrequency"
-
 export interface Offer {
      boatId: string
      profileId?: string | null
@@ -7,7 +5,6 @@ export interface Offer {
      description: string
      price: string
      isAvailable: boolean
-     frequency: number
      equipments: Equipment[] | []
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
@@ -30,24 +27,9 @@ interface BoatImage {
      mimeType: string
      fileName: string
 }
-
-interface Frequency {
-     value: string
-     list: {
-          _id: RentalFrequency
-          value: string
-     }[]
-     selectedList: {
-          _id: RentalFrequency
-          value: string
-     }[]
-     error: string
-     id: RentalFrequency
-}
-
 export interface Equipment {
-     name: string
-     quantity: string
+     equipmentName: string
+     equipmentQuantity: string
 }
 
 export interface RentalPeriod {

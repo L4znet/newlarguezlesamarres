@@ -10,7 +10,6 @@ export default class OfferEntity {
           public readonly description: string,
           public readonly price: string,
           public readonly isAvailable: boolean,
-          public readonly frequency: number,
           public readonly equipments: Equipment[] | [],
           public readonly isSkipperAvailable: boolean,
           public readonly isTeamAvailable: boolean,
@@ -22,7 +21,7 @@ export default class OfferEntity {
           public readonly profiles?: ProfileEntity
      ) {}
 
-     static fromSupabaseData(data: { profile_id: string; boat_id: string; title: string; description: string; price: string; is_available: boolean; frequency: number; equipments: Equipment[]; is_skipper_available: boolean; is_team_available: boolean; rental_period: RentalPeriod; location: Location; deleted_at: Date | null; id: string; boats?: BoatEntity; profiles?: ProfileEntity }): OfferEntity {
+     static fromSupabaseData(data: { profile_id: string; boat_id: string; title: string; description: string; price: string; is_available: boolean; equipments: Equipment[]; is_skipper_available: boolean; is_team_available: boolean; rental_period: RentalPeriod; location: Location; deleted_at: Date | null; id: string; boats?: BoatEntity; profiles?: ProfileEntity }): OfferEntity {
           const boats = data.boats ? BoatEntity.fromSupabaseData(data.boats) : undefined
 
           const profiles = data.profiles ? ProfileEntity.fromSupabaseUser(data.profiles) : undefined
@@ -34,7 +33,6 @@ export default class OfferEntity {
                data.description,
                data.price,
                data.is_available,
-               data.frequency,
                data.equipments
                     ? data.equipments.map((equip: any) => ({
                            name: equip.name,
@@ -72,7 +70,6 @@ export default class OfferEntity {
                description: data.description,
                price: data.price,
                is_available: data.isAvailable,
-               frequency: data.frequency,
                equipments: data.equipments,
                is_skipper_available: data.isSkipperAvailable,
                is_team_available: data.isTeamAvailable,

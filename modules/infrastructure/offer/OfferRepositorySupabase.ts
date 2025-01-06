@@ -7,7 +7,7 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { Equipment, Location, RentalPeriod } from "@/interfaces/Offer"
 
 class OfferRepositorySupabase implements OfferRepository {
-     async createOffer({ profileId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; frequency: number; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
+     async createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .insert({
@@ -17,7 +17,6 @@ class OfferRepositorySupabase implements OfferRepository {
                     description: description,
                     price: price,
                     is_available: isAvailable,
-                    frequency: frequency,
                     equipments: equipments,
                     is_skipper_available: isSkipperAvailable,
                     is_team_available: isTeamAvailable,
@@ -36,7 +35,7 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async updateOffer({ offerId, boatId, title, description, price, isAvailable, frequency, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; frequency: number; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean }): Promise<OfferEntity | undefined> {
+     async updateOffer({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean }): Promise<OfferEntity | undefined> {
           if (!offerId) {
                throw new Error("Invalid offerId: " + offerId)
           }
@@ -50,7 +49,6 @@ class OfferRepositorySupabase implements OfferRepository {
                          description: description,
                          price: price,
                          is_available: isAvailable,
-                         frequency: frequency,
                          equipments: equipments,
                          is_skipper_available: isSkipperAvailable,
                          is_team_available: isTeamAvailable,
@@ -177,6 +175,24 @@ class OfferRepositorySupabase implements OfferRepository {
 
           if (boats) {
                return BoatEntity.fromSupabaseData(boats)
+          }
+     }
+
+     async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }): Promise<OfferEntity | undefined> {
+          const { data: offerData, error: offerError } = await supabase
+               .from("offers")
+               .update({
+                    is_available: isAvailable,
+               })
+               .eq("id", offerId)
+               .select()
+
+          if (offerError) {
+               throw new Error(`Error updating offer availability: ${offerError.message}`)
+          }
+
+          if (offerData?.length) {
+               return OfferEntity.fromSupabaseData(offerData[0])
           }
      }
 }

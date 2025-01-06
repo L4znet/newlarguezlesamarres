@@ -4,7 +4,6 @@ import { ActivityIndicator, Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import Slideshow from "@/modules/components/Slideshow"
-import { displayRentalFrequency } from "@/constants/RentalFrequency"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
@@ -56,7 +55,6 @@ export default function OfferDetail() {
      }
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const frequencyParsed = displayRentalFrequency(currentOffer.frequency.toString(), locale)
      const { rentalStartDate, rentalEndDate } = displayRentalPeriod(currentOffer.rentalPeriod.start, currentOffer.rentalPeriod.end, locale)
 
      const getBoatsImages = () => {
@@ -88,7 +86,7 @@ export default function OfferDetail() {
                     {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
                </Text>
                <Text style={styles.price}>
-                    {currentOffer.price} {t("money_symbol")} / {frequencyParsed.toLowerCase()}
+                    {currentOffer.price} {t("money_symbol")}
                </Text>
                <Button mode="contained" style={styles.button} onPress={handleBookOffer} disabled={hasUserReservedOffer || isOfferReserved}>
                     {hasUserReservedOffer ? t("already_reserved") : t("book_offer")}

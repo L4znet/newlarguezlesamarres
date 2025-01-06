@@ -6,11 +6,11 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { PaperSelect } from "react-native-paper-select"
 import { RelativePathString, useRouter } from "expo-router"
 import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
-import { displayRentalFrequency, RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, FieldError, FieldErrorsImpl, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Merge } from "type-fest"
 
 export default function createOffer() {
      const router = useRouter()
@@ -18,21 +18,9 @@ export default function createOffer() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     const rentalFrequencyOptions = useRentalFrequencyOptions(locale)
-
-     console.log("rentalFrequencyOptions", rentalFrequencyOptions)
-
      const { resetStore, getErrors, equipments, setRentalPeriod, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
-
-     const [frequency, setFrequency] = useState({
-          value: rentalFrequencyOptions[0]?.value || "",
-          list: rentalFrequencyOptions || [],
-          selectedList: [rentalFrequencyOptions[0]] || [],
-          error: "",
-          id: rentalFrequencyOptions[0]?._id || 0,
-     })
 
      const handleNavigate = (path: string, params: any) => {
           router.push({
@@ -59,27 +47,51 @@ export default function createOffer() {
                isTeamAvailable: isTeamAvailable || false,
                equipments: equipments || [],
                rentalPeriod: rentalPeriod,
-               location: location || { city: "", address: "", country: "", zipcode: "" },
-               selectedBoatId: selectedBoatId || "",
-               frequency: rentalFrequencyOptions[0]._id,
+               location: location || {
+                    city: "",
+                    country: "",
+                    address: "",
+                    zipcode: "",
+               },
+               selectedBoatId: selectedBoatId || null,
           },
      })
 
      if (location.zipcode && location.city && location.address && location.country) {
+          console.log("sfdmlfsd")
+
           setValue("location", location)
+          resetField("location")
+     } else {
+          setValue("location", {
+               city: "",
+               country: "",
+               address: "",
+               zipcode: "",
+          })
+          resetField("location")
      }
 
      if (selectedBoatId) {
+          console.log("SELECTED BOAT ID")
+
+          console.log(selectedBoatId)
+
+          resetField("selectedBoatId")
           setValue("selectedBoatId", selectedBoatId)
+     } else {
+          setValue("selectedBoatId", "")
+          resetField("selectedBoatId")
      }
 
-     if (rentalPeriod.start && rentalPeriod.end && frequency.id && getErrors("rentalPeriod") === null) {
+     if (rentalPeriod.start && rentalPeriod.end && getErrors("rentalPeriod") === null) {
           setValue("rentalPeriod.start", rentalPeriod.start)
-          setValue("frequency", frequency.id)
           setValue("rentalPeriod.end", rentalPeriod.end)
      }
 
      const onSubmit = async (data: any) => {
+          console.log("dsfdsffd", data)
+
           try {
                createOffer({
                     ...data,
@@ -92,6 +104,14 @@ export default function createOffer() {
                setValue("isSkipperAvailable", false)
                setValue("isTeamAvailable", false)
                setValue("equipments", [])
+               setValue("rentalPeriod", { start: "", end: "" })
+               setValue("location", {
+                    city: "",
+                    country: "",
+                    address: "",
+                    zipcode: "",
+               })
+               setValue("selectedBoatId", "")
 
                showTranslatedFlashMessage("success", {
                     title: t("flash_title_success"),
@@ -112,8 +132,8 @@ export default function createOffer() {
           })
      }
 
-     const displayIcon = (errorLabel: string, isErrors: string[] | null) => {
-          if (isErrors) {
+     const displayErrorIcon = (displayError: boolean) => {
+          if (displayError) {
                return "close"
           } else {
                return "check"
@@ -124,8 +144,7 @@ export default function createOffer() {
           await trigger(field)
      }
 
-     console.log("Erreur ici", errors)
-     console.log('getErrors("rentalPeriod")', getErrors("rentalPeriod"))
+     console.log(errors.location)
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -163,24 +182,6 @@ export default function createOffer() {
                                         </View>
                                    )
                               }}
-                         />
-
-                         <PaperSelect
-                              label={t("rental_frequency_placeholder")}
-                              value={frequency.value}
-                              onSelection={(value: any) => {
-                                   setFrequency({
-                                        list: frequency.list,
-                                        value: value.text,
-                                        selectedList: value.selectedList,
-                                        error: "",
-                                        id: value.selectedList[0]._id,
-                                   })
-                              }}
-                              arrayList={[...frequency.list]}
-                              selectedArrayList={frequency.selectedList}
-                              errorText={frequency.error}
-                              multiEnable={false}
                          />
 
                          <Controller
@@ -232,7 +233,7 @@ export default function createOffer() {
                               {t("select_equipment_button")}
                          </Button>
                          <Button
-                              icon={rentalPeriod.start && rentalPeriod.end ? displayIcon("rentalPeriod", getErrors("rentalPeriod")) : "plus"}
+                              icon={rentalPeriod.start && rentalPeriod.end ? displayErrorIcon(!!errors.rentalPeriod) : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
@@ -241,24 +242,18 @@ export default function createOffer() {
                                         control: control,
                                         fieldIds: {
                                              rentalPeriod: "rentalPeriod",
-                                             frequency: "frequency",
                                         },
                                    })
                               }
-                              style={[styles.button, getErrors("rentalPeriod") ? styles.buttonError : ""]}
+                              style={[styles.button, errors.rentalPeriod ? styles.buttonError : ""]}
                          >
                               {t("select_rental_period_button")}
                          </Button>
 
-                         {getErrors("rentalPeriod") &&
-                              getErrors("rentalPeriod")?.map((error, index) => (
-                                   <Text key={index} style={styles.errorText}>
-                                        {error}
-                                   </Text>
-                              ))}
+                         {errors.rentalPeriod && <Text style={styles.errorText}>{t(errors.rentalPeriod.message as string)}</Text>}
 
                          <Button
-                              icon={location.city && location.address && location.country && location.zipcode ? "check" : "plus"}
+                              icon={location.city && location.address && location.country && location.zipcode ? displayErrorIcon(!!errors.location) : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectLocation", {
@@ -266,13 +261,15 @@ export default function createOffer() {
                                         backPath: "/createOffer",
                                    })
                               }
-                              style={styles.button}
+                              style={[styles.button, errors.location ? styles.buttonError : ""]}
                          >
                               {t("select_location_button")}
                          </Button>
 
+                         {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+
                          <Button
-                              icon={selectedBoatId ? "check" : "plus"}
+                              icon={selectedBoatId ? displayErrorIcon(!!errors.selectedBoatId) : "plus"}
                               mode="contained"
                               onPress={() =>
                                    handleNavigate("/selectBoat", {
@@ -280,10 +277,11 @@ export default function createOffer() {
                                         backPath: "/createOffer",
                                    })
                               }
-                              style={styles.button}
+                              style={[styles.button, errors.selectedBoatId ? styles.buttonError : ""]}
                          >
                               {t("select_boat_button")}
                          </Button>
+                         {errors.selectedBoatId && <Text style={styles.errorText}>{t(errors.selectedBoatId.message as string)}</Text>}
 
                          <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
                               {isPending ? t("loading_button_text") : t("create_offer_button")}

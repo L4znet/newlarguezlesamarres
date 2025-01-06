@@ -1,7 +1,5 @@
 import { create } from "zustand"
 import { Equipment, Offer, RentalPeriod, Location } from "@/interfaces/Offer"
-import { displayRentalFrequency, getFrequencyLabelByIndex, RentalFrequency, useRentalFrequencyOptions } from "@/constants/RentalFrequency"
-
 interface BoatImage {
      id: string
      url: string
@@ -36,7 +34,6 @@ interface OfferStore {
      isAvailable: boolean
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
-     frequency: number
      boatId: string | null
      boatImages: BoatImage[]
      boat: Boat | null
@@ -44,10 +41,11 @@ interface OfferStore {
      currentOffer: Offer | null
      setEquipments: (equipments: Equipment[]) => void
      addEquipment: (equipment: Equipment) => void
+     emptyEquipments: () => void
      removeEquipment: (index: number) => void
      setRentalPeriod: (start: string, end: string) => void
      setLocation: (location: Location) => void
-     selectBoat: (boatUid: string) => void
+     selectBoat: (boatUid: string | null) => void
      setOfferField: (fieldOrFields: keyof OfferStore | Partial<OfferStore>, value?: any) => void
      setErrors: (field: string, errors: string[]) => void
      getErrors: (field: string) => string[] | null
@@ -74,7 +72,6 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
      isAvailable: false,
      isSkipperAvailable: false,
      isTeamAvailable: false,
-     frequency: 1,
      boatId: null,
      boatImages: [],
      boat: null,
@@ -90,6 +87,7 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
           set((state) => ({
                equipments: state.equipments.filter((_, i) => i !== index),
           })),
+     emptyEquipments: () => set(() => ({ equipments: [] })),
      setRentalPeriod: (start: string, end: string) => set(() => ({ rentalPeriod: { start, end } })),
      setLocation: (location) => set(() => ({ location })),
      selectBoat: (boatId) => set(() => ({ selectedBoatId: boatId })),
@@ -138,7 +136,6 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
                     location: resolvedOffer.location ?? state.location,
                     equipments: resolvedOffer.equipments ?? state.equipments,
                     deletedAt: resolvedOffer.deletedAt ?? null,
-                    frequency: resolvedOffer.frequency ?? state.frequency,
                },
           }))
      },
@@ -161,7 +158,6 @@ export const useOfferStore = create<OfferStore>((set, get) => ({
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,
-               frequency: 1,
                boatId: null,
                boatImages: [],
                boat: null,

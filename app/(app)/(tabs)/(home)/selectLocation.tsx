@@ -5,23 +5,44 @@ import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { z } from "zod"
 
 export default function SelectLocation() {
      const [searchTerm, setSearchTerm] = useState<string>("")
-     const { setLocation, location } = useOfferStore()
+     const { setLocation, location, setErrors, getErrors } = useOfferStore()
      const [validationError, setValidationError] = useState<string | null>(null)
      const [selectedLocation, setSelectedLocation] = useState<{
           city: string
           country: string
           zipcode: string
           address: string
-     } | null>(location)
-     const { mutate, data, isPending, error } = useLocationSearch()
+     } | null>(null)
+
+     const { mutate, data, isPending, error, reset } = useLocationSearch()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      const router = useRouter()
      const theme = useTheme()
 
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
+
+     const resetScreen = () => {
+          setSearchTerm("")
+          setValidationError(null)
+          setSelectedLocation({
+               city: "",
+               country: "",
+               zipcode: "",
+               address: "",
+          })
+          setLocation({
+               city: "",
+               country: "",
+               zipcode: "",
+               address: "",
+          })
+     }
 
      const handleSearch = () => {
           if (searchTerm.trim()) {
@@ -30,46 +51,18 @@ export default function SelectLocation() {
           }
      }
 
-     const validateLocation = (location: any) => {
-          const { address } = location
-
-          if ((!address.municipality || !address.city || !address.localName) && (!address.country || !address.postalCode || !address.streetName || !address.streetNumber)) {
-               //@TODO Traduction
-               setValidationError("La localisation sélectionnée est incomplète. Assurez-vous que la ville, le pays, le code postal et l'adresse sont disponibles.")
-               return {
-                    city: "",
-                    country: "",
-                    zipcode: "",
-                    address: "",
-                    status: "INVALID",
-               }
-          }
-
-          const validatedLocation = {
-               city: address.city || address.municipality || address.localName,
-               country: address.country,
-               zipcode: address.postalCode,
-               address: `${address.streetNumber || ""} ${address.streetName || ""}`.trim(),
-               status: "VALIDATED",
-          }
-
-          if (validatedLocation.status !== "INVALID") {
-               setValidationError(null)
-          }
-
-          return validatedLocation
-     }
-
      const handleSelectLocation = (location: any) => {
-          const { city, country, zipcode, address, status } = validateLocation(location)
+          const { streetNumber, streetName, municipality, country, postalCode } = location.address
 
-          if (status === "VALIDATED") {
-               setSelectedLocation({ city, country, zipcode, address })
-               setSearchTerm("")
-               mutate("", {
-                    onSuccess: () => {},
-               })
-          }
+          console.log(selectedLocation)
+
+          setSelectedLocation({ city: municipality, country: country, zipcode: postalCode, address: streetNumber + " " + streetName })
+          setSearchTerm("")
+          mutate("", {
+               onSuccess: () => {
+                    reset()
+               },
+          })
      }
 
      const handleNavigation = () => {
@@ -78,25 +71,53 @@ export default function SelectLocation() {
 
      const cancelSelection = () => {
           handleNavigation()
-
-          setSelectedLocation({
-               city: location.city,
-               country: location.country,
-               zipcode: location.zipcode,
-               address: location.address,
-          })
+          resetScreen()
      }
 
      const confirmSelection = () => {
           if (selectedLocation) {
+               const schema = z.object({
+                    city: z.string().nonempty(),
+                    country: z.string().nonempty(),
+                    zipcode: z
+                         .string()
+                         .nonempty()
+                         .length(5, { message: t("zod_rule_zipcode_too_short") })
+                         .regex(/^\d+$/, { message: t("zod_rule_zipcode_invalid") }),
+                    address: z.string().nonempty(),
+               })
+
+               const validationResult = schema.safeParse({
+                    city: selectedLocation?.city,
+                    country: selectedLocation?.country,
+                    zipcode: selectedLocation?.zipcode,
+                    address: selectedLocation?.address,
+               })
+
+               if (!validationResult.success) {
+                    console.log("Validation error", validationResult.error)
+
+                    const errors = validationResult.error.flatten()
+                    setErrors("rentalPeriod", [...(errors.fieldErrors.zipcode || []), ...(errors.fieldErrors.address || []), ...(errors.fieldErrors.city || []), ...(errors.fieldErrors.country || []), ...(errors.formErrors || [])])
+                    return
+               }
+               console.log("----------------------------------------------------")
+               console.log("fffffffff", validationResult.success)
+               console.log("dfsfdssfdq", selectedLocation)
+
                setLocation(selectedLocation)
                handleNavigation()
           }
      }
-     const { locale } = useTranslation()
-     const t = getTranslator(locale)
 
-     const currentSelection = selectedLocation?.country && selectedLocation.city && selectedLocation.address && selectedLocation.zipcode ? `${selectedLocation.address}, ${selectedLocation.zipcode} ${selectedLocation.city}, ${selectedLocation.country}` : "Aucune sélection"
+     let currentSelection = ""
+
+     if (selectedLocation?.country && selectedLocation?.city && selectedLocation?.zipcode && selectedLocation?.address) {
+          currentSelection = `${selectedLocation?.address}, ${selectedLocation?.zipcode} ${selectedLocation?.city}, ${selectedLocation?.country}`
+     } else {
+          currentSelection = t("location_not_specified")
+     }
+
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
                <ScrollView contentContainerStyle={styles.content}>
@@ -104,12 +125,8 @@ export default function SelectLocation() {
 
                     {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
-                    {/*  TODO Traduction*/}
                     {error && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
-
-                    {validationError && <Text style={styles.errorText}>{validationError}</Text>}
-
-                    {data && data.length > 0 ? (
+                    {data && data.length > 0 && (
                          <FlatList
                               data={data}
                               keyExtractor={(item, index) => index.toString()}
@@ -119,18 +136,22 @@ export default function SelectLocation() {
                                    </TouchableOpacity>
                               )}
                          />
-                    ) : (
-                         !isPending && searchTerm.trim() !== "" && <Text style={styles.noResultsText}>Aucun résultat trouvé. Essayez un autre mot-clé.</Text>
                     )}
 
-                    <View style={styles.selectionContainer}>
-                         <Text style={styles.selectionTitle}>{t("your_selection")}</Text>
-                         <Card style={styles.selectionCard}>
-                              <Card.Content>
-                                   <Text>{currentSelection}</Text>
-                              </Card.Content>
-                         </Card>
-                    </View>
+                    {!isPending && data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+
+                    {data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+
+                    {selectedLocation?.address && selectedLocation.country && selectedLocation.zipcode && selectedLocation.city && (
+                         <View style={styles.selectionContainer}>
+                              <Text style={styles.selectionTitle}>{t("your_selection")}</Text>
+                              <Card style={styles.selectionCard}>
+                                   <Card.Content>
+                                        <Text>{currentSelection}</Text>
+                                   </Card.Content>
+                              </Card>
+                         </View>
+                    )}
 
                     <Button mode="contained" onPress={() => confirmSelection()} style={styles.actionButton}>
                          {t("confirm")}

@@ -3,7 +3,7 @@ import { enUS, es, fr } from "date-fns/locale"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { Locale } from "@/constants/Locales"
 
-export const displayRentalPeriod = (start: string | null, end: string | null, locale: Locale, displayFormat: string = "long") => {
+export const displayRentalPeriod = (start: Date | null, end: Date | null, locale: Locale, displayFormat: string = "long") => {
      const t = getTranslator(locale)
 
      const localeMap = {

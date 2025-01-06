@@ -3,7 +3,6 @@ import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
 import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-paper"
 import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
-import { displayRentalFrequency, getRentalFrequency } from "@/constants/RentalFrequency"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { useOfferStore } from "@/modules/stores/offerStore"
@@ -46,7 +45,6 @@ const OwnOffersList = () => {
                title: offer.title,
                description: offer.description,
                price: offer.price,
-               frequency: offer.frequency,
                isAvailable: offer.isAvailable,
                isSkipperAvailable: offer.isSkipperAvailable,
                isTeamAvailable: offer.isTeamAvailable,
@@ -64,7 +62,6 @@ const OwnOffersList = () => {
      }
 
      const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
-          const frequency = displayRentalFrequency(item.frequency.toString(), locale)
           const username = item?.profiles?.username as string
           const boatImages = item?.boats?.boatImages as unknown as [
                {
@@ -85,7 +82,7 @@ const OwnOffersList = () => {
                               {t("published_by")} : {username}
                          </Text>
                          <Text>
-                              {t("price")} : {item.price} {t("money_symbol")} / {frequency}
+                              {t("price")} : {item.price} {t("money_symbol")}
                          </Text>
                     </Card.Content>
 
