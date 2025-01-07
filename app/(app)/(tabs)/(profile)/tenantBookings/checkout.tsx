@@ -13,7 +13,7 @@ import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerify
 import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
 import { useUpdateOfferAvailability } from "@/modules/hooks/offers/useUpdateOfferAvailability"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
-import { useLocalSearchParams } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
@@ -89,6 +89,13 @@ export default function Checkout() {
           const accessToken = session.data.session?.access_token as string
           await initializePaymentSheet()
 
+          console.log({
+               paymentIntentId: paymentIntent.paymentIntent,
+               offerId: currentOfferToRent?.id as string,
+               userId: session.data.session?.user?.id as string,
+               accessToken: accessToken,
+          })
+
           try {
                const result = await presentPaymentSheet()
 
@@ -114,6 +121,7 @@ export default function Checkout() {
                          title: "Payment Successful",
                          description: "Your payment was successfully processed.",
                     })
+                    router.navigate("/(app)/(tabs)/(profile)/tenantBookings")
                } else {
                     showTranslatedFlashMessage("danger", {
                          title: "Payment Failed",

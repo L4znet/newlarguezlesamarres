@@ -1,11 +1,11 @@
-import React, { useRef, useState } from "react"
+import React, { useState } from "react"
 import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, useTheme, Text, ActivityIndicator } from "react-native-paper"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
-import { BoatType, useBoatTypeOptions } from "@/constants/BoatTypes"
+import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
-import { ImagePickerCanceledResult, ImagePickerSuccessResult } from "expo-image-picker"
+import { ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateBoat } from "@/modules/hooks/boats/useCreateBoat"
@@ -80,20 +80,12 @@ export default function createBoat() {
      }
 
      const handleSubmit = async () => {
-          const boatToInsert = {
+          createBoat({
                boatName: boat.boatName,
                boatDescription: boat.boatDescription,
                boatCapacity: boat.boatCapacity,
                boatType: types.id,
                boatImages: boat.boatImages,
-          }
-
-          createBoat({
-               boatName: boatToInsert.boatName,
-               boatDescription: boatToInsert.boatDescription,
-               boatCapacity: boatToInsert.boatCapacity,
-               boatType: boatToInsert.boatType,
-               boatImages: boatToInsert.boatImages,
           })
      }
 

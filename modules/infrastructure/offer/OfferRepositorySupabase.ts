@@ -178,22 +178,8 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }): Promise<OfferEntity | undefined> {
-          const { data: offerData, error: offerError } = await supabase
-               .from("offers")
-               .update({
-                    is_available: isAvailable,
-               })
-               .eq("id", offerId)
-               .select()
-
-          if (offerError) {
-               throw new Error(`Error updating offer availability: ${offerError.message}`)
-          }
-
-          if (offerData?.length) {
-               return OfferEntity.fromSupabaseData(offerData[0])
-          }
+     async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }) {
+          const { data, error } = await supabase.from("offers").select("*").eq("is_available", isAvailable).eq("id", offerId)
      }
 }
 

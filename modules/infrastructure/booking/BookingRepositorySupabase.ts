@@ -3,7 +3,6 @@ import BookingEntity from "@/modules/domain/bookings/BookingEntity"
 import supabase from "@/supabaseClient"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { undefined } from "zod"
-import supabaseClient from "@/supabaseClient"
 
 class BookingRepositorySupabase implements BookingRepository {
      async getTenantBookings(userId: string): Promise<BookingEntity[] | undefined> {
@@ -100,7 +99,7 @@ class BookingRepositorySupabase implements BookingRepository {
 
      async updateBookingStatus(bookingId: string, status: string): Promise<any> {
           try {
-               const { data, error } = await supabaseClient.from("bookings").update({ status }).eq("id", bookingId)
+               const { data, error } = await supabase.from("bookings").update({ status }).eq("id", bookingId)
 
                if (error) {
                     throw new Error(error.message)

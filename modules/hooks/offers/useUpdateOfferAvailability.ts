@@ -11,6 +11,11 @@ export function useUpdateOfferAvailability() {
 
      return useMutation({
           mutationFn: async ({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }) => {
+               console.log({
+                    isAvailable: isAvailable,
+                    offerId: offerId,
+               })
+
                try {
                     await updateOfferAvailabilityUseCase(
                          {
