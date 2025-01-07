@@ -23,11 +23,8 @@ const OffersList = () => {
 
      if (isPending) return <ActivityIndicator size="large" />
      if (error) {
-          console.error("Erreur lors de la récupération des offres :", error)
           return <Text>Erreur lors de la récupération des offres</Text>
      }
-
-     console.log("RENDERING OFFERS LIST")
 
      const EmptyList = () => {
           return (

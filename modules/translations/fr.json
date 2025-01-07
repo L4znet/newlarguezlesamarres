@@ -284,6 +284,10 @@
           "supabase_message": "All fields are required",
           "translation": "Tous les champs sont requis."
      },
+     "cant_create_offer_without_boats": {
+          "supabase_message": "flash_description_no_boats",
+          "translation": "Vous devez ajouter un bateau pour créer une offre."
+     },
 
      "offers_not_found": {
           "supabase_message": "No offers found",
@@ -306,7 +310,7 @@
      "bookings_tenant_confirmed_empty_message": "Aucune location confirmée",
      "bookings_tenant_declined_empty_message": "Aucune réservation refusée",
      "bookings_tenant_rented_empty_message": "Aucune location en cours",
-     "bookings_tenant_empty_message": "Aucune location",
+     "bookings_tenant_empty_message": "Aucune locations",
      "select_boat_empty_message": "Vous n'avez pas encore de bateau",
 
      "bookings_owner_pending_empty_message": "Aucune réservation en attente",

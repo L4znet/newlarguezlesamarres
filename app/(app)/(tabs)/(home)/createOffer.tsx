@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useCallback } from "react"
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
 import { Button, Text, TextInput, Switch } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
@@ -11,6 +11,8 @@ import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
 import { Controller, FieldError, FieldErrorsImpl, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Merge } from "type-fest"
+import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
+import { useFocusEffect } from "@react-navigation/native"
 
 export default function createOffer() {
      const router = useRouter()
@@ -19,6 +21,7 @@ export default function createOffer() {
      const t = getTranslator(locale)
 
      const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
+     const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
 
@@ -28,6 +31,18 @@ export default function createOffer() {
                params,
           })
      }
+
+     useFocusEffect(
+          useCallback(() => {
+               if (boatsCount === 0) {
+                    showTranslatedFlashMessage("warning", {
+                         title: "flash_title_warning",
+                         description: "flash_description_no_boats",
+                    })
+                    router.navigate("/(app)/(tabs)/(home)")
+               }
+          }, [boatsCount])
+     )
 
      const {
           control,
@@ -64,7 +79,6 @@ export default function createOffer() {
                selectedBoatId: "",
           },
      })
-
      if (location.zipcode && location.city && location.address && location.country) {
           setValue("location", location)
           resetField("location")

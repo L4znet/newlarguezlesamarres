@@ -224,6 +224,23 @@ class BoatRepositorySupabase implements BoatRepository {
                throw new Error(`Error in getSingleBoat: ${(error as Error).message}`)
           }
      }
+     async getBoatsCount(profileId: string | undefined): Promise<Number | null> {
+          console.log("profileId", profileId)
+
+          try {
+               const { count, error } = await supabase.from("boats").select("*", { count: "exact", head: true }).eq("profile_id", profileId).limit(1)
+               if (error) {
+                    console.log("boatError", error)
+                    throw new Error(`Error getting boats: ${error.message}`)
+               }
+
+               return count
+          } catch (error) {
+               console.log("error", error)
+
+               throw new Error(`Error in getBoats: ${(error as Error).message}`)
+          }
+     }
 }
 
 export default new BoatRepositorySupabase()

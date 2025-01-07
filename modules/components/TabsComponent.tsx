@@ -65,13 +65,13 @@ const styles = StyleSheet.create({
           height: 50,
      },
      tabText: {
-          fontSize: 12,
+          fontSize: 10,
           fontWeight: "600",
           color: "#666",
      },
      tabContent: {
           flexDirection: "row",
-          width: screenWidth * 5,
+          width: screenWidth * 6,
           flex: 1,
      },
 })

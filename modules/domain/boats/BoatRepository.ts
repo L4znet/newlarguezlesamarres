@@ -23,6 +23,7 @@ interface BoatRepository {
      deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
      getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
      getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
+     getBoatsCount(profileId: string | undefined): Promise<Number | null>
      deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
 }
 
