@@ -39,7 +39,7 @@ const BookingTenantList = () => {
                end: item.endDate,
           })
 
-          const { rentalStartDate, rentalEndDate } = displayRentalPeriod(item.startDate, item.endDate, locale, "short")
+          const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(item.startDate), new Date(item.endDate), locale, "short")
 
           if (!item.id) {
                return null
@@ -51,7 +51,7 @@ const BookingTenantList = () => {
                     <Card.Title title={item.offerTitle} subtitle={"Réservé par " + item.profileFirstname + " " + item.profileLastname} />
                     <Card.Content>
                          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10 }}>
-                              <Chip>{item.status === "pending" ? t("booking_pending_chip") : item.status === "confirmed" ? t("booking_confirmed_chip") : t("booking_cancelled_chip")}</Chip>
+                              <Chip>{t("booking_" + item.status + "_chip")}</Chip>
                          </View>
                          <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10 }}>
                               <Chip style={{ marginRight: 5 }}>
@@ -69,7 +69,7 @@ const BookingTenantList = () => {
                                    {totalAmount} {t("money_symbol")}
                               </Chip>
                               <Chip style={{ marginLeft: 10 }}>
-                                   {item.offerPrice} {t("money_symbol")}
+                                   {item.offerPrice} {t("money_symbol")} / {t("days")}
                               </Chip>
                          </View>
                     </Card.Content>
@@ -91,9 +91,9 @@ const BookingTenantList = () => {
      const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
-          <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>
-               {renderTabContent(ownerBookings, t("bookings_owner_empty_message"))}
+          <TabsComponent tabLabels={[t("booking_pending_btn"), t("booking_rented_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>
                {renderTabContent(filterReservations("pending"), t("bookings_owner_pending_empty_message"))}
+               {renderTabContent(filterReservations("rented"), t("bookings_owner_rented_empty_message"))}
                {renderTabContent(filterReservations("confirmed"), t("bookings_owner_confirmed_empty_message"))}
                {renderTabContent(filterReservations("cancelled"), t("bookings_owner_cancelled_empty_message"))}
                {renderTabContent(filterReservations("declined"), t("bookings_owner_declined_empty_message"))}

@@ -22,11 +22,6 @@ export const displayRentalPeriod = (start: Date | null, end: Date | null, locale
 
      const rentalEndDate = end && isValid(end) ? format(end, dateFormat, { locale: localeMap[locale] || fr }) : t("not_specified")
 
-     console.log({
-          rentalStartDate,
-          rentalEndDate,
-     })
-
      return {
           rentalStartDate,
           rentalEndDate,

@@ -7,6 +7,8 @@ import supabaseClient from "@/supabaseClient"
 
 class BookingRepositorySupabase implements BookingRepository {
      async getTenantBookings(userId: string): Promise<BookingEntity[] | undefined> {
+          console.log("userfffffId", userId)
+
           const { data: bookingData, error: bookingError } = await supabase
                .from("bookings")
                .select(
@@ -33,6 +35,8 @@ class BookingRepositorySupabase implements BookingRepository {
                )
                .eq("user_id", userId)
 
+          console.log("bookingData", bookingData)
+
           if (bookingError) {
                throw new Error(`Error getting bookings tenants: ${bookingError.message}`)
           }
@@ -43,6 +47,8 @@ class BookingRepositorySupabase implements BookingRepository {
      }
 
      async getOwnerBookings(userId: string): Promise<BookingEntity[] | undefined> {
+          console.log("userId", userId)
+
           try {
                const { data, error } = await supabase
                     .from("bookings")
@@ -61,6 +67,7 @@ class BookingRepositorySupabase implements BookingRepository {
                           offer_description:description,
                           offer_price:price,
                           offer_rentals:rental_period,
+                          offer_profile_id:profile_id,
                           ...boats!inner(
                             boat_name,
                             boat_images (id,caption,url)
@@ -77,6 +84,8 @@ class BookingRepositorySupabase implements BookingRepository {
                     console.error("Error fetching owner bookings:", error)
                     throw new Error("Failed to fetch owner bookings")
                }
+
+               console.log("data", data)
 
                return data?.map((booking) => BookingEntity.fromSupabaseData(booking))
           } catch (error) {

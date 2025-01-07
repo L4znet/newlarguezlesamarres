@@ -7,7 +7,7 @@ export function useOwnerBookings() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useQuery<BookingEntity[]>({
-          queryKey: ["bookings"],
+          queryKey: ["owner_bookings"],
           queryFn: () => getOwnerBookingsUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,
           refetchOnWindowFocus: true,

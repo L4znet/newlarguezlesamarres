@@ -18,10 +18,10 @@ const customDarkTheme = {
      ...MD3DarkTheme,
      fonts: {
           ...MD3DarkTheme.fonts,
-          regular: { ...MD3DarkTheme.fonts.bodyMedium, fontWeight: "400" },
-          medium: { ...MD3DarkTheme.fonts.titleMedium, fontWeight: "500" },
-          bold: { ...MD3DarkTheme.fonts.headlineMedium, fontWeight: "700" },
-          heavy: { ...MD3DarkTheme.fonts.bodyLarge, fontWeight: "900" },
+          regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" as "400" },
+          medium: { ...MD3LightTheme.fonts.titleMedium, fontWeight: "500" as "500" },
+          bold: { ...MD3LightTheme.fonts.headlineMedium, fontWeight: "700" as "700" },
+          heavy: { ...MD3LightTheme.fonts.bodyLarge, fontWeight: "900" as "900" },
      },
 }
 
@@ -29,10 +29,10 @@ const customLightTheme = {
      ...MD3LightTheme,
      fonts: {
           ...MD3LightTheme.fonts,
-          regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" },
-          medium: { ...MD3LightTheme.fonts.titleMedium, fontWeight: "500" },
-          bold: { ...MD3LightTheme.fonts.headlineMedium, fontWeight: "700" },
-          heavy: { ...MD3LightTheme.fonts.bodyLarge, fontWeight: "900" },
+          regular: { ...MD3LightTheme.fonts.bodyMedium, fontWeight: "400" as "400" },
+          medium: { ...MD3LightTheme.fonts.titleMedium, fontWeight: "500" as "500" },
+          bold: { ...MD3LightTheme.fonts.headlineMedium, fontWeight: "700" as "700" },
+          heavy: { ...MD3LightTheme.fonts.bodyLarge, fontWeight: "900" as "900" },
      },
 }
 

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native"
 import React from "react"
 import { Text, BottomNavigation } from "react-native-paper"
-import TabBarButton from "./TabBarButton"
+
 import { Href, router } from "expo-router"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 

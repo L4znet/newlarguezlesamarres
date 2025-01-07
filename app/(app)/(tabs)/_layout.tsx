@@ -11,13 +11,15 @@ export default function Layout() {
 
      const { session } = useAuth()
 
-     if (!session) {
-          router.replace("/(app)/(auth)")
-     }
+     useEffect(() => {
+          if (!session) {
+               router.replace("/(app)/(auth)")
+          }
+     }, [session])
 
      return (
           <Tabs
-               tabBar={(props) => <TabBar {...props} />}
+               tabBar={(props) => <TabBar {...(props as any)} />}
                screenOptions={{
                     headerShown: false,
                }}

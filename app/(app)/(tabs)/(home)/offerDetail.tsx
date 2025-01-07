@@ -11,33 +11,19 @@ import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useCreateBooking } from "@/modules/hooks/bookings/useCreateBooking"
 import { useIsOfferReserved } from "@/modules/hooks/bookings/useIsOfferReserved"
 import { useHasUserReservedOffer } from "@/modules/hooks/bookings/useHasUserReservedOffer"
-import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
+import { displayTotalPrice, getHowManyDays } from "@/constants/DisplayTotalPrice"
 
 export default function OfferDetail() {
      const { offerId, userId } = useLocalSearchParams<{ offerId: string; userId: string }>()
-     const { currentOffer, setCurrentOffer } = useOfferStore()
      const { data: offerById, isPending, error } = useOfferById(offerId)
-
      const createBooking = useCreateBooking()
      const { data: isOfferReserved, isPending: isPendingIsOfferReserved, error: errorIsOfferReserved } = useIsOfferReserved(offerId)
      const { data: hasUserReservedOffer, isPending: isPendingHasUserReservedOffer, error: errorHasUserReservedOffer } = useHasUserReservedOffer(offerId, userId)
 
-     interface BoatImage {
-          id: string
-          url: string
-          caption: string | null
-     }
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
-     useEffect(() => {
-          if (offerId && offerById && !isPending && !error) {
-               const fetchOffer = async () => {
-                    await setCurrentOffer(offerById)
-               }
-               fetchOffer()
-          }
-     }, [offerById])
-
-     if (!currentOffer) {
+     if (isPending) {
           return <ActivityIndicator size="large" />
      }
 
@@ -47,17 +33,17 @@ export default function OfferDetail() {
           }
 
           createBooking.mutate({
-               offerId: currentOffer.id as string,
+               offerId: offerById?.id as string,
                userId: userId,
-               startDate: currentOffer.rentalPeriod.start,
-               endDate: currentOffer.rentalPeriod.end,
+               startDate: offerById?.rentalPeriod.start as string,
+               endDate: offerById?.rentalPeriod.end as string,
                status: "pending",
           })
      }
-     const { locale } = useTranslation()
-     const t = getTranslator(locale)
-     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(currentOffer.rentalPeriod.start), new Date(currentOffer.rentalPeriod.end), locale)
-     const { totalAmount } = displayTotalPrice(currentOffer.price as string, currentOffer.rentalPeriod as { start: string; end: string })
+
+     const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(offerById?.rentalPeriod.start as string), new Date(offerById?.rentalPeriod.end as string), locale)
+     const { totalAmount } = displayTotalPrice(offerById?.price as string, offerById?.rentalPeriod as { start: string; end: string })
+     const days = getHowManyDays(offerById?.rentalPeriod.start as string, offerById?.rentalPeriod.end as string)
 
      const getBoatsImages = () => {
           const boatsImages = [] as { id: string; caption: string; url: string }[]
@@ -70,25 +56,27 @@ export default function OfferDetail() {
                })
           })
 
-          return boatsImages as BoatImage[]
+          return boatsImages
      }
 
-     let boatImages = getBoatsImages()
+     console.log("RENDERING OFFERS DETAILS")
+
+     const boatImages = getBoatsImages()
 
      return (
           <View style={styles.container}>
                <Slideshow images={boatImages} />
                <Text variant="headlineLarge" style={styles.title}>
-                    {currentOffer.title}
+                    {offerById?.title}
                </Text>
                <Text variant="bodyLarge" style={styles.description}>
-                    {currentOffer.description}
+                    {offerById?.description}
                </Text>
                <Text style={styles.period}>
-                    {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
+                    {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate} ({days} {t("days")})
                </Text>
                <Text style={styles.price}>
-                    {currentOffer.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
+                    {offerById?.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
                </Text>
                <Button mode="contained" style={styles.button} onPress={handleBookOffer} disabled={hasUserReservedOffer || isOfferReserved}>
                     {hasUserReservedOffer ? t("already_reserved") : t("book_offer")}

@@ -11,7 +11,7 @@ import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
-import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
+import { displayTotalPrice, getHowManyDays } from "@/constants/DisplayTotalPrice"
 
 const OffersList = () => {
      const router = useRouter()
@@ -26,6 +26,8 @@ const OffersList = () => {
           console.error("Erreur lors de la récupération des offres :", error)
           return <Text>Erreur lors de la récupération des offres</Text>
      }
+
+     console.log("RENDERING OFFERS LIST")
 
      const EmptyList = () => {
           return (
@@ -57,6 +59,7 @@ const OffersList = () => {
 
           const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(item.rentalPeriod.start), new Date(item.rentalPeriod.end), locale)
           const { totalAmount } = displayTotalPrice(item.price as string, item?.rentalPeriod as { start: string; end: string })
+          const days = getHowManyDays(item.rentalPeriod.start, item.rentalPeriod.end)
 
           return (
                <Card key={item.id} style={[styles.card]}>
@@ -68,12 +71,11 @@ const OffersList = () => {
                          <Text>
                               {t("published_by")} {username}
                          </Text>
-
+                         <Text style={styles.period}>
+                              {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate} ({days} {t("days")})
+                         </Text>
                          <Text>
                               {t("price")} : {item.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
-                         </Text>
-                         <Text style={styles.period}>
-                              {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate}
                          </Text>
                     </Card.Content>
 

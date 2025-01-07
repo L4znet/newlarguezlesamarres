@@ -8,7 +8,7 @@ export function useTenantBookings() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useQuery<BookingEntity[]>({
-          queryKey: ["bookings"],
+          queryKey: ["tenant_bookings"],
           queryFn: () => getTenantBookingsUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,
           refetchOnWindowFocus: true,

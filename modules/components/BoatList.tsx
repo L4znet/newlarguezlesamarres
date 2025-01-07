@@ -9,11 +9,14 @@ import { BoatType, displayBoatType, getBoatType } from "@/constants/BoatTypes"
 import { useBoatStore } from "@/modules/stores/boatStore"
 import { getSingleBoatUseCase } from "@/modules/application/boats/getSingleBoatUseCase"
 import { useDeleteBoat } from "@/modules/hooks/boats/useDeleteBoat"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 const BoatList = () => {
      const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
      const { setCurrentBoat } = useBoatStore()
+     const { locale } = useTranslation()
+     const t = getTranslator(locale)
 
      if (isPending) return <ActivityIndicator size="large" />
 
@@ -49,9 +52,8 @@ const BoatList = () => {
                     <Slideshow images={boatImages} />
                     <Card.Title title={item.boatName} subtitle={item.boatDescription} />
                     <Card.Content>
-                         <Text>ID : {item.id}</Text>
                          <Text>Capacité : {item.boatCapacity}</Text>
-                         <Text>Type : {boatType}</Text>
+                         <Text>Type : {t(boatType.toLowerCase())}</Text>
                     </Card.Content>
                     <Card.Actions>
                          <Button mode={"contained"} onPress={() => handleEditBoat(item.id)}>

@@ -28,13 +28,15 @@ export default function Layout() {
           insets: any
      }
 
-     if (session) {
-          router.replace("/(app)/(tabs)/(home)")
-     }
+     useEffect(() => {
+          if (session) {
+               router.replace("/(app)/(tabs)/(home)")
+          }
+     }, [session])
 
      return (
           <Tabs
-               tabBar={(props: TabBarProps) => <AuthTabBar {...props} />}
+               tabBar={(props: any) => <AuthTabBar {...props} />}
                screenOptions={{
                     headerShown: false,
                }}

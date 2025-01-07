@@ -4,8 +4,6 @@ import { useOfferStore } from "@/modules/stores/offerStore"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 
 export function useOfferById(offerId: string) {
-     const setCurrentOffer = useOfferStore((state) => state.setCurrentOffer)
-
      return useQuery<OfferEntity, Error>({
           queryKey: ["offer", offerId],
           queryFn: () => getSingleOfferUseCase(offerId),
@@ -13,8 +11,5 @@ export function useOfferById(offerId: string) {
           refetchOnMount: false,
           refetchOnWindowFocus: false,
           staleTime: Infinity,
-          onSuccess: (data: any) => {
-               setCurrentOffer(data)
-          },
      } as UseQueryOptions<OfferEntity, Error>)
 }
