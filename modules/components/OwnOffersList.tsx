@@ -17,7 +17,7 @@ const OwnOffersList = () => {
      const { mutate: deleteOffer, isPending: isDeleting, error: deleteError } = useDeleteOffer()
      const theme = useTheme()
 
-     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat } = useOfferStore()
+     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat, setTemporaryLocation, setTemporaryEquipments, setTemporaryStartDate, setTemporaryEndDate, setTemporaryBoatId, temporaryEquipments } = useOfferStore()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -51,13 +51,22 @@ const OwnOffersList = () => {
                boatId: offer.boatId,
           })
 
+          console.log("offer.equipments", offer.equipments)
+
           setEquipments(offer.equipments)
           setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
+          setTemporaryStartDate(new Date(offer.rentalPeriod.start))
+          setTemporaryEndDate(new Date(offer.rentalPeriod.end))
           setLocation(offer.location)
+          setTemporaryLocation(offer.location)
+          setTemporaryBoatId(offer.boatId)
           selectBoat(offer.boatId)
 
           router.navigate({
-               pathname: "/(app)/(tabs)/(home)/editOffer",
+               pathname: "/(app)/(tabs)/(home)/(editOffer)",
+               params: {
+                    offerId: offer.id,
+               },
           })
      }
 

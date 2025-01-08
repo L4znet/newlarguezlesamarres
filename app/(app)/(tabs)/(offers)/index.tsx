@@ -14,7 +14,7 @@ export default function index() {
                <SafeAreaView style={styles.safeView}>
                     <OwnOffersList />
                </SafeAreaView>
-               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/createOffer")} />
+               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(home)/(createOffer)")} />
 
                <FAB
                     icon="plus"
@@ -26,7 +26,7 @@ export default function index() {
                                    description: "flash_description_no_boats",
                               })
                          } else {
-                              router.navigate("/(app)/(tabs)/(home)/createOffer")
+                              router.navigate("/(app)/(tabs)/(home)/(createOffer)")
                          }
                     }}
                />

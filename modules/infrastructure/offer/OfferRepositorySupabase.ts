@@ -181,6 +181,22 @@ class OfferRepositorySupabase implements OfferRepository {
      async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }) {
           const { data, error } = await supabase.from("offers").select("*").eq("is_available", isAvailable).eq("id", offerId)
      }
+
+     async getSpecificOfferData({ offerId, dataToSelect }: { offerId: string; dataToSelect: string }): Promise<any> {
+          const { data: offerData, error: offerError } = await supabase.from("offers").select(dataToSelect).eq("id", offerId)
+
+          console.log("offerData", offerData)
+
+          if (offerError) {
+               throw new Error(`Error fetching offer: ${offerError.message}`)
+          }
+
+          if (offerData?.length) {
+               return offerData[0]
+          }
+
+          throw new Error("No data returned from offer fetch.")
+     }
 }
 
 export default new OfferRepositorySupabase()

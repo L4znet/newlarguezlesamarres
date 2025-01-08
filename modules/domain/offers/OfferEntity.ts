@@ -35,8 +35,8 @@ export default class OfferEntity {
                data.is_available,
                data.equipments
                     ? data.equipments.map((equip: any) => ({
-                           equipmentName: equip.name,
-                           equipmentQuantity: equip.quantity,
+                           equipmentName: equip.equipmentName,
+                           equipmentQuantity: equip.equipmentQuantity,
                       }))
                     : [],
                data.is_skipper_available,

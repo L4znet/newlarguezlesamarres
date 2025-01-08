@@ -12,7 +12,6 @@ export default function Layout() {
      const { session } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const { data: countBoats, isPending: countBoatsIsPending, error: countBoatsError } = useCountBoats()
 
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -22,29 +21,40 @@ export default function Layout() {
                          options={{
                               drawerLabel: t("drawer_home"),
                               title: t("drawer_home"),
+                              drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
-                         name={"(createOffer)"}
+                         name="selectLocation"
                          options={{
-                              drawerLabel: t("drawer_add_offer"),
-                              title: t("drawer_add_offer"),
+                              title: t("drawer_select_location"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
-                         name={"(editOffer)"}
+                         name="selectRentalPeriod"
                          options={{
-                              drawerLabel: t("drawer_edit_offer"),
-                              title: t("drawer_edit_offer"),
+                              title: t("drawer_select_rental_period"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
-                         name="offerDetail"
+                         name="selectEquipments"
                          options={{
-                              title: t("drawer_offer_detail"),
+                              title: t("drawer_select_equipments"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
+                         }}
+                    />
+                    <Drawer.Screen
+                         name="selectBoat"
+                         options={{
+                              title: t("drawer_select_boat"),
+                              drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                </Drawer>

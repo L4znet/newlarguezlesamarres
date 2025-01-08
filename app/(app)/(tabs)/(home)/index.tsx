@@ -17,7 +17,7 @@ export default function Index() {
      const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
 
      const createOffer = async () => {
-          router.navigate("/(app)/(tabs)/(home)/createOffer")
+          router.navigate("/(app)/(tabs)/(home)/(createOffer)")
           setLocation({
                city: "",
                address: "",
