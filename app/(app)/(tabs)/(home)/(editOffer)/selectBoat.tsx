@@ -30,6 +30,9 @@ export default function SelectBoat() {
 
      const handleConfirmSelection = () => {
           handleNavigation()
+
+          console.log("newSelectedBoat", newSelectedBoat)
+
           selectBoat(newSelectedBoat as string)
      }
 

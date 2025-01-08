@@ -65,6 +65,7 @@ export default function editOffer() {
           try {
                updateOffer({
                     ...data,
+                    id: offerId,
                })
 
                setValue("title", title)
@@ -76,7 +77,7 @@ export default function editOffer() {
                setValue("equipments", equipments)
                setValue("rentalPeriod", rentalPeriod)
                setValue("location", location)
-               setValue("selectedBoatId", "")
+               setValue("selectedBoatId", selectedBoatId)
                setRentalPeriod(rentalPeriod.start, rentalPeriod.end)
                setTemporaryStartDate(new Date(rentalPeriod.start))
                setTemporaryEndDate(new Date(rentalPeriod.end))

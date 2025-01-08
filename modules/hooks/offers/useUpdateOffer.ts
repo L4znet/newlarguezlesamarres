@@ -11,22 +11,19 @@ export function useUpdateOffer() {
      return useMutation({
           mutationFn: async ({ id, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { id: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: { start: string; end: string }; location: { city: string; country: string; zipcode: string; address: string } }) => {
                try {
-                    await updateOfferUseCase(
-                         {
-                              id: id,
-                              boatId: boatId,
-                              title: title,
-                              description: description,
-                              price: price,
-                              isAvailable: isAvailable,
-                              equipments: equipments,
-                              isSkipperAvailable: isSkipperAvailable,
-                              isTeamAvailable: isTeamAvailable,
-                              rentalPeriod: rentalPeriod,
-                              location: location,
-                         },
-                         showTranslatedFlashMessage
-                    )
+                    await updateOfferUseCase({
+                         id: id,
+                         boatId: boatId,
+                         title: title,
+                         description: description,
+                         price: price,
+                         isAvailable: isAvailable,
+                         equipments: equipments,
+                         isSkipperAvailable: isSkipperAvailable,
+                         isTeamAvailable: isTeamAvailable,
+                         rentalPeriod: rentalPeriod,
+                         location: location,
+                    })
                } catch (error) {
                     throw new Error((error as Error).message)
                }
