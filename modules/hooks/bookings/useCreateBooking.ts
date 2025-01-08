@@ -24,7 +24,7 @@ export const useCreateBooking = () => {
                queryClient.invalidateQueries({ queryKey: ["isOfferReserved"] })
                queryClient.invalidateQueries({ queryKey: ["hasUserReservedOffer"] })
                showTranslatedFlashMessage("success", {
-                    title: "Booking Created",
+                    title: "flash_title_success",
                     description: "Your booking has been created successfully.",
                })
           },
@@ -32,7 +32,7 @@ export const useCreateBooking = () => {
           onError: (error) => {
                console.error("Booking insertion error:", error)
                showTranslatedFlashMessage("danger", {
-                    title: "Booking Error",
+                    title: "flash_title_danger",
                     description: "An error occurred while creating your Booking.",
                })
           },

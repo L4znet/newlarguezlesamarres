@@ -35,6 +35,7 @@
      "register_already_account": "Vous avez déjà un compte ? Connectez-vous",
      "register_login_btn": "J'ai un compte !",
      "register_submit": "S'inscrire",
+     "no_account_found": "Aucun compte trouvé ! Cela doit être une erreur. Déconnectez-vous et réessayez.",
 
      "forgot_password_title": "Impossible de vous souvenir de votre mot de passe ?",
      "forgot_password_subtitle": "Cela arrive ! Nous allons vous aider à le récupérer",
@@ -58,6 +59,7 @@
      "boat_name_placeholder": "Nom du bateau",
      "boat_description_placeholder": "Description du bateau",
      "boat_capacity_placeholder": "Capacité du bateau",
+     "nothing_to_show": "Rien à afficher pour le moment",
 
      "bottom_bar_(home)/index": "Accueil",
      "bottom_bar_index": "Accueil",
@@ -302,6 +304,42 @@
           "supabase_message": "An error occurred while searching for locations",
           "translation": "Erreur lors de la sélection de la localisation."
      },
+
+     "email_updated_success": {
+          "supabase_message": "Email updated successfully!",
+          "translation": "Adresse e-mail mise à jour avec succès."
+     },
+
+     "booking_created_success": {
+          "supabase_message": "Your booking has been created successfully.",
+          "translation": "Réservation créée avec succès."
+     },
+
+     "booking_updated_success": {
+          "supabase_message": "Your booking has been updated successfully.",
+          "translation": "Réservation modifiée avec succès."
+     },
+
+     "booking_deleted_success": {
+          "supabase_message": "Your booking has been deleted successfully.",
+          "translation": "Réservation supprimée avec succès."
+     },
+
+     "booking_declined_success": {
+          "supabase_message": "Your booking has been declined successfully.",
+          "translation": "Réservation refusée avec succès."
+     },
+
+     "booking_cancelled_success": {
+          "supabase_message": "Your booking has been cancelled successfully.",
+          "translation": "Réservation annulée avec succès."
+     },
+
+     "booking_status_changed_success": {
+          "supabase_message": "The booking status has been updated successfully.",
+          "translation": "Statut de la réservation modifié avec succès."
+     },
+
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
      "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
@@ -312,6 +350,7 @@
      "bookings_tenant_rented_empty_message": "Aucune location en cours",
      "bookings_tenant_empty_message": "Aucune locations",
      "select_boat_empty_message": "Vous n'avez pas encore de bateau",
+     "boats_empty_message": "Vous n'avez pas encore de bateau",
 
      "bookings_owner_pending_empty_message": "Aucune réservation en attente",
      "bookings_owner_cancelled_empty_message": "Aucune réservation annulée",
@@ -463,5 +502,6 @@
      "zod_rule_address_required": "L'adresse est requise.",
      "zod_rule_city_required": "La ville est requise.",
      "zod_rule_country_required": "Le pays est requis.",
-     "zod_rule_zipcode_required": "Le code postal est requis."
+     "zod_rule_zipcode_required": "Le code postal est requis.",
+     "zod_rule_email_required": "L'adresse e-mail est requise."
 }

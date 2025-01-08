@@ -22,9 +22,8 @@ const BoatList = () => {
 
      const EmptyList = () => {
           return (
-               //@TODO Translate
                <View style={styles.container}>
-                    <Text>Rien à afficher pour le moment</Text>
+                    <Text>{t("boats_empty_message")}</Text>
                </View>
           )
      }

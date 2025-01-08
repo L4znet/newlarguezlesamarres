@@ -59,8 +59,6 @@ export default function OfferDetail() {
           return boatsImages
      }
 
-     console.log("RENDERING OFFERS DETAILS")
-
      const boatImages = getBoatsImages()
 
      return (

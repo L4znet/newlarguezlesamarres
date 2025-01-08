@@ -49,7 +49,6 @@ export const loginUseCase = async (
                return null
           }
      } catch (error: any) {
-          console.dir(error)
           showTranslatedFlashMessage("danger", {
                title: "flash_title_danger",
                description: error.message,

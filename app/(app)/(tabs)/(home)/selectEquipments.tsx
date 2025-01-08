@@ -29,7 +29,6 @@ export default function selectEquipments() {
                .nonempty("zod_rule_equipment_quantity_required")
                .refine(
                     (value) => {
-                         console.log("value", value)
                          return parseInt(value) > 0
                     },
                     { message: "zod_rule_equipment_quantity_invalid" }

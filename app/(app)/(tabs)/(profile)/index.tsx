@@ -1,25 +1,40 @@
 import React, { useEffect } from "react"
 import { View, StyleSheet } from "react-native"
-import { Avatar, Button, Text, TextInput } from "react-native-paper"
+import { Avatar, Button, Text, TextInput, ActivityIndicator, useTheme } from "react-native-paper"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
-import { router } from "expo-router"
-import { useProfile } from "@/modules/context/ProfileProvider"
+import { useProfile } from "@/modules/hooks/profiles/useProfile"
 
 export default function Index() {
      const { signOut } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const { profile } = useProfile()
+     const { data: profile, isPending, error } = useProfile()
+     const theme = useTheme()
 
-     const avatar = profile?.avatar ? { uri: profile.avatar } : require("@/assets/images/avatars/default-avatar.png")
+     if (!profile) {
+          return (
+               <View style={styles.container}>
+                    <Text>{t("no_account_found")}</Text>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+               </View>
+          )
+     }
+
+     if (isPending) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("loading_title")}</Text>
+               </View>
+          )
+     }
 
      return (
           <View style={styles.container}>
                <View style={styles.profile}>
                     <View style={styles.profileHeader}>
-                         <Avatar.Image size={150} source={avatar} />
+                         <Avatar.Image size={150} source={{ uri: profile.avatar_url }} />
                          <Text style={styles.title}>{profile?.username}</Text>
                          <Text style={styles.text}>
                               {profile?.firstname} {profile?.lastname}

@@ -5,10 +5,7 @@ const t = getTranslator()
 
 export const EmailUpdateSchema = z
      .object({
-          email: z
-               .string()
-               .email(t("validation_email_invalid"))
-               .transform((email) => email.trim().toLowerCase()),
+          email: z.string().nonempty(t("zod_rule_email_required")).email(t("validation_email_invalid")),
      })
      .transform((data) => ({
           email: data.email,

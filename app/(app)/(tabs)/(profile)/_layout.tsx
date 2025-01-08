@@ -18,20 +18,6 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name="editProfile"
-                         options={{
-                              drawerLabel: t("drawer_edit_profile"),
-                              title: t("drawer_edit_profile"),
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="editEmail"
-                         options={{
-                              drawerLabel: t("drawer_edit_email"),
-                              title: t("drawer_edit_email"),
-                         }}
-                    />
-                    <Drawer.Screen
                          name="tenantBookings"
                          options={{
                               drawerLabel: t("drawer_my_bookings_as_tenants"),

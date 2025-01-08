@@ -5,9 +5,12 @@ import { AuthChangeEvent, UserResponse } from "@supabase/auth-js"
 import { Session } from "@supabase/supabase-js"
 
 import * as Linking from "expo-linking"
+import { decode } from "base64-arraybuffer"
+import ProfileEntity from "@/modules/domain/profile/ProfileEntity"
 
 class AuthRepositorySupabase implements AuthRepository {
-     async signUp(email: string, password: string, lastname: string, firstname: string, username: string, avatar_url?: string) {
+     async signUp(email: string, password: string, lastname: string, firstname: string, username: string) {
+          const avatar_url = "http://larguezlesamarres-supabase-726f1d-185-216-27-53.traefik.me/storage/v1/object/public/avatars/default-avatar.png"
           try {
                const { data: user, error } = await supabase.auth.signUp({
                     email,
@@ -81,12 +84,22 @@ class AuthRepositorySupabase implements AuthRepository {
                throw new Error("Erreur lors de la récupération de l'utilisateur courant.")
           }
           return {
-               email: user.email,
+               email: user.email as string,
                lastname: user.user_metadata.lastname,
                firstname: user.user_metadata.firstname,
                username: user.user_metadata.username,
                avatar_url: user.user_metadata.avatar_url,
           }
+     }
+
+     async getCurrentUserProfile(user_id: string) {
+          const { data: user, error } = await supabase.from("profiles").select("*").eq("profile_id", user_id).single()
+
+          if (error) {
+               throw new Error("Erreur lors de la récupération du profil.")
+          }
+
+          return user
      }
 
      async resetPassword(email: string, url: string | null) {

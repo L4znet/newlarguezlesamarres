@@ -89,13 +89,6 @@ export default function Checkout() {
           const accessToken = session.data.session?.access_token as string
           await initializePaymentSheet()
 
-          console.log({
-               paymentIntentId: paymentIntent.paymentIntent,
-               offerId: currentOfferToRent?.id as string,
-               userId: session.data.session?.user?.id as string,
-               accessToken: accessToken,
-          })
-
           try {
                const result = await presentPaymentSheet()
 

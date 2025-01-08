@@ -19,12 +19,6 @@ export const updateOfferAvailabilityUseCase = async (
                isAvailable: isAvailable,
           })
      } catch (error) {
-          console.log({
-               offerId: offerId,
-               isAvailable: isAvailable,
-               error: (error as Error).message,
-          })
-
           throw new Error((error as Error).message)
      }
 }

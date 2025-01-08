@@ -7,7 +7,6 @@ import merge from "deepmerge"
 import { AuthProvider } from "@/modules/context/AuthProvider"
 import { FlashMessageProvider } from "@/modules/context/FlashMessageProvider"
 import { TranslationProvider } from "@/modules/context/TranslationContext"
-import { ProfileProvider } from "@/modules/context/ProfileProvider"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/queryClient"
 import { StripeProvider } from "@stripe/stripe-react-native"
@@ -54,18 +53,16 @@ export default function RootLayout() {
                          <PaperProvider theme={paperTheme}>
                               <ThemeProvider value={paperTheme}>
                                    <FlashMessageProvider>
-                                        <ProfileProvider>
-                                             <AuthProvider>
-                                                  <Stack
-                                                       screenOptions={{
-                                                            headerShown: false,
-                                                       }}
-                                                  >
-                                                       <Stack.Screen name="(auth)" />
-                                                       <Stack.Screen name="(tabs)" />
-                                                  </Stack>
-                                             </AuthProvider>
-                                        </ProfileProvider>
+                                        <AuthProvider>
+                                             <Stack
+                                                  screenOptions={{
+                                                       headerShown: false,
+                                                  }}
+                                             >
+                                                  <Stack.Screen name="(auth)" />
+                                                  <Stack.Screen name="(tabs)" />
+                                             </Stack>
+                                        </AuthProvider>
                                    </FlashMessageProvider>
                               </ThemeProvider>
                          </PaperProvider>

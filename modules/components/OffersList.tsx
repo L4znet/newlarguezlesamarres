@@ -23,13 +23,17 @@ const OffersList = () => {
 
      if (isPending) return <ActivityIndicator size="large" />
      if (error) {
-          return <Text>Erreur lors de la récupération des offres</Text>
+          return (
+               <View style={styles.container}>
+                    <Text>{t("offers_fetch_error")}</Text>
+               </View>
+          )
      }
 
      const EmptyList = () => {
           return (
                <View style={styles.container}>
-                    <Text>Rien à afficher pour le moment</Text>
+                    <Text>{t("offers_empty_message")}</Text>
                </View>
           )
      }

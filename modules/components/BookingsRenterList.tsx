@@ -16,7 +16,7 @@ const BookingTenantList = () => {
      const { mutate: updateBookingStatus } = useUpdateBookingStatus()
 
      const handleBookingDecline = (bookingId: string) => {
-          updateBookingStatus({ bookingId, status: "cancelled" })
+          updateBookingStatus({ bookingId, status: "declined" })
      }
 
      const handleBookingConfirm = (bookingId: string) => {
@@ -74,16 +74,14 @@ const BookingTenantList = () => {
                          </View>
                     </Card.Content>
 
-                    {item.status === "pending" && (
-                         <Card.Actions>
-                              <Button mode={"outlined"} onPress={() => handleBookingDecline(item.id as string)}>
-                                   {t("booking_decline_btn")}
-                              </Button>
-                              <Button mode={"contained"} onPress={() => handleBookingConfirm(item.id as string)}>
-                                   {t("booking_confirm_btn")}
-                              </Button>
-                         </Card.Actions>
-                    )}
+                    <Card.Actions>
+                         <Button mode={"outlined"} disabled={item.status !== "pending"} onPress={() => handleBookingDecline(item.id as string)}>
+                              {t("booking_decline_btn")}
+                         </Button>
+                         <Button mode={"contained"} disabled={item.status !== "pending"} onPress={() => handleBookingConfirm(item.id as string)}>
+                              {t("booking_confirm_btn")}
+                         </Button>
+                    </Card.Actions>
                </Card>
           )
      }

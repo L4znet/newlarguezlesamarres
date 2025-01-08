@@ -10,7 +10,7 @@ export const useCreateOffer = () => {
 
      return useMutation({
           mutationFn: async (offerData: any) => {
-               return await createOfferUseCase(offerData, showTranslatedFlashMessage)
+               return await createOfferUseCase(offerData)
           },
           onSuccess: (createdOffer) => {
                showTranslatedFlashMessage("success", {

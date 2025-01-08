@@ -10,11 +10,12 @@ import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useRouter } from "expo-router"
 import { useOfferStore } from "@/modules/stores/offerStore"
+import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
 
 const BookingTenantList = () => {
      const { data: tenantBookings, isPending, error } = useTenantBookings()
      const { setCurrentOffer } = useOfferStore()
-
+     const { mutate: updateBookingStatus } = useUpdateBookingStatus()
      const theme = useTheme()
      const router = useRouter()
 
@@ -35,8 +36,8 @@ const BookingTenantList = () => {
           })
      }
 
-     const handleCancelBooking = () => {
-          console.log("Cancel booking")
+     const handleCancelBooking = (bookingId: string) => {
+          updateBookingStatus({ bookingId, status: "cancelled" })
      }
 
      const filterReservations = (status: string) => tenantBookings.filter((item) => item.status === status)
@@ -103,7 +104,7 @@ const BookingTenantList = () => {
                          >
                               {t("pay_booking")}
                          </Button>
-                         <Button mode="outlined" disabled={item.status === "rented" || item.status === "cancelled"} style={styles.button} onPress={handleCancelBooking}>
+                         <Button mode="outlined" disabled={item.status === "rented" || item.status === "cancelled"} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
                               {t("cancel_booking")}
                          </Button>
                     </Card.Actions>

@@ -20,22 +20,6 @@ export const createOfferUseCase = async ({ boatId, title, description, price, is
           if (!profileId) {
                throw new Error("User session not found.")
           }
-
-          console.log("LES DATAS", {
-               profileId,
-               boatId,
-               title,
-               description,
-               price,
-               isAvailable,
-               equipments,
-               isSkipperAvailable,
-               isTeamAvailable,
-               rentalPeriod,
-               location,
-               deletedAt,
-          })
-
           await OfferRepositorySupabase.createOffer({
                profileId,
                boatId,
@@ -67,7 +51,6 @@ export const createOfferUseCase = async ({ boatId, title, description, price, is
                deletedAt,
           })
      } catch (error: any) {
-          console.error("Error in createOfferUseCase:", error.message)
           throw new Error(error.message)
      }
 }

@@ -16,7 +16,8 @@ export function useUpdateBookingStatus() {
                }
           },
           onSuccess: () => {
-               queryClient.invalidateQueries({ queryKey: ["bookings"] })
+               queryClient.invalidateQueries({ queryKey: ["owner_bookings"] })
+               queryClient.invalidateQueries({ queryKey: ["tenant_bookings"] })
                showTranslatedFlashMessage("success", {
                     title: "Booking Updated",
                     description: "The booking status has been updated successfully.",

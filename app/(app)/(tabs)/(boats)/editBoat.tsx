@@ -139,7 +139,7 @@ export default function EditBoat() {
                          </Button>
 
                          <Button mode="contained" onPress={() => handleSave()} loading={isUpdating} disabled={isUpdating} style={styles.button}>
-                              {t("create_boat_button")}
+                              {t("edit_boat_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>

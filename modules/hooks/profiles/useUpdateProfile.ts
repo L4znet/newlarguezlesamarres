@@ -1,24 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase"
+import { updateBoatUseCase } from "@/modules/application/boats/updateBoatUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { updateEmailUseCase } from "@/modules/application/profile/updateEmailUseCase"
+import { updateProfileUseCase } from "@/modules/application/profile/updateProfileUseCase"
 
-export function useDeleteBoat() {
+export function useUpdateProfile() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useMutation({
-          mutationFn: async (boatId: string) => {
-               await deleteBoatUseCase(boatId, showTranslatedFlashMessage)
+          mutationFn: async (variables: { lastname: string; firstname: string; username: string }) => {
+               await updateProfileUseCase(variables.lastname, variables.firstname, variables.username)
           },
           onSuccess: () => {
+               queryClient.invalidateQueries({ queryKey: ["profile"] })
                showTranslatedFlashMessage("success", {
                     title: "flash_title_success",
-                    description: "Boat deleted successfully!",
+                    description: "Email updated successfully!",
                })
-
-               queryClient.invalidateQueries({ queryKey: ["boats"] })
-               queryClient.invalidateQueries({ queryKey: ["count_boats"] })
           },
+
           onError: (error) => {
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_danger",

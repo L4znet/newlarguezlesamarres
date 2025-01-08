@@ -40,7 +40,6 @@ export const updateBoatUseCase = async (
 
           router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          console.error("Error while updating boat:", error)
           throw new Error((error as Error).message)
      }
 }

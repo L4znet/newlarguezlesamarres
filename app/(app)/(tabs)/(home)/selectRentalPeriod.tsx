@@ -27,13 +27,7 @@ export default function SelectRentalPeriod() {
 
      const rentalPeriodErrors = getErrors("rentalPeriod")
      const handleDateChange = (date: Date, type: "START_DATE" | "END_DATE") => {
-          console.log("Date change", {
-               start: temporaryStartDate,
-               end: endDate,
-          })
-
           if (type === "END_DATE") {
-               console.log("Setting end date", date)
                setTemporaryEndDate(date)
                clearErrors("rentalPeriod")
           } else {

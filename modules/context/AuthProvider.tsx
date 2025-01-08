@@ -10,7 +10,6 @@ import { Session, UserMetadata } from "@supabase/supabase-js"
 import { queryClient } from "@/queryClient"
 
 type AuthContextType = {
-     signUp: (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => Promise<void>
      signIn: (email: string, password: string) => Promise<void>
      signOut: () => Promise<void>
      session: Session | null
@@ -23,18 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const [session, setSession] = useState<Session | null>(null)
      const [user, setUser] = useState<UserMetadata | null>(null)
-
-     const signUp = async (email: string, password: string, confirmPassword: string, firstname: string, lastname: string, username: string) => {
-          try {
-               const newUser = await signupUseCase({ email, password, confirmPassword, firstname, lastname, username }, showTranslatedFlashMessage)
-               if (newUser) {
-                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User successfully registered" })
-                    router.push("/(app)/(auth)/signin")
-               }
-          } catch (error: any) {
-               showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
-          }
-     }
 
      const signIn = async (email: string, password: string) => {
           try {
@@ -95,7 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
      }, [])
 
-     return <AuthContext.Provider value={{ signUp, signIn, signOut, session, user }}>{children}</AuthContext.Provider>
+     return <AuthContext.Provider value={{ signIn, signOut, session, user }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {
