@@ -10,6 +10,10 @@ import Slideshow from "@/modules/components/Slideshow"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateBoat } from "@/modules/hooks/boats/useCreateBoat"
 import { Boat } from "@/interfaces/Boat"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
+import { BoatSchema } from "@/modules/domain/boats/schemas/BoatSchema"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -25,7 +29,6 @@ export default function createBoat() {
      const boatTypeOptions = useBoatTypeOptions(locale)
      const colors = useTheme().colors
      const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
-     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const [boat, setBoat] = useState<Boat>({
           boatName: "",
@@ -36,11 +39,28 @@ export default function createBoat() {
      })
 
      const [types, setType] = useState({
-          value: boatTypeOptions[1].value,
+          value: boatTypeOptions[0].value,
           list: boatTypeOptions,
-          selectedList: [boatTypeOptions[1]],
+          selectedList: [boatTypeOptions[0]],
           error: "",
           id: 1,
+     })
+
+     const {
+          control,
+          handleSubmit,
+          trigger,
+          setValue,
+          resetField,
+          formState: { errors },
+     } = useForm({
+          resolver: zodResolver(BoatSchema),
+          defaultValues: {
+               boatName: "",
+               boatDescription: "",
+               boatCapacity: "",
+               boatImages: [],
+          },
      })
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
@@ -79,7 +99,7 @@ export default function createBoat() {
           setBoat({ ...boat, boatImages: thumbnails })
      }
 
-     const handleSubmit = async () => {
+     const onSubmit = async () => {
           createBoat({
                boatName: boat.boatName,
                boatDescription: boat.boatDescription,
@@ -87,6 +107,10 @@ export default function createBoat() {
                boatType: types.id,
                boatImages: boat.boatImages,
           })
+     }
+
+     const onError = (error: any) => {
+          console.error("Error while creating boat:", error)
      }
 
      const handleThumbnailChange = async () => {
@@ -113,9 +137,11 @@ export default function createBoat() {
                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <SafeAreaView style={styles.safeView}>
                          <ScrollView style={styles.scrollViewBoats}>
-                              <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={boat.boatName} onChangeText={(boatName) => setBoat({ ...boat, boatName })} />
-                              <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={boat.boatDescription} onChangeText={(boatDescription) => setBoat({ ...boat, boatDescription })} />
-                              <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={boat.boatCapacity} keyboardType="decimal-pad" onChangeText={(boatCapacity) => setBoat({ ...boat, boatCapacity })} />
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
+
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
 
                               <View style={styles.selector}>
                                    <PaperSelect
@@ -140,13 +166,21 @@ export default function createBoat() {
                                    />
                               </View>
 
-                              <Slideshow images={boat.boatImages} />
+                              <Slideshow
+                                   images={boat.boatImages.map((boatImage) => {
+                                        return {
+                                             id: boatImage.id,
+                                             url: boatImage.url,
+                                             caption: boatImage.caption as string,
+                                        }
+                                   })}
+                              />
 
                               <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                                    {t("change_thumbnail_btn")}
                               </Button>
 
-                              <Button mode="contained" style={styles.button} onPress={() => handleSubmit()} loading={isPending} disabled={isPending}>
+                              <Button mode="contained" style={styles.button} onPress={() => handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
                                    {isPending ? t("loading_button_text") : t("create_boat_button")}
                               </Button>
                          </ScrollView>

@@ -225,8 +225,6 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
      async getBoatsCount(profileId: string | undefined): Promise<Number | null> {
-          console.log("profileId", profileId)
-
           try {
                const { count, error } = await supabase.from("boats").select("*", { count: "exact", head: true }).eq("profile_id", profileId).limit(1)
                if (error) {

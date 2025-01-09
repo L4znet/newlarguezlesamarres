@@ -17,8 +17,6 @@ export function useCreateBoat() {
                     description: "Boat added successfully!",
                })
 
-               console.log("sdfdfs")
-
                queryClient.invalidateQueries({ queryKey: ["boats"] })
                queryClient.invalidateQueries({ queryKey: ["count_boats"] })
           },
