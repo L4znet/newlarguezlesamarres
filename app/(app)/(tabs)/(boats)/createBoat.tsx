@@ -7,13 +7,13 @@ import { useBoatTypeOptions } from "@/constants/BoatTypes"
 import * as ImagePicker from "expo-image-picker"
 import { ImagePickerSuccessResult } from "expo-image-picker"
 import Slideshow from "@/modules/components/Slideshow"
-import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateBoat } from "@/modules/hooks/boats/useCreateBoat"
 import { Boat } from "@/interfaces/Boat"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
 import { BoatSchema } from "@/modules/domain/boats/schemas/BoatSchema"
+import { useBoatStore } from "@/modules/stores/boatStore"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export const selectValidator = (value: any) => {
      if (!value || value.length <= 0) {
@@ -30,13 +30,9 @@ export default function createBoat() {
      const colors = useTheme().colors
      const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
 
-     const [boat, setBoat] = useState<Boat>({
-          boatName: "",
-          boatDescription: "",
-          boatCapacity: "",
-          boatType: 1,
-          boatImages: [],
-     })
+     const { showTranslatedFlashMessage } = useFlashMessage()
+
+     const { boatImages, setBoatImages } = useBoatStore()
 
      const [types, setType] = useState({
           value: boatTypeOptions[0].value,
@@ -53,18 +49,19 @@ export default function createBoat() {
           setValue,
           resetField,
           formState: { errors },
+          reset,
      } = useForm({
           resolver: zodResolver(BoatSchema),
           defaultValues: {
                boatName: "",
                boatDescription: "",
                boatCapacity: "",
-               boatImages: [],
+               boatImages: [] as Boat["boatImages"],
           },
      })
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
-          const thumbnails = [] as unknown as Boat["boatImages"]
+          let thumbnails: Boat["boatImages"] = [] as Boat["boatImages"]
 
           result.assets.forEach((asset, index) => {
                if (result.assets.length > 5) {
@@ -77,10 +74,8 @@ export default function createBoat() {
                     isDefault = true
                }
 
-               if (asset.base64) {
+               if (asset.base64 && asset.type && asset.uri && asset.width && asset.height && asset.fileSize && asset.mimeType && asset.fileName) {
                     thumbnails.push({
-                         boatId: "",
-                         id: "",
                          isDefault: isDefault,
                          url: asset.uri,
                          caption: asset.fileName,
@@ -91,28 +86,32 @@ export default function createBoat() {
                          mimeType: asset.mimeType,
                          fileName: asset.fileName,
                     })
+                    setValue("boatImages", thumbnails)
                } else {
                     throw new Error("Error while selecting image: base64 is undefined")
                }
           })
-
-          setBoat({ ...boat, boatImages: thumbnails })
      }
 
-     const onSubmit = async () => {
-          createBoat({
-               boatName: boat.boatName,
-               boatDescription: boat.boatDescription,
-               boatCapacity: boat.boatCapacity,
-               boatType: types.id,
-               boatImages: boat.boatImages,
+     const onSubmit = async (data: any) => {
+          try {
+               createBoat({ ...data })
+
+               reset()
+               setBoatImages([])
+          } catch (error) {
+               showTranslatedFlashMessage("danger", {
+                    title: t("flash_title_error"),
+                    description: t("supabase_boat_error_added_boat"),
+               })
+          }
+     }
+     const onError = (error: any) => {
+          showTranslatedFlashMessage("danger", {
+               title: t("flash_title_danger"),
+               description: t("fix_errors_before_submitting"),
           })
      }
-
-     const onError = (error: any) => {
-          console.error("Error while creating boat:", error)
-     }
-
      const handleThumbnailChange = async () => {
           try {
                let result = await ImagePicker.launchImageLibraryAsync({
@@ -125,10 +124,35 @@ export default function createBoat() {
                     base64: true,
                })
                if (!result.canceled) {
+                    setBoatImages(
+                         result.assets.map((asset, index) => {
+                              let isDefault = false
+
+                              if (index === 0) {
+                                   isDefault = true
+                              }
+
+                              if (asset.base64 && asset.type && asset.uri && asset.width && asset.height && asset.fileSize && asset.mimeType && asset.fileName) {
+                                   return {
+                                        isDefault: isDefault,
+                                        url: asset.uri,
+                                        caption: asset.fileName,
+                                        contentType: asset.type,
+                                        base64: asset.base64,
+                                        dimensions: { width: asset.width, height: asset.height },
+                                        size: asset.fileSize,
+                                        mimeType: asset.mimeType,
+                                        fileName: asset.fileName,
+                                   }
+                              } else {
+                                   throw new Error("Error while selecting image: base64 is undefined")
+                              }
+                         })
+                    )
                     handleMultiplePicture(result)
                }
           } catch (error) {
-               console.error("Error while selecting image:", error)
+               throw new Error("Error while selecting image: " + error)
           }
      }
 
@@ -138,10 +162,13 @@ export default function createBoat() {
                     <SafeAreaView style={styles.safeView}>
                          <ScrollView style={styles.scrollViewBoats}>
                               <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                              {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
 
                               <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
+                              {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
 
                               <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
+                              {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
 
                               <View style={styles.selector}>
                                    <PaperSelect
@@ -167,10 +194,10 @@ export default function createBoat() {
                               </View>
 
                               <Slideshow
-                                   images={boat.boatImages.map((boatImage) => {
+                                   images={boatImages.map((boatImage) => {
                                         return {
-                                             id: boatImage.id,
-                                             url: boatImage.url,
+                                             id: boatImage.id as string,
+                                             url: boatImage.url as string,
                                              caption: boatImage.caption as string,
                                         }
                                    })}
@@ -179,8 +206,9 @@ export default function createBoat() {
                               <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                                    {t("change_thumbnail_btn")}
                               </Button>
+                              {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
 
-                              <Button mode="contained" style={styles.button} onPress={() => handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
+                              <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
                                    {isPending ? t("loading_button_text") : t("create_boat_button")}
                               </Button>
                          </ScrollView>
@@ -262,5 +290,9 @@ const styles = StyleSheet.create({
      },
      button: {
           marginVertical: 30,
+     },
+     errorText: {
+          color: "#ea5555",
+          fontSize: 16,
      },
 })

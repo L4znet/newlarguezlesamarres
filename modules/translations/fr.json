@@ -500,6 +500,16 @@
 
      "zod_rule_price_min_value": "Le prix de l'annonce doit être supérieur ou égale à 5€",
 
+     "zod_rule_boat_name_no_empty": "Le nom du bateau est requis.",
+     "zod_rule_boat_description_no_empty": "La description du bateau est requise.",
+
+     "zod_rule_boat_name_min_3": "Le nom du bateau doit contenir au moins 3 caractères.",
+     "zod_rule_boat_description_min_10": "La description du bateau doit contenir au moins 10 caractères.",
+
+     "zod_rule_boat_capacity_min_value": "La capacité du bateau doit être supérieure ou égale à 1.",
+
+     "zod_rule_boat_images_min_length": "Vous devez sélectionner au moins une photo pour votre bateau.",
+
      "zod_rule_address_required": "L'adresse est requise.",
      "zod_rule_city_required": "La ville est requise.",
      "zod_rule_country_required": "Le pays est requis.",

@@ -20,7 +20,7 @@ export default function createOffer() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId, title, description, price, isAvailable, isSkipperAvailable, isTeamAvailable } = useOfferStore()
+     const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId } = useOfferStore()
      const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
 
      const { mutate: createOffer, isPending } = useCreateOffer()

@@ -4,16 +4,16 @@ export interface Boat {
      boatCapacity: string
      boatType: number
      boatImages: {
-          id: string
+          id?: string | null
           url: string
-          boatId: string
+          boatId?: string
           isDefault: boolean
-          caption: string | null | undefined
-          contentType: string | undefined
-          base64: string | undefined
+          caption: string | null
+          contentType: string
+          base64: string
           dimensions: { width: number; height: number }
-          size: number | undefined
-          mimeType: string | undefined
-          fileName: string | undefined | null
+          size: number
+          mimeType: string
+          fileName: string | null
      }[]
 }
