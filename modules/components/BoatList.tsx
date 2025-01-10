@@ -14,7 +14,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 const BoatList = () => {
      const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
-     const { setCurrentBoat } = useBoatStore()
+     const { setCurrentBoat, setBoatImages } = useBoatStore()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 

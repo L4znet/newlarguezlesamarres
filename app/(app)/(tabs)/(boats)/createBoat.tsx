@@ -161,13 +161,13 @@ export default function createBoat() {
                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <SafeAreaView style={styles.safeView}>
                          <ScrollView style={styles.scrollViewBoats}>
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
                               {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
 
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
                               {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
 
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
+                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatCapacity} style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
                               {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
 
                               <View style={styles.selector}>
@@ -194,7 +194,7 @@ export default function createBoat() {
                               </View>
 
                               <Slideshow
-                                   images={boatImages.map((boatImage) => {
+                                   images={boatImages.map((boatImage: { id: string; url: string; caption: string }) => {
                                         return {
                                              id: boatImage.id as string,
                                              url: boatImage.url as string,

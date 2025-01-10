@@ -8,7 +8,7 @@ export function useUpdateBoat() {
 
      return useMutation({
           mutationFn: async ({ boatId, updatedData, imageSelected }: { boatId: string; updatedData: any; imageSelected: boolean }) => {
-               await updateBoatUseCase(boatId, updatedData, imageSelected, showTranslatedFlashMessage)
+               await updateBoatUseCase(boatId, updatedData, imageSelected)
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["boats"] })
@@ -21,6 +21,8 @@ export function useUpdateBoat() {
           },
 
           onError: (error) => {
+               console.log("error", error)
+
                showTranslatedFlashMessage("danger", {
                     title: "flash_title_danger",
                     description: (error as Error).message,

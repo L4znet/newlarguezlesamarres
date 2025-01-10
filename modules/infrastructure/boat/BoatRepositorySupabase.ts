@@ -28,11 +28,11 @@ class BoatRepositorySupabase implements BoatRepository {
           throw new Error("No data returned from boat creation.")
      }
 
-     async updateBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
+     async updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
+          console.log("boatId", boatId)
           const { data: boatData, error: boatError } = await supabase
                .from("boats")
                .update({
-                    profile_id: profileId,
                     boat_name: boatName,
                     boat_description: boatDescription,
                     boat_capacity: boatCapacity,
@@ -83,6 +83,8 @@ class BoatRepositorySupabase implements BoatRepository {
      }
 
      async uploadUpdateImages(boatId: string | undefined, newImages: any[]): Promise<void> {
+          console.log("newImages", newImages)
+
           const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
 
           if (fetchError) {
@@ -170,6 +172,8 @@ class BoatRepositorySupabase implements BoatRepository {
                }
 
                if (boatData) {
+                    console.log("boatData", boatData)
+
                     return boatData.map((boat: any) => BoatEntity.fromSupabaseData(boat))
                }
 

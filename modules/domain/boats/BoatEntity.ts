@@ -5,41 +5,21 @@ export default class BoatEntity {
           public readonly boatName: string,
           public readonly boatDescription: string,
           public readonly boatCapacity: string,
-          public readonly boatType: number,
-          public readonly boatImages: {
-               id: string
-               url: string
-               caption: string | null | undefined
-               contentType: string
-               base64: string | null
-               dimensions: { width: number; height: number }
-               size: number
-               mimeType: string
-               fileName: string
-          }[] = []
+          public readonly boatType: number
      ) {}
 
      static fromSupabaseData(data: any): BoatEntity {
-          return new BoatEntity(
-               data.id,
-               data.profile_id,
-               data.boat_name,
-               data.boat_description,
-               data.boat_capacity,
-               data.boat_type,
-               data.boat_images
-                    ? data.boat_images.map((img: any) => ({
-                           id: img.id,
-                           url: img.url,
-                           caption: img.caption || "",
-                           content_type: img.content_type || "unknown",
-                           base64: img.base64 || null,
-                           dimensions: img.dimensions || { width: 0, height: 0 },
-                           size: img.size || 0,
-                           mime_type: img.mime_type || "unknown",
-                           file_name: img.file_name || "",
-                      }))
-                    : []
-          )
+          return new BoatEntity(data.id, data.profile_id, data.boat_name, data.boat_description, data.boat_capacity, data.boat_type)
+     }
+
+     static toSupabaseData(data: BoatEntity): any {
+          return {
+               id: data.id,
+               profile_id: data.profileId,
+               boat_name: data.boatName,
+               boat_description: data.boatDescription,
+               boat_capacity: data.boatCapacity,
+               boat_type: data.boatType,
+          }
      }
 }

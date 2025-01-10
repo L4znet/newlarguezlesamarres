@@ -10,11 +10,26 @@ export const updateBoatUseCase = async (
           boatDescription: string
           boatCapacity: string
           boatType: number
-          boatImages: any[]
+          boatImages: {
+               id?: string | null
+               url: string
+               boatId?: string
+               isDefault: boolean
+               caption: string | null
+               contentType: string
+               base64: string
+               dimensions: { width: number; height: number }
+               size: string
+               mimeType: string
+               fileName: string | null
+          }[]
      },
-     imageSelected: boolean,
-     showTranslatedFlashMessage: (type: MessageType, message: { title: string; description: string }) => void
+     imageSelected: boolean
 ) => {
+     // console.log all data in updatedData but without base64 image data
+
+     console.log("Boat updated")
+
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -23,23 +38,21 @@ export const updateBoatUseCase = async (
                throw new Error("User session not found.")
           }
 
-          const updatedBoat = await BoatRepositorySupabase.updateBoat(profileId, updatedData.boatName, updatedData.boatDescription, updatedData.boatCapacity, updatedData.boatType, boatId)
+          const updatedBoat = await BoatRepositorySupabase.updateBoat(updatedData.boatName, updatedData.boatDescription, updatedData.boatCapacity, updatedData.boatType, boatId)
 
           if (!updatedBoat?.id) {
                throw new Error("Failed to update boat.")
           }
 
           if (imageSelected) {
-               await BoatRepositorySupabase.uploadUpdateImages(updatedBoat.id, updatedData.boatImages)
-          }
+               console.log("Image selected")
 
-          showTranslatedFlashMessage("success", {
-               title: "flash_title_success",
-               description: "Boat updated successfully",
-          })
+               await BoatRepositorySupabase.uploadUpdateImages(boatId, updatedData.boatImages)
+          }
 
           router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
+          console.log("error ici", error)
           throw new Error((error as Error).message)
      }
 }
