@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { BoatImageRawData, GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
 
 interface Boat {
      id: string
@@ -21,11 +22,54 @@ interface Boat {
      }[]
 }
 
+interface CurrentBoat {
+     id: string
+     profileId: string
+     boatName: string
+     boatDescription: string
+     boatCapacity: string
+     boatType: number
+     boatImages: {
+          id: string
+          url: string
+          boatId: string
+          isDefault: boolean
+          caption: string
+          contentType: string
+          base64: string
+          dimensions: { width: number; height: number }
+          size: string
+          mimeType: string
+          fileName: string
+     }[]
+}
+
+interface BoatToUpdate {
+     boatName: string
+     boatDescription: string
+     boatCapacity: string
+     boatType: number
+     boatImages: {
+          url: string
+          boatId: string
+          isDefault: boolean
+          caption: string
+          contentType: string
+          base64: string
+          dimensions: { width: number; height: number }
+          size: string
+          mimeType: string
+          fileName: string
+     }[]
+}
+
 interface BoatStore {
      currentBoat: Boat | null
      isCurrentBoatLoading: boolean
      boatImages: any
-     setCurrentBoat: (boat: Boat | Promise<Boat>) => void
+     boatToUpdate: BoatToUpdate | null
+     setCurrentBoat: (boat: CurrentBoat) => void
+     setBoatToUpdate: (boat: BoatToUpdate) => void
      updateCurrentBoatField: (field: keyof Boat, value: any) => void
      resetBoatStore: () => void
      imageSelectedState: boolean
@@ -38,8 +82,10 @@ export const useBoatStore = create<BoatStore>((set) => ({
      isCurrentBoatLoading: false,
      imageSelectedState: false,
      boatImages: [],
+     boatToUpdate: null,
+     setBoatToUpdate: (boat) => set({ boatToUpdate: boat }),
 
-     setBoatImages: (images) => set({ ...images }),
+     setBoatImages: (images) => set({ boatImages: images }),
 
      setImageSelectedState: (state) => set({ imageSelectedState: state }),
 

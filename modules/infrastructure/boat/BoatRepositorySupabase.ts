@@ -3,19 +3,22 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
 import { undefined } from "zod"
+import { CreateBoatDTO } from "@/modules/domain/boats/DTO/CreateBoatDTO"
+import { CreateBoatImageDTO } from "@/modules/domain/boats/DTO/CreateBoatImageDTO"
+import { BoatRawData, GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
+import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
 
 class BoatRepositorySupabase implements BoatRepository {
-     async createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
-          const { data: boatData, error: boatError } = await supabase
-               .from("boats")
-               .insert({
-                    profile_id: profileId,
-                    boat_name: boatName,
-                    boat_description: boatDescription,
-                    boat_capacity: boatCapacity,
-                    boat_type: boatType,
-               })
-               .select()
+     async createBoat(profileId: string, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
+          const createBoatDTO = new CreateBoatDTO({
+               profile_id: profileId,
+               boat_name: boatName,
+               boat_description: boatDescription,
+               boat_capacity: boatCapacity,
+               boat_type: boatType,
+          })
+
+          const { data: boatData, error: boatError } = await supabase.from("boats").insert(CreateBoatDTO.toRawData(createBoatDTO)).select()
 
           if (boatError) {
                throw new Error(`Error creating boat: ${boatError.message}`)
@@ -50,9 +53,22 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async uploadImages(boatId: string | undefined, images: any[]): Promise<void> {
+     async uploadImages(boatId: string, images: any[]): Promise<void> {
           try {
                for (const [index, image] of images.entries()) {
+                    const createBoatImageDTO = new CreateBoatImageDTO({
+                         url: image.url,
+                         is_default: image.isDefault,
+                         caption: image.caption,
+                         content_type: image.contentType,
+                         base64: image.base64,
+                         dimensions: image.dimensions,
+                         size: image.size,
+                         mime_type: image.mimeType,
+                         file_name: image.fileName,
+                         boat_id: boatId,
+                    })
+
                     const randomName = Math.random().toString(36).substring(7)
                     const fileName = `${randomName}-${(image.fileName || "default").toLowerCase().replace(/_/g, "-")}`
 
@@ -64,18 +80,7 @@ class BoatRepositorySupabase implements BoatRepository {
 
                     const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
 
-                    const { data, error } = await supabase.from("boat_images").insert({
-                         boat_id: boatId,
-                         url: publicUrl,
-                         caption: image.caption,
-                         content_type: image.contentType,
-                         dimensions: image.dimensions,
-                         size: image.size,
-                         mime_type: image.mimeType,
-                         file_name: fileName,
-                         is_default: index === 0,
-                         base64: image.base64,
-                    })
+                    const { data, error } = await supabase.from("boat_images").insert(CreateBoatImageDTO.toRawData(createBoatImageDTO))
                }
           } catch (error) {
                throw new Error(`Error in uploadImages: ${(error as Error).message}`)
@@ -144,7 +149,7 @@ class BoatRepositorySupabase implements BoatRepository {
           throw new Error("No data returned from boat deletion.")
      }
 
-     async getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined> {
+     async getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined> {
           try {
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
@@ -174,7 +179,11 @@ class BoatRepositorySupabase implements BoatRepository {
                if (boatData) {
                     console.log("boatData", boatData)
 
-                    return boatData.map((boat: any) => BoatEntity.fromSupabaseData(boat))
+                    return boatData.map((boat: BoatRawData) => {
+                         console.log("boat", boat)
+
+                         return GetBoatsDTO.fromRawData(boat)
+                    })
                }
 
                return []
@@ -183,7 +192,7 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async getSingleBoat(boatId: string | string[]): Promise<BoatEntity> {
+     async getSingleBoat(boatId: string | string[]): Promise<GetSingleBoatDTO> {
           try {
                const boatIdString = Array.isArray(boatId) ? boatId[0] : boatId
 
@@ -220,7 +229,7 @@ class BoatRepositorySupabase implements BoatRepository {
                }
 
                if (boatData) {
-                    return BoatEntity.fromSupabaseData(boatData)
+                    return GetSingleBoatDTO.fromRawData(boatData)
                }
 
                throw new Error("No data returned from boat query.")

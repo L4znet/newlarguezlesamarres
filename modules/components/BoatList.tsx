@@ -14,7 +14,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 const BoatList = () => {
      const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
-     const { setCurrentBoat, setBoatImages } = useBoatStore()
+     const { setCurrentBoat } = useBoatStore()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -35,7 +35,18 @@ const BoatList = () => {
           router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat" })
      }
 
-     const renderItem = ({ item }: { item: BoatEntity }) => {
+     const renderItem = ({
+          item,
+     }: {
+          item: {
+               id: string
+               boatName: string
+               boatDescription: string
+               boatCapacity: string
+               boatType: number
+               boatImages: { id: string; url: string; caption: string }[]
+          }
+     }) => {
           const boatType = displayBoatType(item.boatType as unknown as BoatType)
 
           const boatImages = item.boatImages.map((image) => {

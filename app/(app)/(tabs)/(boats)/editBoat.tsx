@@ -14,7 +14,7 @@ import { BoatSchema } from "@/modules/domain/boats/schemas/BoatSchema"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export default function EditBoat() {
-     const { currentBoat, updateCurrentBoatField, setCurrentBoat, setImageSelectedState, imageSelectedState } = useBoatStore()
+     const { currentBoat, updateCurrentBoatField, setBoatToUpdate, setImageSelectedState, imageSelectedState, boatToUpdate } = useBoatStore()
      const { mutate: updateBoat, isPending: isUpdating } = useUpdateBoat()
 
      const { locale } = useTranslation()
@@ -72,19 +72,22 @@ export default function EditBoat() {
           )
      }
 
-     if (currentBoat.boatImages.length > 0 && currentBoat.boatImages[0].url === "") {
+     if (!boatToUpdate) {
+          return null
+     }
+
+     if (boatToUpdate.boatImages.length > 0) {
           console.log("boatImages", {
-               id: currentBoat.boatImages[0].id,
-               url: currentBoat.boatImages[0].url,
-               caption: currentBoat.boatImages[0].caption,
-               contentType: currentBoat.boatImages[0].contentType,
-               dimensions: currentBoat.boatImages[0].dimensions,
-               size: currentBoat.boatImages[0].size,
-               mimeType: currentBoat.boatImages[0].mimeType,
-               fileName: currentBoat.boatImages[0].fileName,
+               url: boatToUpdate.boatImages[0].url,
+               caption: boatToUpdate.boatImages[0].caption,
+               contentType: boatToUpdate.boatImages[0].contentType,
+               dimensions: boatToUpdate.boatImages[0].dimensions,
+               size: boatToUpdate.boatImages[0].size,
+               mimeType: boatToUpdate.boatImages[0].mimeType,
+               fileName: boatToUpdate.boatImages[0].fileName,
           })
 
-          setValue("boatImages", currentBoat.boatImages)
+          setValue("boatImages", boatToUpdate.boatImages)
      }
 
      const handleThumbnailChange = async () => {
@@ -101,10 +104,9 @@ export default function EditBoat() {
 
                if (!result.canceled) {
                     setImageSelectedState(true)
-                    setCurrentBoat({
+                    setBoatToUpdate({
                          ...currentBoat,
                          boatImages: result.assets.map((image, index) => ({
-                              id: null,
                               url: image.uri as string,
                               isDefault: false,
                               caption: image.fileName as string,
@@ -114,6 +116,7 @@ export default function EditBoat() {
                               size: image?.fileSize?.toString() as string,
                               mimeType: image.type as string,
                               fileName: image.fileName as string,
+                              boatId: currentBoat.id,
                          })),
                     })
                }
@@ -132,6 +135,13 @@ export default function EditBoat() {
      }
 
      const onSubmit = (data: any) => {
+          console.log("data", {
+               boatName: data.boatName,
+               boatDescription: data.boatDescription,
+               boatCapacity: data.boatCapacity,
+               boatType: data.boatType,
+          })
+
           const updatedData = {
                boatName: getValues("boatName"),
                boatDescription: getValues("boatDescription"),

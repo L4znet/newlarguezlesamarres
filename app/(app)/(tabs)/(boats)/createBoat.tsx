@@ -42,23 +42,6 @@ export default function createBoat() {
           id: 1,
      })
 
-     const {
-          control,
-          handleSubmit,
-          trigger,
-          setValue,
-          resetField,
-          formState: { errors },
-          reset,
-     } = useForm({
-          resolver: zodResolver(BoatSchema),
-          defaultValues: {
-               boatName: "",
-               boatDescription: "",
-               boatCapacity: "",
-               boatImages: [] as Boat["boatImages"],
-          },
-     })
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
           let thumbnails: Boat["boatImages"] = [] as Boat["boatImages"]
@@ -86,7 +69,6 @@ export default function createBoat() {
                          mimeType: asset.mimeType,
                          fileName: asset.fileName,
                     })
-                    setValue("boatImages", thumbnails)
                } else {
                     throw new Error("Error while selecting image: base64 is undefined")
                }
@@ -161,8 +143,8 @@ export default function createBoat() {
                <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <SafeAreaView style={styles.safeView}>
                          <ScrollView style={styles.scrollViewBoats}>
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
-                              {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
+                              ) => <TextInput error={!!errors.boatName} style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                            
 
                               <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
                               {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}

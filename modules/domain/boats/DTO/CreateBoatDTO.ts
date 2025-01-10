@@ -5,29 +5,25 @@ export class CreateBoatDTO {
      public readonly boatCapacity: string
      public readonly boatType: number
 
-     constructor(profileId: string, boatName: string, boatDescription: string, boatCapacity: string, boatType: number) {
-          if (!profileId || !boatName || !boatCapacity || !boatType) {
-               throw new Error("Missing required fields for CreateBoatDTO.")
-          }
-
-          this.profileId = profileId
-          this.boatName = boatName
-          this.boatDescription = boatDescription
-          this.boatCapacity = boatCapacity
-          this.boatType = boatType
+     constructor({ profile_id, boat_name, boat_description, boat_capacity, boat_type }: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number }) {
+          this.profileId = profile_id
+          this.boatName = boat_name
+          this.boatDescription = boat_description
+          this.boatCapacity = boat_capacity
+          this.boatType = boat_type
      }
 
-     static fromRequest(data: any): CreateBoatDTO {
-          return new CreateBoatDTO(data.profile_id, data.boat_name, data.boat_description, data.boat_capacity, data.boat_type)
+     static fromRawData(data: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number }): CreateBoatDTO {
+          return new CreateBoatDTO(data)
      }
 
-     toEntity(): any {
+     static toRawData(dto: CreateBoatDTO): any {
           return {
-               profileId: this.profileId,
-               boatName: this.boatName,
-               boatDescription: this.boatDescription,
-               boatCapacity: this.boatCapacity,
-               boatType: this.boatType,
+               profile_id: dto.profileId,
+               boat_name: dto.boatName,
+               boat_description: dto.boatDescription,
+               boat_capacity: dto.boatCapacity,
+               boat_type: dto.boatType,
           }
      }
 }

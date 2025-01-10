@@ -14,35 +14,12 @@ export const BoatSchema = z
                     message: "zod_rule_boat_capacity_min_value",
                }
           ),
-          boatImages: z
-               .array(
-                    z.object({
-                         isDefault: z.boolean(),
-                         url: z.string().url(),
-                         caption: z.string(),
-                         contentType: z.string(),
-                         base64: z.string(),
-                         dimensions: z.object({ width: z.number(), height: z.number() }),
-                         size: z.string(),
-                         mimeType: z.string(),
-                         fileName: z.string(),
-                    })
-               )
-               .refine(
-                    (val) => {
-                         return val.length >= 1
-                    },
-                    {
-                         message: "zod_rule_boat_images_min_length",
-                    }
-               ),
      })
      .transform((data) => () => {
           return {
                boatName: data.boatName,
                boatDescription: data.boatDescription,
                boatCapacity: data.boatCapacity,
-               boatImages: data.boatImages,
           }
      })
 

@@ -12,4 +12,8 @@ export class BoatImageEntity {
           public readonly boatId: string,
           public readonly id?: string
      ) {}
+
+     static fromSupabaseData(data: any): BoatImageEntity {
+          return new BoatImageEntity(data.url, data.is_default, data.caption, data.content_type, data.base64, data.dimensions, data.size, data.mime_type, data.file_name, data.boat_id, data.id)
+     }
 }
