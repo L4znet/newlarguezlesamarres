@@ -22,7 +22,6 @@ export const selectValidator = (value: any) => {
 
      return ""
 }
-
 export default function createBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -42,44 +41,49 @@ export default function createBoat() {
           id: 1,
      })
 
+     const {
+          control,
+          handleSubmit,
+          setValue,
+          formState: { errors },
+     } = useForm({
+          resolver: zodResolver(BoatSchema),
+          defaultValues: {
+               boatName: "",
+               boatDescription: "",
+               boatCapacity: "",
+               boatType: types.id.toString(),
+               boatImages: [],
+          },
+     })
+
+     if (boatImages.length > 0) {
+          setValue("boatImages", boatImages)
+     }
 
      const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
           let thumbnails: Boat["boatImages"] = [] as Boat["boatImages"]
 
           result.assets.forEach((asset, index) => {
-               if (result.assets.length > 5) {
-                    throw new Error("Error while selecting image: selection limit is 5")
-               }
-
-               let isDefault = false
-
-               if (index === 0) {
-                    isDefault = true
-               }
-
-               if (asset.base64 && asset.type && asset.uri && asset.width && asset.height && asset.fileSize && asset.mimeType && asset.fileName) {
-                    thumbnails.push({
-                         isDefault: isDefault,
-                         url: asset.uri,
-                         caption: asset.fileName,
-                         contentType: asset.type,
-                         base64: asset.base64,
-                         dimensions: { width: asset.width, height: asset.height },
-                         size: asset.fileSize,
-                         mimeType: asset.mimeType,
-                         fileName: asset.fileName,
-                    })
-               } else {
-                    throw new Error("Error while selecting image: base64 is undefined")
-               }
+               thumbnails.push({
+                    isDefault: index === 0,
+                    url: asset.uri,
+                    caption: asset.fileName as string,
+                    contentType: asset.type as string,
+                    base64: asset.base64 as string,
+                    dimensions: { width: asset.width, height: asset.height },
+                    size: asset.fileSize as number,
+                    mimeType: asset.mimeType as string,
+                    fileName: asset.fileName as string,
+               })
           })
      }
 
      const onSubmit = async (data: any) => {
           try {
+               setValue("boatType", types.id.toString())
                createBoat({ ...data })
 
-               reset()
                setBoatImages([])
           } catch (error) {
                showTranslatedFlashMessage("danger", {
@@ -106,100 +110,30 @@ export default function createBoat() {
                     base64: true,
                })
                if (!result.canceled) {
-                    setBoatImages(
-                         result.assets.map((asset, index) => {
-                              let isDefault = false
-
-                              if (index === 0) {
-                                   isDefault = true
-                              }
-
-                              if (asset.base64 && asset.type && asset.uri && asset.width && asset.height && asset.fileSize && asset.mimeType && asset.fileName) {
+                    if (result.assets.length !== 0) {
+                         setBoatImages(
+                              result.assets.map((asset, index) => {
                                    return {
-                                        isDefault: isDefault,
+                                        isDefault: index === 0,
                                         url: asset.uri,
                                         caption: asset.fileName,
                                         contentType: asset.type,
                                         base64: asset.base64,
                                         dimensions: { width: asset.width, height: asset.height },
-                                        size: asset.fileSize,
+                                        size: asset.fileSize?.toString(),
                                         mimeType: asset.mimeType,
                                         fileName: asset.fileName,
                                    }
-                              } else {
-                                   throw new Error("Error while selecting image: base64 is undefined")
-                              }
-                         })
-                    )
-                    handleMultiplePicture(result)
+                              })
+                         )
+                         handleMultiplePicture(result)
+                    }
                }
           } catch (error) {
                throw new Error("Error while selecting image: " + error)
           }
      }
-
-     const form = () => {
-          return (
-               <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                    <SafeAreaView style={styles.safeView}>
-                         <ScrollView style={styles.scrollViewBoats}>
-                              ) => <TextInput error={!!errors.boatName} style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
-                            
-
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
-                              {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
-
-                              <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatCapacity} style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
-                              {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
-
-                              <View style={styles.selector}>
-                                   <PaperSelect
-                                        label={t("boat_type_placeholder")}
-                                        value={types.value}
-                                        onSelection={(value: any) => {
-                                             setType({
-                                                  ...types,
-                                                  value: value.text,
-                                                  selectedList: value.selectedList,
-                                                  error: "",
-                                                  id: value.selectedList[0]._id,
-                                             })
-                                        }}
-                                        arrayList={[...types.list]}
-                                        selectedArrayList={types.selectedList}
-                                        errorText={types.error}
-                                        multiEnable={false}
-                                        dialogTitleStyle={{ color: "white" }}
-                                        dialogCloseButtonText={t("close_btn")}
-                                        dialogDoneButtonText={t("done_btn")}
-                                   />
-                              </View>
-
-                              <Slideshow
-                                   images={boatImages.map((boatImage: { id: string; url: string; caption: string }) => {
-                                        return {
-                                             id: boatImage.id as string,
-                                             url: boatImage.url as string,
-                                             caption: boatImage.caption as string,
-                                        }
-                                   })}
-                              />
-
-                              <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
-                                   {t("change_thumbnail_btn")}
-                              </Button>
-                              {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
-
-                              <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
-                                   {isPending ? t("loading_button_text") : t("create_boat_button")}
-                              </Button>
-                         </ScrollView>
-                    </SafeAreaView>
-               </KeyboardAvoidingView>
-          )
-     }
-
-     const loader = () => {
+     if (isPending) {
           return (
                <View style={styles.container}>
                     <ActivityIndicator size="large" color={colors.primary} />
@@ -208,7 +142,65 @@ export default function createBoat() {
           )
      }
 
-     return isPending ? loader() : form()
+     return (
+          <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+               <SafeAreaView style={styles.safeView}>
+                    <ScrollView style={styles.scrollViewBoats}>
+                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.textarea} multiline={true} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                         {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
+
+                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
+                         {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
+
+                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatCapacity} style={styles.input} placeholder={t("boat_capacity_placeholder")} label={t("boat_capacity_label")} value={value} keyboardType="decimal-pad" onChangeText={onChange} onBlur={onBlur} />} name="boatCapacity" />
+                         {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
+
+                         <Controller
+                              control={control}
+                              name="boatType"
+                              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                   <View style={styles.selector}>
+                                        <PaperSelect
+                                             label={t("boat_type_placeholder")}
+                                             value={types.list.find((item) => item._id.toString() === value.toString())?.value || ""}
+                                             onSelection={(selectedValue: any) => {
+                                                  const selected = selectedValue.selectedList[0]
+                                                  onChange(selected._id.toString())
+                                             }}
+                                             arrayList={types.list}
+                                             selectedArrayList={value ? types.list.filter((item) => item._id === value.toString()) : []}
+                                             multiEnable={false}
+                                             dialogTitleStyle={{ color: "white" }}
+                                             dialogCloseButtonText={t("close_btn")}
+                                             dialogDoneButtonText={t("done_btn")}
+                                        />
+                                   </View>
+                              )}
+                         />
+                         {errors.boatType && <Text style={styles.errorText}>{t(errors.boatType.message as string)}</Text>}
+
+                         <Slideshow
+                              images={boatImages.map((boatImage: { id: string; url: string; caption: string }) => {
+                                   return {
+                                        id: boatImage.id as string,
+                                        url: boatImage.url as string,
+                                        caption: boatImage.caption as string,
+                                   }
+                              })}
+                         />
+
+                         <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
+                              {t("change_thumbnail_btn")}
+                         </Button>
+                         {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
+
+                         <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
+                              {isPending ? t("loading_button_text") : t("create_boat_button")}
+                         </Button>
+                    </ScrollView>
+               </SafeAreaView>
+          </KeyboardAvoidingView>
+     )
 }
 
 const styles = StyleSheet.create({

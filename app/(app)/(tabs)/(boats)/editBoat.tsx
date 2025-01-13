@@ -77,16 +77,6 @@ export default function EditBoat() {
      }
 
      if (boatToUpdate.boatImages.length > 0) {
-          console.log("boatImages", {
-               url: boatToUpdate.boatImages[0].url,
-               caption: boatToUpdate.boatImages[0].caption,
-               contentType: boatToUpdate.boatImages[0].contentType,
-               dimensions: boatToUpdate.boatImages[0].dimensions,
-               size: boatToUpdate.boatImages[0].size,
-               mimeType: boatToUpdate.boatImages[0].mimeType,
-               fileName: boatToUpdate.boatImages[0].fileName,
-          })
-
           setValue("boatImages", boatToUpdate.boatImages)
      }
 
@@ -135,13 +125,6 @@ export default function EditBoat() {
      }
 
      const onSubmit = (data: any) => {
-          console.log("data", {
-               boatName: data.boatName,
-               boatDescription: data.boatDescription,
-               boatCapacity: data.boatCapacity,
-               boatType: data.boatType,
-          })
-
           const updatedData = {
                boatName: getValues("boatName"),
                boatDescription: getValues("boatDescription"),

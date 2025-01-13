@@ -33,6 +33,7 @@ class BoatRepositorySupabase implements BoatRepository {
 
      async updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
           console.log("boatId", boatId)
+
           const { data: boatData, error: boatError } = await supabase
                .from("boats")
                .update({
@@ -56,19 +57,6 @@ class BoatRepositorySupabase implements BoatRepository {
      async uploadImages(boatId: string, images: any[]): Promise<void> {
           try {
                for (const [index, image] of images.entries()) {
-                    const createBoatImageDTO = new CreateBoatImageDTO({
-                         url: image.url,
-                         is_default: image.isDefault,
-                         caption: image.caption,
-                         content_type: image.contentType,
-                         base64: image.base64,
-                         dimensions: image.dimensions,
-                         size: image.size,
-                         mime_type: image.mimeType,
-                         file_name: image.fileName,
-                         boat_id: boatId,
-                    })
-
                     const randomName = Math.random().toString(36).substring(7)
                     const fileName = `${randomName}-${(image.fileName || "default").toLowerCase().replace(/_/g, "-")}`
 
@@ -76,14 +64,27 @@ class BoatRepositorySupabase implements BoatRepository {
                          contentType: image.mimeType,
                     })
 
-                    if (uploadError) throw new Error(`Error uploading image: ${uploadError.message}`)
+                    if (!uploadError && uploadData) {
+                         const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
 
-                    const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
+                         const createBoatImageDTO = new CreateBoatImageDTO({
+                              url: publicUrl,
+                              is_default: image.isDefault,
+                              caption: image.caption,
+                              content_type: image.contentType,
+                              base64: image.base64,
+                              dimensions: image.dimensions,
+                              size: image.size,
+                              mime_type: image.mimeType,
+                              file_name: image.fileName,
+                              boat_id: boatId,
+                         })
 
-                    const { data, error } = await supabase.from("boat_images").insert(CreateBoatImageDTO.toRawData(createBoatImageDTO))
+                         const { data, error } = await supabase.from("boat_images").insert(CreateBoatImageDTO.toRawData(createBoatImageDTO))
+                    }
                }
           } catch (error) {
-               throw new Error(`Error in uploadImages: ${(error as Error).message}`)
+               throw new Error((error as Error).message)
           }
      }
 
@@ -170,6 +171,9 @@ class BoatRepositorySupabase implements BoatRepository {
                     )
                 `
                     )
+                    .order("created_at", {
+                         ascending: false,
+                    })
                     .eq("profile_id", profileId)
 
                if (boatError) {

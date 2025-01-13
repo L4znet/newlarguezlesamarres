@@ -115,6 +115,9 @@ class OfferRepositorySupabase implements OfferRepository {
                 username)
         `
                )
+               .order("created_at", {
+                    ascending: false,
+               })
                .eq("is_available", true)
                .neq("profile_id", profileId)
 
@@ -145,6 +148,9 @@ class OfferRepositorySupabase implements OfferRepository {
                 username)
         `
                )
+               .order("created_at", {
+                    ascending: false,
+               })
                .eq("profile_id", profileId)
 
           if (offerError) {

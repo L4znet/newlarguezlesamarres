@@ -1,8 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createBoatUseCase } from "@/modules/application/boats/createBoatUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-
-import { Boat } from "@/interfaces/Boat"
 export function useCreateBoat() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
@@ -19,6 +17,14 @@ export function useCreateBoat() {
 
                queryClient.invalidateQueries({ queryKey: ["boats"] })
                queryClient.invalidateQueries({ queryKey: ["count_boats"] })
+          },
+          onError: (error) => {
+               showTranslatedFlashMessage("danger", {
+                    title: "flash_title_error",
+                    description: "An error occurred while adding the boat.",
+               })
+
+               console.error(error)
           },
      })
 }

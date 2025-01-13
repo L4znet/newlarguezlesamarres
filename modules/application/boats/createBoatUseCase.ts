@@ -6,6 +6,12 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[] }) => {
+     console.log({
+          boatName,
+          boatDescription,
+          boatCapacity,
+          boatType,
+     })
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
