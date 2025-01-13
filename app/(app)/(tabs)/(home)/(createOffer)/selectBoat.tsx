@@ -15,7 +15,7 @@ export default function SelectBoat() {
      const [newSelectedBoat, setNewSelectedBoat] = React.useState<string | null>(selectedBoatId)
 
      const handleNavigation = () => {
-          router.navigate({ pathname: backPath as RelativePathString })
+          router.back()
      }
 
      const handleSelectBoat = (boat: any) => {

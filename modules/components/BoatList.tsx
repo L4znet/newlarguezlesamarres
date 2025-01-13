@@ -14,7 +14,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 const BoatList = () => {
      const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
-     const { setCurrentBoat } = useBoatStore()
+     const { setCurrentBoatId } = useBoatStore()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -29,9 +29,7 @@ const BoatList = () => {
      }
 
      const handleEditBoat = async (boatId: string) => {
-          const boat = await getSingleBoatUseCase(boatId)
-
-          setCurrentBoat(boat)
+          setCurrentBoatId(boatId)
           router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat" })
      }
 

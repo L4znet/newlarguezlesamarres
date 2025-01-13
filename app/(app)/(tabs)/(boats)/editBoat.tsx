@@ -1,200 +1,134 @@
-import React from "react"
-import { KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Platform, View } from "react-native"
-import { Button, TextInput, Text, useTheme, ActivityIndicator } from "react-native-paper"
-import { PaperSelect } from "react-native-paper-select"
-import * as ImagePicker from "expo-image-picker"
-import Slideshow from "@/modules/components/Slideshow"
-import { useUpdateBoat } from "@/modules/hooks/boats/useUpdateBoat"
-import { useBoatTypeOptions } from "@/constants/BoatTypes"
-import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { useBoatStore } from "@/modules/stores/boatStore"
+import React, { useEffect, useState } from "react"
+import { StyleSheet, View, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native"
+import { Button, TextInput, useTheme, Text, ActivityIndicator } from "react-native-paper"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { BoatSchema } from "@/modules/domain/boats/schemas/BoatSchema"
+import { useBoatById } from "@/modules/hooks/boats/useBoatById"
+import { useUpdateBoat } from "@/modules/hooks/boats/useUpdateBoat"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { useBoatStore } from "@/modules/stores/boatStore"
+import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
+import { PaperSelect } from "react-native-paper-select"
+import { useBoatTypeOptions } from "@/constants/BoatTypes"
 
-export default function EditBoat() {
-     const { currentBoat, updateCurrentBoatField, setBoatToUpdate, setImageSelectedState, imageSelectedState, boatToUpdate } = useBoatStore()
+export default function EditBoat({ route }: { route: any }) {
+     const { currentBoatId } = useBoatStore()
+     const { data: boat, isLoading, error } = useBoatById(currentBoatId as string)
      const { mutate: updateBoat, isPending: isUpdating } = useUpdateBoat()
-
+     const { showTranslatedFlashMessage } = useFlashMessage()
+     const { colors } = useTheme()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions(locale)
-     const colors = useTheme().colors
 
-     const { showTranslatedFlashMessage } = useFlashMessage()
+     const [types] = useState({
+          value: boatTypeOptions[0].value,
+          list: boatTypeOptions,
+          selectedList: [boatTypeOptions[0]],
+          error: "",
+          id: 1,
+     })
+
      const {
           control,
           handleSubmit,
-          trigger,
           setValue,
-          getValues,
-          resetField,
           formState: { errors },
-          reset,
      } = useForm({
           resolver: zodResolver(BoatSchema),
           defaultValues: {
-               boatName: currentBoat?.boatName,
-               boatDescription: currentBoat?.boatDescription,
-               boatCapacity: currentBoat?.boatCapacity,
-               boatType: currentBoat?.boatType,
-               boatImages: currentBoat?.boatImages,
+               boatName: "",
+               boatDescription: "",
+               boatCapacity: "",
+               boatType: "",
           },
      })
 
-     if (!currentBoat) {
-          return (
-               <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                    <SafeAreaView style={styles.safeView}>
-                         <ActivityIndicator size="large" color={colors.primary} />
-                         <Text>{t("edit_boat_loading")}</Text>
-                    </SafeAreaView>
-               </KeyboardAvoidingView>
-          )
-     }
-
-     if (currentBoat.boatName && currentBoat.boatDescription && currentBoat.boatCapacity && currentBoat.boatType) {
-          setValue("boatName", currentBoat.boatName)
-          setValue("boatDescription", currentBoat.boatDescription)
-          setValue("boatCapacity", currentBoat.boatCapacity)
-          setValue("boatType", currentBoat.boatType)
-     }
-
-     if (isUpdating) {
-          return (
-               <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                    <SafeAreaView style={styles.safeView}>
-                         <ActivityIndicator size="large" color={colors.primary} />
-                         <Text>{t("edit_boat_loading")}</Text>
-                    </SafeAreaView>
-               </KeyboardAvoidingView>
-          )
-     }
-
-     if (!boatToUpdate) {
-          return null
-     }
-
-     if (boatToUpdate.boatImages.length > 0) {
-          setValue("boatImages", boatToUpdate.boatImages)
-     }
-
-     const handleThumbnailChange = async () => {
-          try {
-               const result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ["images"],
-                    allowsMultipleSelection: true,
-                    aspect: [1, 1],
-                    quality: 1,
-                    orderedSelection: true,
-                    selectionLimit: 5,
-                    base64: true,
-               })
-
-               if (!result.canceled) {
-                    setImageSelectedState(true)
-                    setBoatToUpdate({
-                         ...currentBoat,
-                         boatImages: result.assets.map((image, index) => ({
-                              url: image.uri as string,
-                              isDefault: false,
-                              caption: image.fileName as string,
-                              contentType: image.type as string,
-                              base64: image.base64 as string,
-                              dimensions: { width: image.width, height: image.height },
-                              size: image?.fileSize?.toString() as string,
-                              mimeType: image.type as string,
-                              fileName: image.fileName as string,
-                              boatId: currentBoat.id,
-                         })),
-                    })
-               }
-          } catch (error) {
-               console.error("Error while selecting images:", error)
+     useEffect(() => {
+          if (boat) {
+               setValue("boatName", boat.boatName)
+               setValue("boatDescription", boat.boatDescription)
+               setValue("boatCapacity", boat.boatCapacity.toString())
+               setValue("boatType", boat.boatType.toString())
           }
-     }
-
-     const ensureSingleDefaultImage = () => {
-          const updatedImages = currentBoat.boatImages.map((image, index) => ({
-               ...image,
-               isDefault: index === 0,
-          }))
-
-          setValue("boatImages", updatedImages)
-     }
+     }, [boat, setValue])
 
      const onSubmit = (data: any) => {
-          const updatedData = {
-               boatName: getValues("boatName"),
-               boatDescription: getValues("boatDescription"),
-               boatCapacity: getValues("boatCapacity"),
-               boatType: getValues("boatType"),
-               boatImages: getValues("boatImages"),
-          }
-
-          updateBoat({ boatId: currentBoat.id, updatedData, imageSelected: imageSelectedState })
+          updateBoat(
+               { id: currentBoatId, ...data },
+               {
+                    onSuccess: () => {
+                         showTranslatedFlashMessage("success", {
+                              title: "Boat updated",
+                              description: "The boat was successfully updated.",
+                         })
+                    },
+                    onError: () => {
+                         showTranslatedFlashMessage("danger", {
+                              title: "Error",
+                              description: "Failed to update the boat.",
+                         })
+                    },
+               }
+          )
      }
 
-     const onError = (error: any) => {
-          console.log("Error while submitting form:", error)
-
-          showTranslatedFlashMessage("danger", {
-               title: t("flash_title_danger"),
-               description: t("fix_errors_before_submitting"),
-          })
+     if (isLoading) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={colors.primary} />
+                    <Text>{t("loading_title")}</Text>
+               </View>
+          )
      }
 
-     const boatType = boatTypeOptions.find((type) => type._id === currentBoat.boatType.toString())
+     if (error) {
+          return (
+               <View style={styles.container}>
+                    <Text style={styles.errorText}>Failed to load boat details. Please try again later.</Text>
+               </View>
+          )
+     }
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
-                    <ScrollView style={styles.scrollViewBoats}>
-                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput label={t("boat_name_label")} style={styles.input} onBlur={onBlur} onChangeText={onChange} value={value} error={!!errors.boatName} />} name="boatName" />
-                         {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
+                    <ScrollView style={styles.scrollView}>
+                         <Controller control={control} name="boatName" render={({ field: { onChange, value } }) => <TextInput label={t("boat_name_label")} placeholder={t("boat_name_placeholder")} value={value} onChangeText={onChange} error={!!errors.boatName} style={styles.input} />} />
+                         {errors.boatName && <Text style={styles.errorText}>{errors.boatName.message}</Text>}
 
-                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput label={t("boat_description_label")} style={styles.textarea} onBlur={onBlur} onChangeText={onChange} value={value} error={!!errors.boatDescription} />} name="boatDescription" />
-                         {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
+                         <Controller control={control} name="boatDescription" render={({ field: { onChange, value } }) => <TextInput label={t("boat_description_label")} placeholder={t("boat_description_label")} value={value} onChangeText={onChange} error={!!errors.boatDescription} style={styles.input} multiline />} />
+                         {errors.boatDescription && <Text style={styles.errorText}>{errors.boatDescription.message}</Text>}
 
-                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput label={t("boat_capacity_label")} style={styles.input} onBlur={onBlur} onChangeText={onChange} value={value} error={!!errors.boatCapacity} />} name="boatCapacity" />
-                         {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
+                         <Controller control={control} name="boatCapacity" render={({ field: { onChange, value } }) => <TextInput label={t("boat_capacity_label")} placeholder={t("boat_capacity_label")} value={value} onChangeText={onChange} keyboardType="numeric" error={!!errors.boatCapacity} style={styles.input} />} />
+                         {errors.boatCapacity && <Text style={styles.errorText}>{errors.boatCapacity.message}</Text>}
 
-                         <View style={styles.selector}>
-                              <PaperSelect
-                                   label="Type de bateau"
-                                   value={boatType?.value || ""}
-                                   onSelection={(value) => {
-                                        const selectedType = value.selectedList[0]
-                                        if (selectedType) {
-                                             updateCurrentBoatField("boatType", selectedType._id)
-                                        }
-                                   }}
-                                   arrayList={boatTypeOptions}
-                                   selectedArrayList={boatType ? [boatType] : []}
-                                   multiEnable={false}
-                                   dialogTitleStyle={{ color: "white" }}
-                                   dialogCloseButtonText="Fermer"
-                                   dialogDoneButtonText="Valider"
-                              />
-                         </View>
-
-                         <Slideshow
-                              images={currentBoat.boatImages.map((boatImage) => {
-                                   return {
-                                        id: boatImage.id as string,
-                                        url: boatImage.url as string,
-                                        caption: boatImage.caption as string,
-                                   }
-                              })}
+                         <Controller
+                              control={control}
+                              name="boatType"
+                              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                   <View style={styles.selector}>
+                                        <PaperSelect
+                                             label={t("boat_type_placeholder")}
+                                             value={types.list.find((item) => item._id.toString() === value.toString())?.value || ""}
+                                             onSelection={(selectedValue: any) => {
+                                                  const selected = selectedValue.selectedList[0]
+                                                  onChange(selected._id.toString())
+                                             }}
+                                             arrayList={types.list}
+                                             selectedArrayList={value ? types.list.filter((item) => item._id === value.toString()) : []}
+                                             multiEnable={false}
+                                             dialogTitleStyle={{ color: "white" }}
+                                             dialogCloseButtonText={t("close_btn")}
+                                             dialogDoneButtonText={t("done_btn")}
+                                        />
+                                   </View>
+                              )}
                          />
-                         <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
-                              {t("change_thumbnail_btn")}
-                         </Button>
-                         {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
 
-                         <Button mode="contained" onPress={handleSubmit(onSubmit, onError)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
-                              {t("edit_boat_button")}
+                         <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
+                              {isUpdating ? "Updating..." : "Update Boat"}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
@@ -208,38 +142,25 @@ const styles = StyleSheet.create({
           alignItems: "center",
           justifyContent: "center",
      },
-     scrollViewBoats: {
-          width: "100%",
-          rowGap: 20,
-          paddingTop: 20,
-     },
      safeView: {
+          flex: 1,
           width: "90%",
-          rowGap: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
+     },
+     scrollView: {
+          flex: 1,
      },
      input: {
-          width: "100%",
           marginVertical: 10,
      },
-     textarea: {
-          width: "100%",
-          marginVertical: 10,
+     button: {
+          marginVertical: 20,
+     },
+     errorText: {
+          color: "#ea5555",
+          fontSize: 14,
      },
      selector: {
           width: "100%",
           marginVertical: 10,
-     },
-     selectImageBtn: {
-          marginVertical: 30,
-     },
-     button: {
-          marginVertical: 30,
-     },
-     errorText: {
-          color: "#ea5555",
-          fontSize: 16,
      },
 })

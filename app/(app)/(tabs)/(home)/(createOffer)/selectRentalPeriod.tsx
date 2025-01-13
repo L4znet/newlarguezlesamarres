@@ -35,7 +35,7 @@ export default function SelectRentalPeriod() {
      }
 
      const handleNavigation = () => {
-          router.navigate({ pathname: backPath as RelativePathString })
+          router.back()
      }
 
      const handleConfirm = () => {

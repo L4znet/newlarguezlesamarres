@@ -7,6 +7,7 @@ import { CreateBoatDTO } from "@/modules/domain/boats/DTO/CreateBoatDTO"
 import { CreateBoatImageDTO } from "@/modules/domain/boats/DTO/CreateBoatImageDTO"
 import { BoatRawData, GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
 import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
+import { UpdateBoatDTO } from "@/modules/domain/boats/DTO/UpdateBoatDTO"
 
 class BoatRepositorySupabase implements BoatRepository {
      async createBoat(profileId: string, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined> {
@@ -31,26 +32,27 @@ class BoatRepositorySupabase implements BoatRepository {
           throw new Error("No data returned from boat creation.")
      }
 
-     async updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined> {
-          console.log("boatId", boatId)
-
-          const { data: boatData, error: boatError } = await supabase
-               .from("boats")
-               .update({
-                    boat_name: boatName,
-                    boat_description: boatDescription,
-                    boat_capacity: boatCapacity,
-                    boat_type: boatType,
+     async updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string): Promise<BoatEntity | undefined> {
+          try {
+               const updateData = new UpdateBoatDTO({
+                    boatId,
+                    boatName,
+                    boatDescription,
+                    boatCapacity,
+                    boatType,
                })
-               .eq("id", boatId)
-               .select()
+               const rawData = UpdateBoatDTO.toRawData(updateData)
+               const { data: boatData, error: boatError } = await supabase.from("boats").update(rawData).eq("id", boatId).select()
 
-          if (boatError) {
-               throw new Error(`Error updating boat: ${boatError.message}`)
-          }
+               if (boatError) {
+                    throw new Error(`Error updating boat: ${boatError.message}`)
+               }
 
-          if (boatData?.length) {
-               return BoatEntity.fromSupabaseData(boatData[0])
+               if (boatData?.length) {
+                    return BoatEntity.fromSupabaseData(boatData[0])
+               }
+          } catch (error) {
+               throw new Error((error as Error).message)
           }
      }
 
@@ -89,8 +91,6 @@ class BoatRepositorySupabase implements BoatRepository {
      }
 
      async uploadUpdateImages(boatId: string | undefined, newImages: any[]): Promise<void> {
-          console.log("newImages", newImages)
-
           const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
 
           if (fetchError) {

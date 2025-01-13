@@ -31,6 +31,7 @@ export default function Layout() {
                          options={{
                               title: t("drawer_select_location"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
@@ -38,6 +39,7 @@ export default function Layout() {
                          options={{
                               title: t("drawer_select_rental_period"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
@@ -45,6 +47,7 @@ export default function Layout() {
                          options={{
                               title: t("drawer_select_equipments"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                     <Drawer.Screen
@@ -52,6 +55,7 @@ export default function Layout() {
                          options={{
                               title: t("drawer_select_boat"),
                               drawerItemStyle: { display: "none" },
+                              headerShown: false,
                          }}
                     />
                </Drawer>

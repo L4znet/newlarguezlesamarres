@@ -86,7 +86,7 @@ export default function SelectLocation() {
      }
 
      const handleNavigation = () => {
-          router.navigate({ pathname: backPath as RelativePathString })
+          router.back()
      }
 
      const cancelSelection = () => {

@@ -54,7 +54,7 @@ export default function selectEquipments() {
      }
 
      const handleNavigation = () => {
-          router.navigate({ pathname: backPath as RelativePathString })
+          router.back()
      }
 
      const handleConfirm = () => {

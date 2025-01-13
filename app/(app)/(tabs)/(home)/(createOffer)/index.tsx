@@ -251,7 +251,7 @@ export default function createOffer() {
                               onPress={() =>
                                    handleNavigate("/selectEquipments", {
                                         initialEquipments: equipments || [],
-                                        backPath: "/(createOffer)/index",
+                                        backPath: "/index",
                                    })
                               }
                               style={styles.button}
@@ -264,7 +264,7 @@ export default function createOffer() {
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
                                         initialPeriod: rentalPeriod,
-                                        backPath: "/(createOffer)/index",
+                                        backPath: "/index",
                                         control: control,
                                         fieldIds: {
                                              rentalPeriod: "rentalPeriod",
@@ -284,7 +284,7 @@ export default function createOffer() {
                               onPress={() =>
                                    handleNavigate("/selectLocation", {
                                         initialLocation: location,
-                                        backPath: "/(createOffer)/index",
+                                        backPath: "/index",
                                    })
                               }
                               style={[styles.button, errors.location ? styles.buttonError : ""]}
@@ -300,7 +300,7 @@ export default function createOffer() {
                               onPress={() =>
                                    handleNavigate("/selectBoat", {
                                         initialBoatId: selectedBoatId,
-                                        backPath: "/(createOffer)/index",
+                                        backPath: "/index",
                                    })
                               }
                               style={[styles.button, errors.selectedBoatId ? styles.buttonError : ""]}

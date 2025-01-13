@@ -33,7 +33,7 @@ export default function createBoat() {
 
      const { boatImages, setBoatImages } = useBoatStore()
 
-     const [types, setType] = useState({
+     const [types] = useState({
           value: boatTypeOptions[0].value,
           list: boatTypeOptions,
           selectedList: [boatTypeOptions[0]],

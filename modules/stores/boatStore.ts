@@ -24,7 +24,6 @@ interface Boat {
 
 interface CurrentBoat {
      id: string
-     profileId: string
      boatName: string
      boatDescription: string
      boatCapacity: string
@@ -64,41 +63,51 @@ interface BoatToUpdate {
 }
 
 interface BoatStore {
-     currentBoat: Boat | null
+     currentBoatId: string | null
      isCurrentBoatLoading: boolean
      boatImages: any
      boatToUpdate: BoatToUpdate | null
-     setCurrentBoat: (boat: CurrentBoat) => void
+     setCurrentBoatId: (boatId: string) => void
      setBoatToUpdate: (boat: BoatToUpdate) => void
-     updateCurrentBoatField: (field: keyof Boat, value: any) => void
-     resetBoatStore: () => void
      imageSelectedState: boolean
      setImageSelectedState: (state: boolean) => void
      setBoatImages: (images: any) => void
+     setBoatField: (fieldOrFields: string | Partial<Boat>, value: any) => void
+     boatName: string
+     boatDescription: string
+     boatCapacity: string
+     boatType: number
 }
 
 export const useBoatStore = create<BoatStore>((set) => ({
-     currentBoat: null,
+     currentBoatId: null,
      isCurrentBoatLoading: false,
      imageSelectedState: false,
      boatImages: [],
      boatToUpdate: null,
+     boatName: "",
+     boatDescription: "",
+     boatCapacity: "",
+     boatType: 0,
      setBoatToUpdate: (boat) => set({ boatToUpdate: boat }),
+
+     setBoatField: (fieldOrFields, value) => {
+          if (typeof fieldOrFields === "string") {
+               set(() => ({ [fieldOrFields]: value }))
+          } else {
+               set((state) => ({ ...state, ...fieldOrFields }))
+          }
+     },
 
      setBoatImages: (images) => set({ boatImages: images }),
 
      setImageSelectedState: (state) => set({ imageSelectedState: state }),
 
-     setCurrentBoat: async (boat) => {
+     setCurrentBoatId: async (boatId) => {
           set({ isCurrentBoatLoading: true })
-          const resolvedBoat = boat instanceof Promise ? await boat : boat
-          set({ currentBoat: resolvedBoat, isCurrentBoatLoading: false })
+
+          set({ currentBoatId: boatId })
+
+          set({ isCurrentBoatLoading: false })
      },
-
-     updateCurrentBoatField: (field, value) =>
-          set((state) => ({
-               currentBoat: state.currentBoat ? { ...state.currentBoat, [field]: value } : null,
-          })),
-
-     resetBoatStore: () => set({ currentBoat: null, isCurrentBoatLoading: false }),
 }))

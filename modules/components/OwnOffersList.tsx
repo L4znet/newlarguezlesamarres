@@ -17,7 +17,7 @@ const OwnOffersList = () => {
      const { mutate: deleteOffer, isPending: isDeleting, error: deleteError } = useDeleteOffer()
      const theme = useTheme()
 
-     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat, setTemporaryLocation, setTemporaryEquipments, setTemporaryStartDate, setTemporaryEndDate, setTemporaryBoatId, temporaryEquipments } = useOfferStore()
+     const { setOfferField, setEquipments, setRentalPeriod, setLocation, selectBoat, setTemporaryLocation, setTemporaryStartDate, setTemporaryEndDate, setTemporaryBoatId } = useOfferStore()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -50,8 +50,6 @@ const OwnOffersList = () => {
                isTeamAvailable: offer.isTeamAvailable,
                boatId: offer.boatId,
           })
-
-          console.log("offer.equipments", offer.equipments)
 
           setEquipments(offer.equipments)
           setRentalPeriod(offer.rentalPeriod.start, offer.rentalPeriod.end)
