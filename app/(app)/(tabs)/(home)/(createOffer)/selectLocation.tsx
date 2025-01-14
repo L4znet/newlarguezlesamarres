@@ -1,42 +1,42 @@
 import React, { useState } from "react"
 import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from "react-native"
 import { Button, Text, useTheme, TextInput, Card, ActivityIndicator } from "react-native-paper"
-import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
-import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
-import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { z } from "zod"
 
-export default function SelectLocation() {
-     const [searchTerm, setSearchTerm] = useState<string>("")
-     const { setLocation, setErrors, getErrors, setTemporaryLocation, temporaryLocation } = useOfferStore()
-     const [validationError, setValidationError] = useState<string | null>(null)
-
-     const { mutate, data, isPending, error: errorFromFetch, reset } = useLocationSearch()
-     const { locale } = useTranslation()
-     const t = getTranslator(locale)
-
-     const router = useRouter()
-     const theme = useTheme()
-
-     const { backPath } = useLocalSearchParams<{ backPath: string }>()
-
-     const resetScreen = () => {
-          setSearchTerm("")
-          setValidationError(null)
-          setTemporaryLocation({
-               city: "",
-               country: "",
-               zipcode: "",
-               address: "",
-          })
-          setLocation({
-               city: "",
-               country: "",
-               zipcode: "",
-               address: "",
-          })
+export default function SelectLocation({
+     searchTerm,
+     setSearchTerm,
+     handleSearch,
+     handleSelectLocation,
+     confirmSelection,
+     cancelSelection,
+     isPending,
+     errorFromFetch,
+     locationData,
+     errors,
+     temporaryLocation,
+}: {
+     searchTerm: string
+     setSearchTerm: React.Dispatch<React.SetStateAction<string>>
+     handleSearch: () => void
+     handleSelectLocation: (item: any) => void
+     confirmSelection: () => void
+     cancelSelection: () => void
+     isPending: boolean
+     errorFromFetch: boolean
+     locationData: any
+     errors: any
+     temporaryLocation: {
+          city: string
+          country: string
+          zipcode: string
+          address: string
      }
+}) {
+     const theme = useTheme()
+     const { t } = useTranslation()
+
+     /*
 
      const handleSearch = () => {
           if (searchTerm.trim()) {
@@ -84,31 +84,7 @@ export default function SelectLocation() {
                setTemporaryLocation({ city: municipality, country: country, zipcode: postalCode, address: streetNumber + " " + streetName })
           }
      }
-
-     const handleNavigation = () => {
-          router.back()
-     }
-
-     const cancelSelection = () => {
-          handleNavigation()
-          resetScreen()
-     }
-
-     const confirmSelection = () => {
-          if (temporaryLocation) {
-               setErrors("location", [])
-               setLocation(temporaryLocation)
-               handleNavigation()
-          }
-     }
-
-     let currentSelection = ""
-
-     if (temporaryLocation.country && temporaryLocation.city && temporaryLocation.zipcode && temporaryLocation.address) {
-          currentSelection = `${temporaryLocation.address}, ${temporaryLocation.zipcode} ${temporaryLocation.city}, ${temporaryLocation.country}`
-     } else {
-          currentSelection = t("location_not_specified")
-     }
+     * */
 
      return (
           <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -118,9 +94,9 @@ export default function SelectLocation() {
                     {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
                     {errorFromFetch && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
-                    {data && data.length > 0 && (
+                    {locationData && locationData.length > 0 && (
                          <FlatList
-                              data={data}
+                              data={locationData}
                               keyExtractor={(item, index) => index.toString()}
                               renderItem={({ item }) => (
                                    <TouchableOpacity style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
@@ -129,23 +105,23 @@ export default function SelectLocation() {
                               )}
                          />
                     )}
-                    {getErrors("location") &&
-                         getErrors("location")?.map((error, index) => (
+                    {errors &&
+                         errors?.map((error: any, index: any) => (
                               <Text key={index} style={[styles.errorText, { color: theme.colors.error }]}>
                                    {error}
                               </Text>
                          ))}
 
-                    {!isPending && data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+                    {!isPending && locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
 
-                    {data && data.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+                    {locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
 
                     {temporaryLocation.address && temporaryLocation.country && temporaryLocation.zipcode && temporaryLocation.city && (
                          <View style={styles.selectionContainer}>
                               <Text style={styles.selectionTitle}>{t("your_selection")}</Text>
                               <Card style={styles.selectionCard}>
                                    <Card.Content>
-                                        <Text>{currentSelection}</Text>
+                                        <Text>{temporaryLocation.address + ", " + temporaryLocation.zipcode + " " + temporaryLocation.city + ", " + temporaryLocation.country}</Text>
                                    </Card.Content>
                               </Card>
                          </View>

@@ -1,6 +1,6 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
-import { Button, Text, TextInput, Switch } from "react-native-paper"
+import { Button, Text, TextInput, Switch, Portal, Modal } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
@@ -13,17 +13,27 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Merge } from "type-fest"
 import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
 import { useFocusEffect } from "@react-navigation/native"
+import { DatePickerModal } from "react-native-paper-dates"
+import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
+import SelectLocation from "@/app/(app)/(tabs)/(home)/(createOffer)/selectLocation"
+import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 
 export default function createOffer() {
      const router = useRouter()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+     const [open, setOpen] = useState(false)
+     const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
+     const [visible, setVisible] = useState(false)
+     const [searchTerm, setSearchTerm] = useState("")
+     const [locationData, setLocationData] = useState([])
 
      const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId } = useOfferStore()
      const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
 
      const { mutate: createOffer, isPending } = useCreateOffer()
+     const { mutate: createOffer, isPending } = useLocationSearch()
 
      const handleNavigate = (path: string, params: any) => {
           router.push({
@@ -43,6 +53,13 @@ export default function createOffer() {
                }
           }, [boatsCount])
      )
+
+     const handleSearch = () => {
+          if (searchTerm.trim()) {
+               mutate(searchTerm)
+               setValidationError(null)
+          }
+     }
 
      const {
           control,
@@ -67,8 +84,8 @@ export default function createOffer() {
                     },
                ],
                rentalPeriod: {
-                    start: "",
-                    end: "",
+                    startDate: range.startDate,
+                    endDate: range.endDate,
                },
                location: {
                     city: "",
@@ -100,11 +117,6 @@ export default function createOffer() {
           resetField("selectedBoatId")
      }
 
-     if (rentalPeriod.start && rentalPeriod.end && getErrors("rentalPeriod") === null) {
-          setValue("rentalPeriod.start", rentalPeriod.start)
-          setValue("rentalPeriod.end", rentalPeriod.end)
-     }
-
      if (equipments.length > 0) {
           setValue("equipments", equipments)
      }
@@ -122,7 +134,6 @@ export default function createOffer() {
                setValue("isSkipperAvailable", false)
                setValue("isTeamAvailable", false)
                setValue("equipments", [])
-               setValue("rentalPeriod", { start: "", end: "" })
                setValue("location", {
                     city: "",
                     country: "",
@@ -171,6 +182,21 @@ export default function createOffer() {
      const onBlurTrigger = async (field: any) => {
           await trigger(field)
      }
+
+     const onDismiss = useCallback(() => {
+          setOpen(false)
+     }, [setOpen])
+
+     const onConfirm = useCallback(
+          ({ startDate, endDate }: { startDate: CalendarDate; endDate: CalendarDate }) => {
+               setOpen(false)
+               setRange({ startDate, endDate })
+          },
+          [setOpen, setRange]
+     )
+
+     const showTestModal = () => setVisible(true)
+     const hideTestModal = () => setVisible(false)
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -245,68 +271,30 @@ export default function createOffer() {
                               )}
                          />
 
-                         <Button
-                              icon={equipments.length > 0 ? "check" : "plus"}
-                              mode="contained"
-                              onPress={() =>
-                                   handleNavigate("/selectEquipments", {
-                                        initialEquipments: equipments || [],
-                                        backPath: "/index",
-                                   })
-                              }
-                              style={styles.button}
-                         >
-                              {t("select_equipment_button")}
-                         </Button>
-                         <Button
-                              icon={rentalPeriod.start && rentalPeriod.end ? displayErrorIcon(!!errors.rentalPeriod) : "plus"}
-                              mode="contained"
-                              onPress={() =>
-                                   handleNavigate("/selectRentalPeriod", {
-                                        initialPeriod: rentalPeriod,
-                                        backPath: "/index",
-                                        control: control,
-                                        fieldIds: {
-                                             rentalPeriod: "rentalPeriod",
-                                        },
-                                   })
-                              }
-                              style={[styles.button, errors.rentalPeriod ? styles.buttonError : ""]}
-                         >
+                         <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
                               {t("select_rental_period_button")}
                          </Button>
 
-                         {errors.rentalPeriod && <Text style={styles.errorText}>{t(errors.rentalPeriod.message as string)}</Text>}
+                         <Controller
+                              name={"rentalPeriod"}
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                   <View>
+                                        <DatePickerModal locale={locale} onChange={onChange} mode="range" visible={open} onDismiss={onDismiss} startDate={value.startDate} endDate={value.endDate} onConfirm={onConfirm} />
+                                   </View>
+                              )}
+                         />
 
-                         <Button
-                              icon={location.city && location.address && location.country && location.zipcode ? displayErrorIcon(!!errors.location) : "plus"}
-                              mode="contained"
-                              onPress={() =>
-                                   handleNavigate("/selectLocation", {
-                                        initialLocation: location,
-                                        backPath: "/index",
-                                   })
-                              }
-                              style={[styles.button, errors.location ? styles.buttonError : ""]}
-                         >
-                              {t("select_location_button")}
+                         <Portal>
+                              <Modal visible={visible} onDismiss={hideTestModal} contentContainerStyle={styles.modalContainerStyle}>
+                                   <SelectLocation searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} isPending={isPending} locationData={locationData} handleSelectLocation={handleSelectLocation} temporaryLocation={temporaryLocation} showTranslatedFlashMessage={showTranslatedFlashMessage} router={router} t={t} errors={errors} theme={theme} temporaryLocation={temporaryLocation} setLocation={setLocation} />
+                              </Modal>
+                         </Portal>
+
+                         <Button onPress={() => setVisible(true)} uppercase={false} mode="outlined">
+                              Outlined Modal
                          </Button>
 
-                         {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
-
-                         <Button
-                              icon={selectedBoatId ? displayErrorIcon(!!errors.selectedBoatId) : "plus"}
-                              mode="contained"
-                              onPress={() =>
-                                   handleNavigate("/selectBoat", {
-                                        initialBoatId: selectedBoatId,
-                                        backPath: "/index",
-                                   })
-                              }
-                              style={[styles.button, errors.selectedBoatId ? styles.buttonError : ""]}
-                         >
-                              {t("select_boat_button")}
-                         </Button>
                          {errors.selectedBoatId && <Text style={styles.errorText}>{t(errors.selectedBoatId.message as string)}</Text>}
 
                          <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
@@ -319,6 +307,12 @@ export default function createOffer() {
 }
 
 const styles = StyleSheet.create({
+     modalContainerStyle: {
+          backgroundColor: "white",
+          padding: 20,
+          margin: 20,
+          flex: 1,
+     },
      container: {
           flex: 1,
           width: "90%",

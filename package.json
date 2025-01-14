@@ -57,6 +57,7 @@
           "react-native-image-crop-picker": "^0.41.6",
           "react-native-image-slider-show": "^1.0.3",
           "react-native-paper": "^5.12.5",
+          "react-native-paper-dates": "^0.22.28",
           "react-native-paper-dropdown": "^2.3.1",
           "react-native-paper-select": "^1.2.0",
           "react-native-reanimated": "~3.16.1",

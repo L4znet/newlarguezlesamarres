@@ -10,6 +10,7 @@ import { TranslationProvider } from "@/modules/context/TranslationContext"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/queryClient"
 import { StripeProvider } from "@stripe/stripe-react-native"
+import { registerTranslation } from "react-native-paper-dates"
 
 const publishableKey = process.env.EXPO_PUBLIC_PUBLISHABLE_STRIPE_KEY as string
 

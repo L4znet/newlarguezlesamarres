@@ -434,8 +434,8 @@
      "is_available_label": "Offre disponible dès sa publication",
      "is_skipper_available_label": "Le skipper est-il inclus ?",
      "is_team_available_label": "Une équipe est-elle incluse ?",
-     "select_rental_period_title": "Sélectionnez la périodes de location",
-     "select_rental_period_button": "Sélectionnez la périodes",
+     "select_rental_period_title": "Sélectionnez la période de location",
+     "select_rental_period_button": "Sélectionnez la période de location",
      "rental_period_title": "Période de location",
 
      "equipment_title": " Ajoutez les équipements inclus dans la location",
