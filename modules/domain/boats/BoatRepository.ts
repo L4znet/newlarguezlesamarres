@@ -1,11 +1,13 @@
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { CreateBoatDTO } from "@/modules/domain/boats/DTO/CreateBoatDTO"
+import { UpdateBoatDTO } from "@/modules/domain/boats/DTO/UpdateBoatDTO"
+import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
+import { GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
+import { BoatIdResponseDTO } from "@/modules/domain/boats/DTO/BoatIdResponseDTO"
 
 interface BoatRepository {
-     createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatEntity | undefined>
-     updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatEntity | undefined>
-
-     getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
-
+     createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatIdResponseDTO>
+     updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatIdResponseDTO | undefined>
      uploadImages(
           boatId: string | undefined,
           images: {
@@ -20,11 +22,10 @@ interface BoatRepository {
                isDefault: boolean
           }[]
      ): Promise<void>
-     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
-     getSingleBoat(boatId: string | string[]): Promise<BoatEntity>
-     getBoats(profileId: string | undefined): Promise<BoatEntity[] | undefined>
+     getSingleBoat(boatId: string | string[]): Promise<GetSingleBoatDTO>
+     getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined>
      getBoatsCount(profileId: string | undefined): Promise<Number | null>
-     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatEntity | undefined>
+     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatIdResponseDTO | undefined>
 }
 
 export default BoatRepository

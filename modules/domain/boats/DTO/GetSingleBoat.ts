@@ -48,16 +48,4 @@ export class GetSingleBoatDTO {
      static fromRawData(data: BoatRawData): GetSingleBoatDTO {
           return new GetSingleBoatDTO(data)
      }
-
-     static toRawData(data: GetSingleBoatDTO): BoatRawData {
-          return {
-               id: data.id,
-               profile_id: data.profileId,
-               boat_name: data.boatName,
-               boat_description: data.boatDescription,
-               boat_capacity: data.boatCapacity,
-               boat_type: data.boatType,
-               boat_images: data.boatImages.map((image) => BoatImageDTO.toRawData(image)), // Mapper les images vers leurs données brutes
-          }
-     }
 }

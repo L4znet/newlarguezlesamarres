@@ -13,10 +13,6 @@ export class CreateBoatDTO {
           this.boatType = boat_type
      }
 
-     static fromRawData(data: { profile_id: string; boat_name: string; boat_description: string; boat_capacity: string; boat_type: number }): CreateBoatDTO {
-          return new CreateBoatDTO(data)
-     }
-
      static toRawData(dto: CreateBoatDTO): any {
           return {
                profile_id: dto.profileId,

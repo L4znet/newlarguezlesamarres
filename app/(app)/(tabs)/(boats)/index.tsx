@@ -3,14 +3,23 @@ import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import BoatList from "@/modules/components/BoatList"
+import { useBoatStore } from "@/modules/stores/boatStore"
 
 export default function index() {
+     const { setBoatImages } = useBoatStore()
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
                     <BoatList />
                </SafeAreaView>
-               <FAB icon="plus" style={styles.fab} onPress={() => router.navigate("/(app)/(tabs)/(boats)/createBoat")} />
+               <FAB
+                    icon="plus"
+                    style={styles.fab}
+                    onPress={() => {
+                         setBoatImages([])
+                         router.navigate("/(app)/(tabs)/(boats)/createBoat")
+                    }}
+               />
           </View>
      )
 }

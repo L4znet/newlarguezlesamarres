@@ -10,25 +10,21 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useBoatStore } from "@/modules/stores/boatStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
-import { useBoatTypeOptions } from "@/constants/BoatTypes"
+import { useBoatTypeOptions, displayBoatType } from "@/constants/BoatTypes"
+import Slideshow from "@/modules/components/Slideshow"
+import * as ImagePicker from "expo-image-picker"
 
 export default function EditBoat({ route }: { route: any }) {
-     const { currentBoatId } = useBoatStore()
+     const { setCurrentBoatId, currentBoatId } = useBoatStore()
      const { data: boat, isLoading, error } = useBoatById(currentBoatId as string)
      const { mutate: updateBoat, isPending: isUpdating } = useUpdateBoat()
      const { showTranslatedFlashMessage } = useFlashMessage()
+     const { boatImages, setBoatImages } = useBoatStore()
      const { colors } = useTheme()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
      const boatTypeOptions = useBoatTypeOptions(locale)
-
-     const [types] = useState({
-          value: boatTypeOptions[0].value,
-          list: boatTypeOptions,
-          selectedList: [boatTypeOptions[0]],
-          error: "",
-          id: 1,
-     })
+     const [imageSelected, setImageSelected] = useState(false)
 
      const {
           control,
@@ -42,6 +38,19 @@ export default function EditBoat({ route }: { route: any }) {
                boatDescription: "",
                boatCapacity: "",
                boatType: "",
+               boatImages: [
+                    {
+                         isDefault: true,
+                         url: "",
+                         caption: "",
+                         base64: "",
+                         contentType: "",
+                         dimensions: { width: 0, height: 0 },
+                         size: "",
+                         mimeType: "",
+                         fileName: "",
+                    },
+               ],
           },
      })
 
@@ -51,30 +60,57 @@ export default function EditBoat({ route }: { route: any }) {
                setValue("boatDescription", boat.boatDescription)
                setValue("boatCapacity", boat.boatCapacity.toString())
                setValue("boatType", boat.boatType.toString())
+               setValue("boatImages", boat.boatImages)
+               setBoatImages(boat.boatImages)
           }
-     }, [boat, setValue])
+     }, [boat, setValue, setBoatImages])
 
-     const onSubmit = (data: any) => {
-          updateBoat(
-               { id: currentBoatId, ...data },
-               {
-                    onSuccess: () => {
-                         showTranslatedFlashMessage("success", {
-                              title: "Boat updated",
-                              description: "The boat was successfully updated.",
-                         })
-                    },
-                    onError: () => {
-                         showTranslatedFlashMessage("danger", {
-                              title: "Error",
-                              description: "Failed to update the boat.",
-                         })
-                    },
+     const handleThumbnailChange = async () => {
+          try {
+               const result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsMultipleSelection: true,
+                    quality: 1,
+                    base64: true,
+                    selectionLimit: 5,
+               })
+               if (!result.canceled) {
+                    const newImages = result.assets.map((asset, index) => ({
+                         isDefault: index === 0,
+                         url: asset.uri as string,
+                         caption: asset.fileName as string,
+                         contentType: asset.type as string,
+                         base64: asset.base64 as string,
+                         dimensions: { width: asset.width, height: asset.height },
+                         size: asset.fileSize?.toString() as string,
+                         mimeType: asset.mimeType as string,
+                         fileName: asset.fileName as string,
+                    }))
+
+                    setBoatImages(newImages)
+                    setImageSelected(true)
+                    setValue("boatImages", newImages)
                }
-          )
+          } catch (error) {
+               console.error("Error while selecting images:", error)
+          }
      }
 
-     if (isLoading) {
+     const onSubmit = (data: any) => {
+          updateBoat({
+               boatId: currentBoatId as string,
+               updatedData: {
+                    boatName: data.boatName,
+                    boatDescription: data.boatDescription,
+                    boatCapacity: parseInt(data.boatCapacity),
+                    boatType: data.boatType,
+                    boatImages: data.boatImages,
+               },
+               imageSelected,
+          })
+     }
+
+     if (isUpdating) {
           return (
                <View style={styles.container}>
                     <ActivityIndicator size="large" color={colors.primary} />
@@ -86,7 +122,7 @@ export default function EditBoat({ route }: { route: any }) {
      if (error) {
           return (
                <View style={styles.container}>
-                    <Text style={styles.errorText}>Failed to load boat details. Please try again later.</Text>
+                    <Text style={styles.errorText}>{t("error_loading_boat")}</Text>
                </View>
           )
      }
@@ -98,37 +134,57 @@ export default function EditBoat({ route }: { route: any }) {
                          <Controller control={control} name="boatName" render={({ field: { onChange, value } }) => <TextInput label={t("boat_name_label")} placeholder={t("boat_name_placeholder")} value={value} onChangeText={onChange} error={!!errors.boatName} style={styles.input} />} />
                          {errors.boatName && <Text style={styles.errorText}>{errors.boatName.message}</Text>}
 
-                         <Controller control={control} name="boatDescription" render={({ field: { onChange, value } }) => <TextInput label={t("boat_description_label")} placeholder={t("boat_description_label")} value={value} onChangeText={onChange} error={!!errors.boatDescription} style={styles.input} multiline />} />
+                         <Controller control={control} name="boatDescription" render={({ field: { onChange, value } }) => <TextInput label={t("boat_description_label")} placeholder={t("boat_description_placeholder")} value={value} onChangeText={onChange} error={!!errors.boatDescription} style={styles.input} multiline />} />
                          {errors.boatDescription && <Text style={styles.errorText}>{errors.boatDescription.message}</Text>}
 
-                         <Controller control={control} name="boatCapacity" render={({ field: { onChange, value } }) => <TextInput label={t("boat_capacity_label")} placeholder={t("boat_capacity_label")} value={value} onChangeText={onChange} keyboardType="numeric" error={!!errors.boatCapacity} style={styles.input} />} />
+                         <Controller control={control} name="boatCapacity" render={({ field: { onChange, value } }) => <TextInput label={t("boat_capacity_label")} placeholder={t("boat_capacity_placeholder")} value={value} onChangeText={onChange} keyboardType="numeric" error={!!errors.boatCapacity} style={styles.input} />} />
                          {errors.boatCapacity && <Text style={styles.errorText}>{errors.boatCapacity.message}</Text>}
 
                          <Controller
                               control={control}
                               name="boatType"
-                              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                                   <View style={styles.selector}>
+                              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                                   const boatType = boatTypeOptions.find((option) => option._id === value)
+                                   return (
                                         <PaperSelect
                                              label={t("boat_type_placeholder")}
-                                             value={types.list.find((item) => item._id.toString() === value.toString())?.value || ""}
+                                             value={boatType?.value || ""}
                                              onSelection={(selectedValue: any) => {
-                                                  const selected = selectedValue.selectedList[0]
-                                                  onChange(selected._id.toString())
+                                                  const selectedType = selectedValue.selectedList[0]
+                                                  if (selectedType) {
+                                                       onChange(selectedType._id)
+                                                  }
                                              }}
-                                             arrayList={types.list}
-                                             selectedArrayList={value ? types.list.filter((item) => item._id === value.toString()) : []}
+                                             arrayList={boatTypeOptions}
+                                             selectedArrayList={boatType ? [boatType] : []}
                                              multiEnable={false}
                                              dialogTitleStyle={{ color: "white" }}
                                              dialogCloseButtonText={t("close_btn")}
                                              dialogDoneButtonText={t("done_btn")}
                                         />
-                                   </View>
-                              )}
+                                   )
+                              }}
                          />
 
+                         <Controller
+                              control={control}
+                              name={"boatImages"}
+                              render={({ field: { onChange, value } }) => {
+                                   return (
+                                        <>
+                                             <Slideshow images={boatImages} />
+                                             <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
+                                                  {t("change_thumbnail_btn")}
+                                             </Button>
+                                        </>
+                                   )
+                              }}
+                         />
+
+                         {errors.boatImages && <Text style={styles.errorText}>{t("zod_rule_boat_images_min_length")}</Text>}
+
                          <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
-                              {isUpdating ? "Updating..." : "Update Boat"}
+                              {isUpdating ? t("loading_button_text") : t("edit_btn")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
@@ -155,12 +211,11 @@ const styles = StyleSheet.create({
      button: {
           marginVertical: 20,
      },
+     selectImageBtn: {
+          marginVertical: 10,
+     },
      errorText: {
           color: "#ea5555",
           fontSize: 14,
-     },
-     selector: {
-          width: "100%",
-          marginVertical: 10,
      },
 })
