@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native"
-import { Button, Text, TextInput, Switch, Portal, Modal } from "react-native-paper"
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native"
+import { Button, Text, TextInput, Switch, Portal, Modal, ActivityIndicator, Card, useTheme, Text as TextPaper } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
@@ -8,15 +8,18 @@ import { RelativePathString, useRouter } from "expo-router"
 import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
-import { Controller, FieldError, FieldErrorsImpl, useForm } from "react-hook-form"
+import { Controller, FieldError, FieldErrorsImpl, useForm, useFormContext } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Merge } from "type-fest"
 import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
 import { useFocusEffect } from "@react-navigation/native"
 import { DatePickerModal } from "react-native-paper-dates"
 import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
-import SelectLocation from "@/app/(app)/(tabs)/(home)/(createOffer)/selectLocation"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
+import SelectEquipments from "@/app/(app)/(tabs)/(home)/(createOffer)/SelectEquipments"
+import { useBoats } from "@/modules/hooks/boats/useBoats"
+import { displayRentalPeriod, displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
+import SelectBoat from "@/app/(app)/(tabs)/(home)/(createOffer)/selectBoat"
 
 export default function createOffer() {
      const router = useRouter()
@@ -27,20 +30,22 @@ export default function createOffer() {
      const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
      const [visible, setVisible] = useState(false)
      const [searchTerm, setSearchTerm] = useState("")
-     const [locationData, setLocationData] = useState([])
 
-     const { resetStore, getErrors, equipments, setRentalPeriod, setTemporaryStartDate, setTemporaryLocation, setTemporaryEndDate, setLocation, rentalPeriod, location, selectedBoatId } = useOfferStore()
+     const [selectedBoatId, setSelectedBoatId] = useState<string | null>(null)
+     const [rentalPeriod, setRentalPeriod] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
+     const [location, setLocation] = useState({
+          city: "",
+          country: "",
+          address: "",
+          zipcode: "",
+     })
+
      const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
 
-     const { mutate: createOffer, isPending } = useCreateOffer()
-     const { mutate: createOffer, isPending } = useLocationSearch()
+     const { mutate: createOffer, isPending: isPendingCreateOffer } = useCreateOffer()
+     const { mutate: mutateSearchLocation, data: locationData, isPending: isPendingLocationSearch, error: errorFromFetch, reset: resetSearchResults } = useLocationSearch()
 
-     const handleNavigate = (path: string, params: any) => {
-          router.push({
-               pathname: path as RelativePathString,
-               params,
-          })
-     }
+     console.log("RENDER")
 
      useFocusEffect(
           useCallback(() => {
@@ -54,18 +59,13 @@ export default function createOffer() {
           }, [boatsCount])
      )
 
-     const handleSearch = () => {
-          if (searchTerm.trim()) {
-               mutate(searchTerm)
-               setValidationError(null)
-          }
-     }
-
      const {
           control,
           handleSubmit,
           trigger,
           setValue,
+          getValues,
+          reset,
           resetField,
           formState: { errors },
      } = useForm({
@@ -77,15 +77,10 @@ export default function createOffer() {
                isAvailable: false,
                isSkipperAvailable: false,
                isTeamAvailable: false,
-               equipments: [
-                    {
-                         equipmentName: "",
-                         equipmentQuantity: "",
-                    },
-               ],
+               equipments: [],
                rentalPeriod: {
-                    startDate: range.startDate,
-                    endDate: range.endDate,
+                    start: range.startDate?.toDateString(),
+                    end: range.endDate?.toDateString(),
                },
                location: {
                     city: "",
@@ -96,65 +91,20 @@ export default function createOffer() {
                selectedBoatId: "",
           },
      })
-     if (location.zipcode && location.city && location.address && location.country) {
-          setValue("location", location)
-          resetField("location")
-     } else {
-          setValue("location", {
-               city: "",
-               country: "",
-               address: "",
-               zipcode: "",
-          })
-          resetField("location")
-     }
-
-     if (selectedBoatId) {
-          resetField("selectedBoatId")
-          setValue("selectedBoatId", selectedBoatId)
-     } else {
-          setValue("selectedBoatId", "")
-          resetField("selectedBoatId")
-     }
-
-     if (equipments.length > 0) {
-          setValue("equipments", equipments)
-     }
 
      const onSubmit = async (data: any) => {
           try {
                createOffer({
                     ...data,
                })
-
-               setValue("title", "")
-               setValue("description", "")
-               setValue("price", "")
-               setValue("isAvailable", false)
-               setValue("isSkipperAvailable", false)
-               setValue("isTeamAvailable", false)
-               setValue("equipments", [])
-               setValue("location", {
-                    city: "",
-                    country: "",
-                    address: "",
-                    zipcode: "",
-               })
-               setValue("selectedBoatId", "")
-               setRentalPeriod("", "")
-               setTemporaryStartDate(null)
-               setTemporaryEndDate(null)
-               setTemporaryLocation({
-                    city: "",
-                    country: "",
-                    address: "",
-                    zipcode: "",
-               })
+               reset()
+               setRentalPeriod({ startDate: undefined, endDate: undefined })
+               setSelectedBoatId(null)
                setLocation({
                     city: "",
                     country: "",
-                    address: "",
                     zipcode: "",
+                    address: "",
                })
           } catch (error) {
                showTranslatedFlashMessage("danger", {
@@ -191,12 +141,62 @@ export default function createOffer() {
           ({ startDate, endDate }: { startDate: CalendarDate; endDate: CalendarDate }) => {
                setOpen(false)
                setRange({ startDate, endDate })
+               setRentalPeriod({ startDate, endDate })
+               setValue("rentalPeriod", {
+                    start: startDate?.toISOString().split("T")[0],
+                    end: endDate?.toISOString().split("T")[0],
+               })
           },
           [setOpen, setRange]
      )
 
-     const showTestModal = () => setVisible(true)
-     const hideTestModal = () => setVisible(false)
+     const handleSearch = () => {
+          if (searchTerm.trim()) {
+               mutateSearchLocation(searchTerm)
+          }
+     }
+
+     const handleSelectLocation = (location: any) => {
+          const { streetNumber, streetName, municipality, country, postalCode } = location.address
+
+          mutateSearchLocation("", {
+               onSuccess: () => {
+                    resetSearchResults()
+               },
+          })
+
+          setSearchTerm("")
+          setLocation({
+               city: municipality,
+               country: country,
+               zipcode: postalCode,
+               address: streetNumber + " " + streetName,
+          })
+          setValue("location", {
+               city: municipality,
+               country: country,
+               zipcode: postalCode,
+               address: streetNumber + " " + streetName,
+          })
+     }
+
+     const theme = useTheme()
+
+     const handleSelectBoat = (boat: any) => {
+          setSelectedBoatId(boat.id)
+     }
+
+     const EmptyBoatList = () => {
+          return (
+               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <Text>{t("select_boat_empty_message")}</Text>
+               </View>
+          )
+     }
+
+     console.log("Erreurs", errors)
+
+     console.log(getValues("rentalPeriod"))
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -271,34 +271,115 @@ export default function createOffer() {
                               )}
                          />
 
-                         <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                              {t("select_rental_period_button")}
-                         </Button>
+                         <View style={styles.step}>
+                              <Text style={styles.selectionTitle}>{t("select_location_title")}</Text>
+                              <Controller
+                                   name="location"
+                                   control={control}
+                                   render={({ field: { onChange } }) => (
+                                        <TextInput
+                                             label={t("location_search_label")}
+                                             placeholder={t("location_search_placeholder")}
+                                             value={searchTerm}
+                                             style={styles.input}
+                                             onChangeText={(text) => {
+                                                  onChange(text)
+                                                  setSearchTerm(text)
+                                             }}
+                                             onEndEditing={handleSearch}
+                                        />
+                                   )}
+                              />
+                              {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
 
-                         <Controller
-                              name={"rentalPeriod"}
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
+                              {isPendingLocationSearch && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
+
+                              {errorFromFetch && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
+                              {locationData && locationData.length > 0 && (
+                                   <FlatList
+                                        data={locationData}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item }) => (
+                                             <TouchableOpacity style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
+                                                  <Text style={styles.resultText}>{item.address.freeformAddress}</Text>
+                                             </TouchableOpacity>
+                                        )}
+                                   />
+                              )}
+
+                              {!isPendingLocationSearch && locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+
+                              {locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+
+                              {location.address && location.country && location.zipcode && location.city && (
                                    <View>
-                                        <DatePickerModal locale={locale} onChange={onChange} mode="range" visible={open} onDismiss={onDismiss} startDate={value.startDate} endDate={value.endDate} onConfirm={onConfirm} />
+                                        <Card style={styles.selectionCard}>
+                                             <Card.Content>
+                                                  <Text>{location.address + ", " + location.zipcode + " " + location.city + ", " + location.country}</Text>
+                                             </Card.Content>
+                                        </Card>
                                    </View>
                               )}
-                         />
+                         </View>
 
-                         <Portal>
-                              <Modal visible={visible} onDismiss={hideTestModal} contentContainerStyle={styles.modalContainerStyle}>
-                                   <SelectLocation searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} isPending={isPending} locationData={locationData} handleSelectLocation={handleSelectLocation} temporaryLocation={temporaryLocation} showTranslatedFlashMessage={showTranslatedFlashMessage} router={router} t={t} errors={errors} theme={theme} temporaryLocation={temporaryLocation} setLocation={setLocation} />
-                              </Modal>
-                         </Portal>
+                         <View style={styles.step}>
+                              <Text style={styles.selectionTitle}>{t("select_rental_title")}</Text>
+                              <Button onPress={() => setOpen(true)} uppercase={false} mode="contained">
+                                   {t("select_rental_period_button")}
+                              </Button>
 
-                         <Button onPress={() => setVisible(true)} uppercase={false} mode="outlined">
-                              Outlined Modal
-                         </Button>
+                              <Controller
+                                   name={"rentalPeriod"}
+                                   control={control}
+                                   render={({ field: { onChange, value } }) => (
+                                        <View>
+                                             <DatePickerModal
+                                                  locale={locale}
+                                                  onChange={() => {
+                                                       onChange({ start: range.startDate?.toDateString(), end: range.endDate?.toDateString() })
+                                                       setRentalPeriod({ startDate: range.startDate, endDate: range.endDate })
+                                                  }}
+                                                  mode="range"
+                                                  visible={open}
+                                                  onDismiss={onDismiss}
+                                                  startDate={range.startDate}
+                                                  endDate={range.endDate}
+                                                  onConfirm={onConfirm}
+                                             />
 
-                         {errors.selectedBoatId && <Text style={styles.errorText}>{t(errors.selectedBoatId.message as string)}</Text>}
+                                             {rentalPeriod.startDate && rentalPeriod.endDate && (
+                                                  <View style={styles.selectedDates}>
+                                                       <Text style={[styles.dateText, { color: theme.colors.primary }]}>
+                                                            {t("start_date_label")}: {rentalPeriod.startDate ? displaySpecificRentalDate(rentalPeriod.startDate, locale) : ""}
+                                                       </Text>
+                                                       <Text style={[styles.dateText, { color: theme.colors.primary }]}>
+                                                            {t("end_date_label")}: {rentalPeriod.endDate ? displaySpecificRentalDate(rentalPeriod.endDate, locale) : ""}
+                                                       </Text>
+                                                  </View>
+                                             )}
+                                        </View>
+                                   )}
+                              />
+                         </View>
 
-                         <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPending} disabled={isPending}>
-                              {isPending ? t("loading_button_text") : t("create_offer_button")}
+                         <View style={styles.step}>
+                              <Text style={styles.selectionTitle}>{t("select_equipment_title")}</Text>
+
+                              <Controller name="equipments" control={control} render={({ field: { onChange, value } }) => <SelectEquipments equipments={value} setEquipments={onChange} />} />
+                         </View>
+
+                         <View style={styles.step}>
+                              <Controller
+                                   name="selectedBoatId"
+                                   control={control}
+                                   render={({ field: { onChange, value } }) => {
+                                        return <SelectBoat selectedBoatId={value} handleSelectBoat={onChange} />
+                                   }}
+                              />
+                         </View>
+
+                         <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPendingCreateOffer} disabled={isPendingCreateOffer}>
+                              {isPendingCreateOffer ? t("loading_button_text") : t("create_offer_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>
@@ -308,10 +389,13 @@ export default function createOffer() {
 
 const styles = StyleSheet.create({
      modalContainerStyle: {
-          backgroundColor: "white",
-          padding: 20,
           margin: 20,
+          backgroundColor: "white",
           flex: 1,
+     },
+     step: {
+          marginTop: 40,
+          marginBottom: 20,
      },
      container: {
           flex: 1,
@@ -355,5 +439,61 @@ const styles = StyleSheet.create({
      },
      buttonError: {
           backgroundColor: "#e59b9b",
+     },
+
+     content: {
+          padding: 20,
+     },
+     resultItem: {
+          padding: 10,
+          borderBottomWidth: 1,
+     },
+     resultText: {
+          fontSize: 16,
+     },
+     selectedDates: {
+          marginVertical: 20,
+     },
+     dateText: {
+          fontSize: 16,
+          textAlign: "center",
+     },
+     noResultsText: {
+          textAlign: "center",
+          marginTop: 20,
+          fontSize: 16,
+     },
+     loading: {
+          marginVertical: 20,
+     },
+     actionButton: {
+          marginTop: 20,
+     },
+     selectionTitle: {
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 10,
+     },
+     selectionCard: {
+          padding: 10,
+          borderRadius: 8,
+     },
+
+     title: {
+          fontSize: 20,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: 20,
+     },
+     boatItem: {
+          padding: 5,
+          paddingVertical: 30,
+          marginVertical: 10,
+          fontSize: 16,
+          borderRadius: 10,
+     },
+     boatName: {
+          fontSize: 16,
+          fontWeight: "bold",
      },
 })

@@ -6,32 +6,12 @@ import { useBoats } from "@/modules/hooks/boats/useBoats"
 import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
-export default function SelectBoat() {
+export default function SelectBoat({ handleSelectBoat, selectedBoatId }: { handleSelectBoat: (boat: any) => void; selectedBoatId: string | null }) {
      const theme = useTheme()
      const router = useRouter()
-     const { data: boats, isPending, error } = useBoats()
-     const { selectBoat, selectedBoatId } = useOfferStore()
+
      const { backPath } = useLocalSearchParams<{ backPath: string }>()
-     const [newSelectedBoat, setNewSelectedBoat] = React.useState<string | null>(selectedBoatId)
-
-     const handleNavigation = () => {
-          router.back()
-     }
-
-     const handleSelectBoat = (boat: any) => {
-          setNewSelectedBoat(boat.id)
-     }
-
-     const handleCancelSelection = () => {
-          handleNavigation()
-          setNewSelectedBoat(null)
-          selectBoat(null)
-     }
-
-     const handleConfirmSelection = () => {
-          handleNavigation()
-          selectBoat(newSelectedBoat as string)
-     }
+     const { data: boats, isPending, error } = useBoats()
 
      // @ts-ignore
      const themeColorText = theme.colors.text
@@ -48,10 +28,9 @@ export default function SelectBoat() {
      }
 
      return (
-          <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-               <Text style={[styles.title, { color: theme.colors.primary }]}>{t("select_boat")}</Text>
-               {isPending && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
-               {error && <Text style={styles.errorText}>Une erreur est survenue lors de la récupération des bateaux.</Text>}
+          <View>
+               <Text style={styles.selectionTitle}>{t("select_boat_title")}</Text>
+
                {boats && (
                     <FlatList
                          ListEmptyComponent={EmptyList}
@@ -59,20 +38,14 @@ export default function SelectBoat() {
                          keyExtractor={(item) => item.id}
                          renderItem={({ item }) => {
                               return (
-                                   <Button mode={"contained"} icon={newSelectedBoat === item.id ? "check" : ""} style={newSelectedBoat === item.id ? [styles.boatItem, { backgroundColor: theme.colors.primary }] : [styles.boatItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 2 }]} onPress={() => handleSelectBoat(item)}>
-                                        <Text style={newSelectedBoat === item.id ? [styles.boatName, { color: theme.colors.background }] : styles.boatName}>{item.boatName}</Text>
+                                   <Button mode={"contained"} icon={selectedBoatId === item.id ? "check" : ""} style={selectedBoatId === item.id ? [styles.boatItem, { backgroundColor: theme.colors.primary }] : [styles.boatItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 2 }]} onPress={() => handleSelectBoat(item.id)}>
+                                        <Text style={selectedBoatId === item.id ? [styles.boatName, { color: theme.colors.background }] : styles.boatName}>{item.boatName}</Text>
                                    </Button>
                               )
                          }}
                     />
                )}
-               <Button mode="contained" onPress={() => handleConfirmSelection()} style={styles.button}>
-                    {t("confirm_button")}
-               </Button>
-               <Button mode="outlined" onPress={() => handleCancelSelection()} style={styles.button}>
-                    {t("cancel_button")}
-               </Button>
-          </SafeAreaView>
+          </View>
      )
 }
 
@@ -111,5 +84,10 @@ const styles = StyleSheet.create({
      },
      button: {
           marginTop: 20,
+     },
+     selectionTitle: {
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 10,
      },
 })

@@ -435,8 +435,15 @@
      "is_skipper_available_label": "Le skipper est-il inclus ?",
      "is_team_available_label": "Une équipe est-elle incluse ?",
      "select_rental_period_title": "Sélectionnez la période de location",
-     "select_rental_period_button": "Sélectionnez la période de location",
+     "select_rental_period_button": "Sélectionner la période de location",
      "rental_period_title": "Période de location",
+
+     "select_location_title": "Localisation de l'offre",
+     "select_rental_title": "Période de location",
+     "select_equipment_title": "Équipements inclus",
+
+     "location_search_label": "Rechercher une localisation",
+     "location_search_placeholder": "Rechercher une localisation",
 
      "equipment_title": " Ajoutez les équipements inclus dans la location",
      "equipment_description": "Cela permettra d'ajouter une plue-value à votre annonce, mais ceci n'est pas obligatoire",
@@ -467,8 +474,8 @@
      "november": "Novembre",
      "december": "Décembre",
      "confirm_button": "Confirmer",
-     "select_location_button": "Sélectionnez la localisation",
-     "select_equipment_button": "Définissez les équipements",
+     "select_location_button": "Sélectionner la localisation",
+     "select_equipment_button": "Définir les équipements",
      "cancel_button": "Annuler",
      "end_date_required": "La date de fin est requise.",
      "loading_offer": "Chargement de l'offre...",

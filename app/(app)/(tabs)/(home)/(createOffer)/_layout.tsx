@@ -27,30 +27,6 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name="selectLocation"
-                         options={{
-                              title: t("drawer_select_location"),
-                              drawerItemStyle: { display: "none" },
-                              headerShown: false,
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="selectRentalPeriod"
-                         options={{
-                              title: t("drawer_select_rental_period"),
-                              drawerItemStyle: { display: "none" },
-                              headerShown: false,
-                         }}
-                    />
-                    <Drawer.Screen
-                         name="selectEquipments"
-                         options={{
-                              title: t("drawer_select_equipments"),
-                              drawerItemStyle: { display: "none" },
-                              headerShown: false,
-                         }}
-                    />
-                    <Drawer.Screen
                          name="selectBoat"
                          options={{
                               title: t("drawer_select_boat"),
