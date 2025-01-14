@@ -59,10 +59,11 @@ export default function selectEquipments() {
 
      const handleConfirm = () => {
           setErrors("equipments", [])
-          router.navigate({ pathname: backPath as RelativePathString })
+          handleNavigation()
      }
      const handleCancel = () => {
           setErrors("equipments", [])
+          setEquipments([])
           handleNavigation()
      }
 

@@ -3,9 +3,9 @@ import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
 import { CreateBoatDTO } from "@/modules/domain/boats/DTO/CreateBoatDTO"
-import { CreateBoatImageDTO } from "@/modules/domain/boats/DTO/CreateBoatImageDTO"
+import { UploadBoatImageDTO } from "@/modules/domain/boats/DTO/UploadBoatImageDTO"
 import { BoatRawData, GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
-import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
+import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoatDTO"
 import { UpdateBoatDTO } from "@/modules/domain/boats/DTO/UpdateBoatDTO"
 import { BoatIdResponseDTO } from "@/modules/domain/boats/DTO/BoatIdResponseDTO"
 
@@ -99,7 +99,7 @@ class BoatRepositorySupabase implements BoatRepository {
                }
                if (imagesToInsert.length === images.length) {
                     for (const imageToInsert of imagesToInsert) {
-                         const createBoatImageDTO = new CreateBoatImageDTO({
+                         const uploadBoatImageDTO = new UploadBoatImageDTO({
                               url: imageToInsert.url,
                               is_default: imageToInsert.is_default,
                               caption: imageToInsert.caption,
@@ -111,7 +111,7 @@ class BoatRepositorySupabase implements BoatRepository {
                               file_name: imageToInsert.file_name,
                               boat_id: boatId,
                          })
-                         const { data: boatImagesInsert, error } = await supabase.from("boat_images").insert(CreateBoatImageDTO.toRawData(createBoatImageDTO)).select("id")
+                         const { data: boatImagesInsert, error } = await supabase.from("boat_images").insert(UploadBoatImageDTO.toRawData(uploadBoatImageDTO)).select("id")
                          if (error) {
                               throw new Error(`Error inserting image: ${error.message}`)
                          }
@@ -123,7 +123,7 @@ class BoatRepositorySupabase implements BoatRepository {
                throw new Error((error as Error).message)
           }
      }
-     async uploadUpdateImages(boatId: string | undefined, newImages: any[]): Promise<void> {
+     async uploadUpdateImages(boatId: string, newImages: any[]): Promise<void> {
           const { data: oldImages, error: fetchError } = await supabase.from("boat_images").select("url").eq("boat_id", boatId)
 
           if (fetchError) {
@@ -151,18 +151,24 @@ class BoatRepositorySupabase implements BoatRepository {
 
                     const publicUrl = supabase.storage.from("boats-images").getPublicUrl(uploadData.path).data.publicUrl
 
-                    const { data, error } = await supabase.from("boat_images").insert({
-                         boat_id: boatId,
+                    const uploadBoatImageDTO = new UploadBoatImageDTO({
                          url: publicUrl,
+                         is_default: image.isDefault,
                          caption: image.caption,
                          content_type: image.contentType,
+                         base64: image.base64,
                          dimensions: image.dimensions,
                          size: image.size,
                          mime_type: image.mimeType,
                          file_name: fileName,
-                         is_default: image.isDefault,
-                         base64: image.base64,
+                         boat_id: boatId,
                     })
+
+                    const { data, error } = await supabase.from("boat_images").insert(UploadBoatImageDTO.toRawData(uploadBoatImageDTO)).select("id")
+
+                    if (error) {
+                         throw new Error(`Error inserting image: ${error.message}`)
+                    }
                }
           } catch (error) {
                throw new Error(`Error in uploadImages: ${(error as Error).message}`)
@@ -214,11 +220,7 @@ class BoatRepositorySupabase implements BoatRepository {
                }
 
                if (boatData) {
-                    console.log("boatData", boatData)
-
                     return boatData.map((boat: BoatRawData) => {
-                         console.log("boat", boat)
-
                          return GetBoatsDTO.fromRawData(boat)
                     })
                }
@@ -284,8 +286,6 @@ class BoatRepositorySupabase implements BoatRepository {
 
                return count
           } catch (error) {
-               console.log("error", error)
-
                throw new Error(`Error in getBoats: ${(error as Error).message}`)
           }
      }

@@ -63,26 +63,12 @@ export default function editOffer() {
 
      const onSubmit = async (data: any) => {
           try {
+               console.log("data", data)
+
                updateOffer({
                     ...data,
                     id: offerId,
                })
-
-               setValue("title", title)
-               setValue("description", description)
-               setValue("price", price)
-               setValue("isAvailable", isAvailable)
-               setValue("isSkipperAvailable", isSkipperAvailable)
-               setValue("isTeamAvailable", isTeamAvailable)
-               setValue("equipments", equipments)
-               setValue("rentalPeriod", rentalPeriod)
-               setValue("location", location)
-               setValue("selectedBoatId", selectedBoatId)
-               setRentalPeriod(rentalPeriod.start, rentalPeriod.end)
-               setTemporaryStartDate(new Date(rentalPeriod.start))
-               setTemporaryEndDate(new Date(rentalPeriod.end))
-               setTemporaryLocation(location)
-               setLocation(location)
           } catch (error) {
                showTranslatedFlashMessage("danger", {
                     title: t("flash_title_error"),
@@ -212,7 +198,6 @@ export default function editOffer() {
                               onPress={() =>
                                    handleNavigate("/selectRentalPeriod", {
                                         initialPeriod: rentalPeriod,
-                                        backPath: "/(editOffer)",
                                         offerId: offerId,
                                    })
                               }

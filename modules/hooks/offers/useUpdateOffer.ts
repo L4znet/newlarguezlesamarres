@@ -9,10 +9,10 @@ export function useUpdateOffer() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useMutation({
-          mutationFn: async ({ id, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { id: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: { start: string; end: string }; location: { city: string; country: string; zipcode: string; address: string } }) => {
+          mutationFn: async ({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: { start: string; end: string }; location: { city: string; country: string; zipcode: string; address: string } }) => {
                try {
                     await updateOfferUseCase({
-                         id: id,
+                         offerId: offerId,
                          boatId: boatId,
                          title: title,
                          description: description,

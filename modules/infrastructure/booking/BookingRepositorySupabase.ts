@@ -3,11 +3,13 @@ import BookingEntity from "@/modules/domain/bookings/BookingEntity"
 import supabase from "@/supabaseClient"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { undefined } from "zod"
+import { CreateBookingDTO } from "@/modules/domain/bookings/DTO/CreateBookingDTO"
+import { BookingIdResponseDTO } from "@/modules/domain/bookings/DTO/BookingIdResponseDTO"
+import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
+import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBookingsDTO"
 
 class BookingRepositorySupabase implements BookingRepository {
-     async getTenantBookings(userId: string): Promise<BookingEntity[] | undefined> {
-          console.log("userfffffId", userId)
-
+     async getTenantBookings(userId: string): Promise<GetTenantsBookingsDTO[] | undefined> {
           const { data: bookingData, error: bookingError } = await supabase
                .from("bookings")
                .select(
@@ -41,15 +43,13 @@ class BookingRepositorySupabase implements BookingRepository {
           }
 
           if (bookingData) {
-               return bookingData?.map((booking) => BookingEntity.fromSupabaseData(booking))
+               return bookingData.map((booking) => GetTenantsBookingsDTO.fromRawData(booking))
           }
      }
 
-     async getOwnerBookings(userId: string): Promise<BookingEntity[] | undefined> {
-          console.log("userId", userId)
-
+     async getOwnerBookings(userId: string): Promise<GetOwnerBookingsDTO[] | undefined> {
           try {
-               const { data, error } = await supabase
+               const { data: bookingData } = await supabase
                     .from("bookings")
                     .select(
                          `
@@ -79,49 +79,44 @@ class BookingRepositorySupabase implements BookingRepository {
                          ascending: false,
                     })
 
-               if (error) {
-                    console.error("Error fetching owner bookings:", error)
-                    throw new Error("Failed to fetch owner bookings")
-               }
-
-               console.log("data", data)
-
-               return data?.map((booking) => BookingEntity.fromSupabaseData(booking))
+               return bookingData?.map((booking) => GetOwnerBookingsDTO.fromRawData(booking))
           } catch (error) {
-               console.error("Error in getOwnerBookings:", error)
                throw new Error("Failed to fetch owner bookings")
           }
      }
 
-     async cancelBooking(bookingId: string): Promise<void> {
-          throw new Error("Method not implemented.")
-     }
-
-     async updateBookingStatus(bookingId: string, status: string): Promise<any> {
+     async updateBookingStatus(bookingId: string, status: string): Promise<BookingIdResponseDTO> {
           try {
-               const { data, error } = await supabase.from("bookings").update({ status }).eq("id", bookingId)
+               const {
+                    data: offerIdResponse,
+               }: {
+                    data: { id: string } | null
+               } = await supabase.from("bookings").update({ status }).eq("id", bookingId).select("id").single()
 
-               if (error) {
-                    throw new Error(error.message)
-               }
-
-               return data
+               return BookingIdResponseDTO.fromRawData(offerIdResponse)
           } catch (err) {
                console.error("Error updating booking status:", err)
                throw err
           }
      }
 
-     async createBooking(booking: { offerId: string; userId: string; startDate: string; endDate: string; status: string }): Promise<BookingEntity | undefined> {
-          const { data: bookingData, error } = await supabase.from("bookings").insert(BookingEntity.toSupabaseData(booking)).single()
+     async createBooking(booking: { offerId: string; userId: string; startDate: string; endDate: string; status: string }): Promise<BookingIdResponseDTO | undefined> {
+          const createBookingDTO = new CreateBookingDTO(booking)
+          const {
+               data: bookingId,
+               error,
+          }: {
+               data: { id: string } | null
+               error: Error | null
+          } = await supabase.from("bookings").insert(CreateBookingDTO.toRawData(createBookingDTO)).select("id").single()
 
           if (error) {
                console.error("Error creating booking:", error)
                throw new Error("Failed to create booking")
           }
 
-          if (bookingData) {
-               return BookingEntity.fromSupabaseData(bookingData)
+          if (bookingId) {
+               return BookingIdResponseDTO.fromRawData(bookingId)
           }
      }
 

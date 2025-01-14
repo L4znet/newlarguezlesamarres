@@ -10,6 +10,7 @@ import { Offer } from "@/interfaces/Offer"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
 import { useOwnOffers } from "@/modules/hooks/offers/useOwnOffers"
+import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 const OwnOffersList = () => {
      const router = useRouter()
@@ -68,9 +69,9 @@ const OwnOffersList = () => {
           })
      }
 
-     const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
-          const username = item?.profiles?.username as string
-          const boatImages = item?.boats?.boatImages as unknown as [
+     const renderCardItem = ({ item }: ListRenderItemInfo<GetOffersDTO>) => {
+          const username = item.profile.username as string
+          const boatImages = item.boat.images as [
                {
                     id: string
                     url: string

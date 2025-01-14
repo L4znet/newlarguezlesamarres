@@ -1,4 +1,4 @@
-export class CreateBoatImageDTO {
+export class UploadBoatImageDTO {
      public url: string
      public isDefault: boolean
      public caption: string
@@ -12,17 +12,6 @@ export class CreateBoatImageDTO {
 
      constructor({ url, is_default, caption, content_type, base64, dimensions, size, mime_type, file_name, boat_id }: { url: string; is_default: boolean; caption: string; content_type: string; base64: string; dimensions: { width: number; height: number }; size: string; mime_type: string; file_name: string; boat_id: string }) {
           if (!url || is_default === undefined || !caption || !content_type || !base64 || !dimensions || !size || !mime_type || !file_name || !boat_id) {
-               if (!url) console.log("url is missing")
-               if (!caption) console.log("caption is missing")
-               if (!content_type) console.log("content_type is missing")
-               if (!base64) console.log("base64 is missing")
-               if (!dimensions) console.log("dimensions is missing")
-               if (!size) console.log("size is missing")
-               if (!mime_type) console.log("mime_type is missing")
-               if (!file_name) console.log("file_name is missing")
-               if (!boat_id) console.log("boat_id is missing")
-
-               console.log("Les champs sont : ", { url, is_default, caption, content_type, dimensions, size, mime_type, file_name, boat_id })
                throw new Error("Missing required fields for CreateBoatImageDTO.")
           }
 
@@ -38,11 +27,7 @@ export class CreateBoatImageDTO {
           this.boatId = boat_id
      }
 
-     static fromRawData({ url, is_default, caption, content_type, base64, dimensions, size, mime_type, file_name, boat_id }: { url: string; is_default: boolean; caption: string; content_type: string; base64: string; dimensions: { width: number; height: number }; size: string; mime_type: string; file_name: string; boat_id: string }): CreateBoatImageDTO {
-          return new CreateBoatImageDTO({ url, is_default, caption, content_type, base64, dimensions, size, mime_type, file_name, boat_id })
-     }
-
-     static toRawData(data: CreateBoatImageDTO): {
+     static toRawData(data: UploadBoatImageDTO): {
           url: string
           is_default: boolean
           caption: string

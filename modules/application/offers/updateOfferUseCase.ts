@@ -3,10 +3,10 @@ import { Equipment, Offer, RentalPeriod } from "@/interfaces/Offer"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { router } from "expo-router"
 
-export const updateOfferUseCase = async ({ id, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { id: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: { city: string; country: string; zipcode: string; address: string } }): Promise<void> => {
+export const updateOfferUseCase = async ({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: { city: string; country: string; zipcode: string; address: string } }): Promise<void> => {
      try {
           const updatedOffer = await OfferRepositorySupabase.updateOffer({
-               offerId: id,
+               offerId: offerId,
                boatId: boatId,
                title: title,
                description: description,

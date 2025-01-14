@@ -13,10 +13,6 @@ export class UpdateBoatDTO {
           this.boatType = data.boatType
      }
 
-     static fromRawData(data: { boatId: string; boatName: string; boatDescription: string; boatCapacity: string; boatType: number }): UpdateBoatDTO {
-          return new UpdateBoatDTO(data)
-     }
-
      static toRawData(data: UpdateBoatDTO): any {
           return {
                boat_name: data.boatName,
