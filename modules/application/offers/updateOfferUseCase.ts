@@ -1,11 +1,10 @@
-import { MessageType } from "react-native-flash-message"
-import { Equipment, Offer, RentalPeriod } from "@/interfaces/Offer"
+import { Equipment, RentalPeriod } from "@/interfaces/Offer"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
-import { router } from "expo-router"
+import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 
-export const updateOfferUseCase = async ({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: { city: string; country: string; zipcode: string; address: string } }): Promise<void> => {
+export const updateOfferUseCase = async ({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: { city: string; country: string; zipcode: string; address: string } }): Promise<OfferIdResponseDTO | undefined> => {
      try {
-          const updatedOffer = await OfferRepositorySupabase.updateOffer({
+          return await OfferRepositorySupabase.updateOffer({
                offerId: offerId,
                boatId: boatId,
                title: title,

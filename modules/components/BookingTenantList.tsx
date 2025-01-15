@@ -9,12 +9,10 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useRouter } from "expo-router"
-import { useOfferStore } from "@/modules/stores/offerStore"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
 
 const BookingTenantList = () => {
      const { data: tenantBookings, isPending, error } = useTenantBookings()
-     const { setCurrentOffer } = useOfferStore()
      const { mutate: updateBookingStatus } = useUpdateBookingStatus()
      const theme = useTheme()
      const router = useRouter()
@@ -25,13 +23,12 @@ const BookingTenantList = () => {
      if (isPending) return <ActivityIndicator size="large" />
      if (error) return <Text style={styles.centered}>Erreur lors de la récupération des données.</Text>
 
-     const handleRentBooking = async (offer: any, bookingId: string) => {
-          await setCurrentOffer(offer)
-
+     const handleRentBooking = async (offerId: any, bookingId: string) => {
           router.push({
                pathname: "/(app)/(tabs)/(profile)/tenantBookings/checkout",
                params: {
                     bookingId: bookingId,
+                    offerId: offerId,
                },
           })
      }

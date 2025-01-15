@@ -1,15 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { updateOfferUseCase } from "@/modules/application/offers/updateOfferUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { router } from "expo-router"
 import { Equipment } from "@/interfaces/Offer"
 import { getSpecificOfferDataUseCase } from "@/modules/application/offers/getSpecificOfferDataUseCase"
-import { useOfferStore } from "@/modules/stores/offerStore"
 
 export function useSpecificData() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
-     const { setTemporaryLocation } = useOfferStore()
 
      return useMutation({
           mutationFn: async ({ offerId, dataToSearch }: { offerId: string; dataToSearch: string }) => {

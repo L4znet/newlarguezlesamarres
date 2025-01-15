@@ -16,7 +16,7 @@ import * as ImagePicker from "expo-image-picker"
 
 export default function EditBoat({ route }: { route: any }) {
      const { setCurrentBoatId, currentBoatId } = useBoatStore()
-     const { data: boat, isLoading, error } = useBoatById(currentBoatId as string)
+     const { data: boat, isPending, error } = useBoatById(currentBoatId as string)
      const { mutate: updateBoat, isPending: isUpdating } = useUpdateBoat()
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { boatImages, setBoatImages } = useBoatStore()
@@ -26,6 +26,12 @@ export default function EditBoat({ route }: { route: any }) {
      const boatTypeOptions = useBoatTypeOptions(locale)
      const [imageSelected, setImageSelected] = useState(false)
 
+     useEffect(() => {
+          if (boat) {
+               setBoatImages(boat.boatImages)
+          }
+     }, [boat])
+
      const {
           control,
           handleSubmit,
@@ -34,36 +40,20 @@ export default function EditBoat({ route }: { route: any }) {
      } = useForm({
           resolver: zodResolver(BoatSchema),
           defaultValues: {
-               boatName: "",
-               boatDescription: "",
-               boatCapacity: "",
-               boatType: "",
-               boatImages: [
-                    {
-                         isDefault: true,
-                         url: "",
-                         caption: "",
-                         base64: "",
-                         contentType: "",
-                         dimensions: { width: 0, height: 0 },
-                         size: "",
-                         mimeType: "",
-                         fileName: "",
-                    },
-               ],
+               boatName: boat?.boatName,
+               boatDescription: boat?.boatDescription,
+               boatCapacity: boat?.boatCapacity,
+               boatType: boat?.boatType.toString(),
+               boatImages: boat?.boatImages,
+          },
+          values: {
+               boatName: boat?.boatName,
+               boatDescription: boat?.boatDescription,
+               boatCapacity: boat?.boatCapacity,
+               boatType: boat?.boatType.toString(),
+               boatImages: boat?.boatImages,
           },
      })
-
-     useEffect(() => {
-          if (boat) {
-               setValue("boatName", boat.boatName)
-               setValue("boatDescription", boat.boatDescription)
-               setValue("boatCapacity", boat.boatCapacity.toString())
-               setValue("boatType", boat.boatType.toString())
-               setValue("boatImages", boat.boatImages)
-               setBoatImages(boat.boatImages)
-          }
-     }, [boat, setValue, setBoatImages])
 
      const handleThumbnailChange = async () => {
           try {
@@ -72,7 +62,7 @@ export default function EditBoat({ route }: { route: any }) {
                     allowsMultipleSelection: true,
                     quality: 1,
                     base64: true,
-                    selectionLimit: 5,
+                    selectionLimit: 3,
                })
                if (!result.canceled) {
                     const newImages = result.assets.map((asset, index) => ({
@@ -89,7 +79,6 @@ export default function EditBoat({ route }: { route: any }) {
 
                     setBoatImages(newImages)
                     setImageSelected(true)
-                    setValue("boatImages", newImages)
                }
           } catch (error) {
                console.error("Error while selecting images:", error)
@@ -115,6 +104,15 @@ export default function EditBoat({ route }: { route: any }) {
                <View style={styles.container}>
                     <ActivityIndicator size="large" color={colors.primary} />
                     <Text>{t("loading_title")}</Text>
+               </View>
+          )
+     }
+
+     if (isPending) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={colors.primary} />
+                    <Text>{t("a_moment_title")}</Text>
                </View>
           )
      }

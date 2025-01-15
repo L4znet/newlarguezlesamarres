@@ -3,11 +3,12 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getOffersUseCase } from "@/modules/application/offers/getOffersUseCase"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
+import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 export function useOffers() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     return useQuery<OfferEntity[]>({
+     return useQuery<GetOffersDTO[]>({
           queryKey: ["offers"],
           queryFn: () => getOffersUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,

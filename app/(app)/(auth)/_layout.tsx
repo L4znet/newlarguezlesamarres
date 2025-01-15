@@ -62,7 +62,6 @@ export default function Layout() {
                          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-plus" color={color} />,
                     }}
                />
-               <Tabs.Screen name="forgot-password" />
           </Tabs>
      )
 }

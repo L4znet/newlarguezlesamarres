@@ -1,30 +1,17 @@
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import { profile } from "@expo/fingerprint/build/utils/Profile"
+import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 
-export const deleteOfferUseCase = async (
-     offerId: string,
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
-          locale?: string
-     ) => void
-) => {
+export const deleteOfferUseCase = async (offerId: string): Promise<OfferIdResponseDTO | undefined> => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
 
           if (profileId) {
-               const deletedOffer = await OfferRepositorySupabase.deleteOffer({ profileId, offerId })
-               if (deletedOffer) {
-                    showTranslatedFlashMessage("success", { title: "flash_title_success", description: "The offer has been successfully deleted." })
-               }
+               return await OfferRepositorySupabase.deleteOffer({ profileId, offerId })
           }
      } catch (error) {
-          showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
+          throw new Error("Error deleting offer" + error)
      }
 }

@@ -25,7 +25,7 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name={"(createOffer)"}
+                         name={"createOffer"}
                          options={{
                               drawerLabel: t("drawer_add_offer"),
                               title: t("drawer_add_offer"),
@@ -33,7 +33,7 @@ export default function Layout() {
                          }}
                     />
                     <Drawer.Screen
-                         name={"(editOffer)"}
+                         name={"editOffer"}
                          options={{
                               drawerLabel: t("drawer_edit_offer"),
                               title: t("drawer_edit_offer"),

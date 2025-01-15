@@ -1,15 +1,14 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
-import { useOfferStore } from "@/modules/stores/offerStore"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
+import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO"
 
 export function useOfferById(offerId: string) {
-     return useQuery<OfferEntity, Error>({
+     return useQuery<GetSingleOfferDTO | undefined, Error>({
           queryKey: ["offer", offerId],
           queryFn: () => getSingleOfferUseCase(offerId),
           enabled: !!offerId,
           refetchOnMount: false,
           refetchOnWindowFocus: false,
           staleTime: Infinity,
-     } as UseQueryOptions<OfferEntity, Error>)
+     })
 }

@@ -8,6 +8,7 @@ import { GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
 import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
 import { $ } from "@faker-js/faker/dist/airline-BnpeTvY9"
 import { UpdateOfferDTO } from "@/modules/domain/offers/DTO/UpdateOfferDTO"
+import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO"
 
 class OfferRepositorySupabase implements OfferRepository {
      async createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined> {
@@ -61,8 +62,6 @@ class OfferRepositorySupabase implements OfferRepository {
                     location,
                })
 
-               console.log("UpdateOfferDTO", updateOfferDTO)
-
                const {
                     data: offerIdResponse,
                     error,
@@ -72,7 +71,6 @@ class OfferRepositorySupabase implements OfferRepository {
                } = await supabase.from("offers").update(UpdateOfferDTO.toRawData(updateOfferDTO)).eq("id", offerId).select("id").single()
 
                if (offerIdResponse) {
-                    console.log("OfferIdResponseDTO", OfferIdResponseDTO.fromRawData(offerIdResponse))
                     return OfferIdResponseDTO.fromRawData(offerIdResponse)
                }
 
@@ -83,7 +81,7 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async getSingleOffer({ offerId }: { offerId: string }): Promise<OfferIdResponseDTO | undefined> {
+     async getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | undefined> {
           const {
                data: offerIdResponse,
                error: offerError,
@@ -108,7 +106,6 @@ class OfferRepositorySupabase implements OfferRepository {
         `
                )
                .eq("id", offerId)
-               .select("id")
                .single()
 
           if (offerError) {
@@ -116,7 +113,7 @@ class OfferRepositorySupabase implements OfferRepository {
           }
 
           if (offerIdResponse) {
-               return OfferIdResponseDTO.fromRawData(offerIdResponse)
+               return GetSingleOfferDTO.fromRawData(offerIdResponse)
           }
 
           throw new Error("No data returned from offer fetch.")

@@ -4,8 +4,10 @@ import { Equipment, RentalPeriod, Location } from "@/interfaces/Offer"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { router } from "expo-router"
 import { MessageType } from "react-native-flash-message"
+import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
+import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 
-export const createOfferUseCase = async ({ boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferEntity | undefined> => {
+export const createOfferUseCase = async ({ boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined> => {
      try {
           if (!title) {
                throw new Error("Le titre est requis.")
@@ -20,7 +22,8 @@ export const createOfferUseCase = async ({ boatId, title, description, price, is
           if (!profileId) {
                throw new Error("User session not found.")
           }
-          await OfferRepositorySupabase.createOffer({
+
+          const id = await OfferRepositorySupabase.createOffer({
                profileId,
                boatId,
                title,
@@ -36,20 +39,7 @@ export const createOfferUseCase = async ({ boatId, title, description, price, is
           })
 
           router.push("/(app)/(tabs)/(home)")
-          return OfferEntity.toSupabaseData({
-               profileId,
-               boatId,
-               title,
-               description,
-               price,
-               isAvailable,
-               equipments,
-               isSkipperAvailable,
-               isTeamAvailable,
-               rentalPeriod,
-               location,
-               deletedAt,
-          })
+          return id
      } catch (error: any) {
           throw new Error(error.message)
      }

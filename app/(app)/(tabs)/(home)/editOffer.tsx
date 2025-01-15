@@ -1,100 +1,97 @@
-import React, { useEffect, useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native"
-import { Button, Text, TextInput, Switch, Portal, Modal, ActivityIndicator, Card, useTheme, Text as TextPaper } from "react-native-paper"
+import { Button, Text, TextInput, Switch, ActivityIndicator, Card, useTheme } from "react-native-paper"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { PaperSelect } from "react-native-paper-select"
-import { RelativePathString, useRouter } from "expo-router"
-import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
-import { useOfferStore } from "@/modules/stores/offerStore"
+import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
-import { Controller, FieldError, FieldErrorsImpl, useForm, useFormContext } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Merge } from "type-fest"
-import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
-import { useFocusEffect } from "@react-navigation/native"
 import { DatePickerModal } from "react-native-paper-dates"
 import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
-import SelectEquipments from "@/app/(app)/(tabs)/(home)/(createOffer)/SelectEquipments"
-import { useBoats } from "@/modules/hooks/boats/useBoats"
-import { displayRentalPeriod, displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
-import SelectBoat from "@/app/(app)/(tabs)/(home)/(createOffer)/selectBoat"
+import { displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
+import { useLocalSearchParams } from "expo-router"
+import { useOfferById } from "@/modules/hooks/offers/useOfferById"
+import SelectEquipments from "@/modules/components/SelectEquipments"
+import SelectBoat from "@/modules/components/SelectBoat"
 
-export default function createOffer() {
-     const router = useRouter()
+export default function editOffer() {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+     const { offerId } = useLocalSearchParams<{ offerId: string }>()
+     const { data: offer, isPending: isPendingLoadingOffer, error: errorOffer } = useOfferById(offerId)
      const [open, setOpen] = useState(false)
-     const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
-     const [visible, setVisible] = useState(false)
+     const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({
+          startDate: new Date(offer?.rentalPeriod.start as string),
+          endDate: new Date(offer?.rentalPeriod.end as string),
+     })
      const [searchTerm, setSearchTerm] = useState("")
 
-     const [selectedBoatId, setSelectedBoatId] = useState<string | null>(null)
-     const [rentalPeriod, setRentalPeriod] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
+     const [selectedBoatId, setSelectedBoatId] = useState<string | null>(offer?.boat.id ? offer.boat.id : null)
+     const [rentalPeriod, setRentalPeriod] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: new Date(offer?.rentalPeriod.start as string), endDate: new Date(offer?.rentalPeriod.end as string) })
      const [location, setLocation] = useState({
-          city: "",
-          country: "",
-          address: "",
-          zipcode: "",
+          city: offer?.location.city,
+          country: offer?.location.country,
+          zipcode: offer?.location.zipcode,
+          address: offer?.location.address,
      })
 
-     const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
-
-     const { mutate: createOffer, isPending: isPendingCreateOffer } = useCreateOffer()
+     const { mutate: updateOffer, isPending: isPendingEditOffer } = useUpdateOffer()
      const { mutate: mutateSearchLocation, data: locationData, isPending: isPendingLocationSearch, error: errorFromFetch, reset: resetSearchResults } = useLocationSearch()
-
-     console.log("RENDER")
-
-     useFocusEffect(
-          useCallback(() => {
-               if (boatsCount === 0) {
-                    showTranslatedFlashMessage("warning", {
-                         title: "flash_title_warning",
-                         description: "flash_description_no_boats",
-                    })
-                    router.navigate("/(app)/(tabs)/(home)")
-               }
-          }, [boatsCount])
-     )
+     const theme = useTheme()
+     useEffect(() => {
+          if (offer) {
+               setRentalPeriod({
+                    startDate: new Date(offer.rentalPeriod.start as string),
+                    endDate: new Date(offer.rentalPeriod.end as string),
+               })
+               setSelectedBoatId(offer.boat.id || null)
+               setLocation({
+                    city: offer.location.city,
+                    country: offer.location.country,
+                    zipcode: offer.location.zipcode,
+                    address: offer.location.address,
+               })
+          }
+     }, [offer])
 
      const {
           control,
           handleSubmit,
           trigger,
           setValue,
-          getValues,
           reset,
-          resetField,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(OfferSchema),
-          defaultValues: {
-               title: "",
-               description: "",
-               price: "",
-               isAvailable: false,
-               isSkipperAvailable: false,
-               isTeamAvailable: false,
-               equipments: [],
-               rentalPeriod: {
-                    start: range.startDate?.toDateString(),
-                    end: range.endDate?.toDateString(),
-               },
+          values: {
+               title: offer?.title,
+               description: offer?.description,
+               price: offer?.price,
+               isAvailable: offer?.isAvailable,
+               isSkipperAvailable: offer?.isSkipperAvailable,
+               isTeamAvailable: offer?.isTeamAvailable,
                location: {
-                    city: "",
-                    country: "",
-                    address: "",
-                    zipcode: "",
+                    city: offer?.location.city,
+                    country: offer?.location.country,
+                    address: offer?.location.address,
+                    zipcode: offer?.location.zipcode,
                },
-               selectedBoatId: "",
+               rentalPeriod: {
+                    start: offer?.rentalPeriod.start,
+                    end: offer?.rentalPeriod.end,
+               },
+               equipments: offer?.equipments ? offer.equipments : [],
+               selectedBoatId: offer?.boat.id ? offer.boat.id : null,
           },
      })
 
      const onSubmit = async (data: any) => {
           try {
-               createOffer({
+               updateOffer({
+                    offerId: offerId,
                     ...data,
                })
                reset()
@@ -180,23 +177,22 @@ export default function createOffer() {
           })
      }
 
-     const theme = useTheme()
-
-     const handleSelectBoat = (boat: any) => {
-          setSelectedBoatId(boat.id)
-     }
-
-     const EmptyBoatList = () => {
+     if (isPendingEditOffer) {
           return (
-               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text>{t("select_boat_empty_message")}</Text>
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("loading_title")}</Text>
                </View>
           )
      }
-
-     console.log("Erreurs", errors)
-
-     console.log(getValues("rentalPeriod"))
+     if (isPendingLoadingOffer) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("a_moment_title")}</Text>
+               </View>
+          )
+     }
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -378,8 +374,8 @@ export default function createOffer() {
                               />
                          </View>
 
-                         <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPendingCreateOffer} disabled={isPendingCreateOffer}>
-                              {isPendingCreateOffer ? t("loading_button_text") : t("create_offer_button")}
+                         <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPendingEditOffer} disabled={isPendingEditOffer}>
+                              {isPendingEditOffer ? t("loading_button_text") : t("edit_offer_button")}
                          </Button>
                     </ScrollView>
                </SafeAreaView>

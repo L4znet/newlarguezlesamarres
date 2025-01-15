@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { View, StyleSheet, FlatList, Text, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from "react-native"
 import { Button, TextInput, Text as TextPaper, useTheme, Switch } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
-import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { z } from "zod"
 

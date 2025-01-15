@@ -6,17 +6,15 @@ import { useRouter } from "expo-router"
 import Slideshow from "@/modules/components/Slideshow"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { useOfferStore } from "@/modules/stores/offerStore"
 import { Offer } from "@/interfaces/Offer"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { displayTotalPrice, getHowManyDays } from "@/constants/DisplayTotalPrice"
+import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 const OffersList = () => {
      const router = useRouter()
      const { data: offers, isPending, error } = useOffers()
-     const theme = useTheme()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -48,9 +46,9 @@ const OffersList = () => {
           })
      }
 
-     const renderCardItem = ({ item }: ListRenderItemInfo<OfferEntity>) => {
-          const username = item?.profiles?.username as string
-          const boatImages = item?.boats?.boatImages?.map((image) => {
+     const renderCardItem = ({ item }: ListRenderItemInfo<GetOffersDTO>) => {
+          const username = item.profile.username as string
+          const boatImages = item.boat.images.map((image) => {
                return {
                     id: image.id as string,
                     url: image.url as string,

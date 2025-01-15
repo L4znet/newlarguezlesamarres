@@ -3,7 +3,6 @@ import { View, FlatList, TouchableOpacity, StyleSheet, SafeAreaView } from "reac
 import { Button, useTheme, Text, Icon, ActivityIndicator } from "react-native-paper"
 import { RelativePathString, useLocalSearchParams, useRouter } from "expo-router"
 import { useBoats } from "@/modules/hooks/boats/useBoats"
-import { useOfferStore } from "@/modules/stores/offerStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function SelectBoat({ handleSelectBoat, selectedBoatId }: { handleSelectBoat: (boat: any) => void; selectedBoatId: string | null }) {

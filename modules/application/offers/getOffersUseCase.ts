@@ -5,6 +5,7 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import { profile } from "@expo/fingerprint/build/utils/Profile"
+import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 export const getOffersUseCase = async (
      showTranslatedFlashMessage: (
@@ -15,7 +16,7 @@ export const getOffersUseCase = async (
           },
           locale?: string
      ) => void
-): Promise<OfferEntity[] | []> => {
+): Promise<GetOffersDTO[] | []> => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id as string
@@ -25,7 +26,7 @@ export const getOffersUseCase = async (
                return []
           }
 
-          return offers as OfferEntity[] | []
+          return offers
      } catch (error) {
           showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
 

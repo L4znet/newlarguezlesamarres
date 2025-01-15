@@ -45,10 +45,18 @@ export default function createBoat() {
           control,
           handleSubmit,
           setValue,
+          reset,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(BoatSchema),
           defaultValues: {
+               boatName: "",
+               boatDescription: "",
+               boatCapacity: "",
+               boatType: types.id.toString(),
+               boatImages: [],
+          },
+          values: {
                boatName: "",
                boatDescription: "",
                boatCapacity: "",
@@ -81,10 +89,8 @@ export default function createBoat() {
 
      const onSubmit = async (data: any) => {
           try {
-               setValue("boatType", types.id.toString())
                createBoat({ ...data })
-
-               setBoatImages([])
+               reset()
           } catch (error) {
                showTranslatedFlashMessage("danger", {
                     title: t("flash_title_error"),
@@ -106,7 +112,7 @@ export default function createBoat() {
                     aspect: [1, 1],
                     quality: 1,
                     orderedSelection: true,
-                    selectionLimit: 5,
+                    selectionLimit: 3,
                     base64: true,
                })
                if (!result.canceled) {

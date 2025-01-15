@@ -19,6 +19,7 @@ export function useUpdateBoat() {
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["boats"] })
+               queryClient.invalidateQueries({ queryKey: ["boat"] })
                queryClient.invalidateQueries({ queryKey: ["offers"] })
                queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
                setBoatImages([])

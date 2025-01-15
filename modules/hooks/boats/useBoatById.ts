@@ -6,7 +6,7 @@ export function useBoatById(boatId: string) {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useQuery({
-          queryKey: ["boats", boatId],
+          queryKey: ["boat", boatId],
           queryFn: () => getSingleBoatUseCase(boatId),
           staleTime: Infinity,
           refetchOnMount: false,

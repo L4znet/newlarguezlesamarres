@@ -1,8 +1,7 @@
 import { confirmPayment, PaymentIntent, RetrievePaymentIntentResult, useStripe } from "@stripe/stripe-react-native"
 import React, { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { Button, Text } from "react-native-paper"
-import { useOfferStore } from "@/modules/stores/offerStore"
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
@@ -14,22 +13,26 @@ import { useUpdateOffer } from "@/modules/hooks/offers/useUpdateOffer"
 import { useUpdateOfferAvailability } from "@/modules/hooks/offers/useUpdateOfferAvailability"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
 import { router, useLocalSearchParams } from "expo-router"
+import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 
 export default function Checkout() {
      const { initPaymentSheet, presentPaymentSheet } = useStripe()
      const API_URL = process.env.EXPO_PUBLIC_API_URL as string
      const { showTranslatedFlashMessage } = useFlashMessage()
-     const currentOfferToRent = useOfferStore((state) => state.currentOffer)
 
      const { mutateAsync: createTransaction, isPending: creatingTransaction } = useCreateTransaction()
      const { mutateAsync: verifyAndInsertTransaction } = useVerifyAndInsertTransaction()
      const { mutate: updateOfferAvailability } = useUpdateOfferAvailability()
      const { mutate: updateBookingStatus } = useUpdateBookingStatus()
 
-     const { bookingId } = useLocalSearchParams<{ bookingId: string }>()
+     const { bookingId, offerId } = useLocalSearchParams<{ bookingId: string; offerId: string }>()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+
+     const theme = useTheme()
+     const { data: currentOfferToRent, isPending: isPendingCheckoutOffer, isError: isOfferError } = useOfferById(offerId)
+
      const { totalAmount, amountForStripe } = displayTotalPrice(currentOfferToRent?.price as string, currentOfferToRent?.rentalPeriod as { start: string; end: string })
 
      const { rentalStartDate, rentalEndDate } = displayRentalPeriod(new Date(currentOfferToRent?.rentalPeriod.start as string), new Date(currentOfferToRent?.rentalPeriod.end as string), locale)
@@ -83,6 +86,15 @@ export default function Checkout() {
      useEffect(() => {
           initializePaymentSheet()
      }, [])
+
+     if (isPendingCheckoutOffer) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("a_moment_title")}</Text>
+               </View>
+          )
+     }
 
      const handlePayment = async () => {
           const session = await getCurrentSessionUseCase()
