@@ -10,6 +10,7 @@ export const displayTotalPrice = (
      totalAmount: number
 } => {
      let amountForStripe = 0
+
      const days = getHowManyDays(rentalPeriod.start, rentalPeriod.end)
 
      const totalAmount = days * parseInt(price)

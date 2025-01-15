@@ -9,7 +9,7 @@ import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBo
 import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBookingsDTO"
 
 class BookingRepositorySupabase implements BookingRepository {
-     async getTenantBookings(userId: string): Promise<GetTenantsBookingsDTO[] | undefined> {
+     async getTenantBookings(userId: string): Promise<GetTenantsBookingsDTO[] | []> {
           const { data: bookingData, error: bookingError } = await supabase
                .from("bookings")
                .select(
@@ -36,20 +36,20 @@ class BookingRepositorySupabase implements BookingRepository {
                )
                .eq("user_id", userId)
 
-          console.log("bookingData", bookingData)
-
           if (bookingError) {
                throw new Error(`Error getting bookings tenants: ${bookingError.message}`)
           }
 
-          if (bookingData) {
+          if (bookingData.length > 0) {
                return bookingData.map((booking) => GetTenantsBookingsDTO.fromRawData(booking))
+          } else {
+               return []
           }
      }
 
-     async getOwnerBookings(userId: string): Promise<GetOwnerBookingsDTO[] | undefined> {
+     async getOwnerBookings(userId: string): Promise<GetOwnerBookingsDTO[] | []> {
           try {
-               const { data: bookingData } = await supabase
+               const { data: bookingData, error: bookingError } = await supabase
                     .from("bookings")
                     .select(
                          `
@@ -69,6 +69,7 @@ class BookingRepositorySupabase implements BookingRepository {
                           offer_profile_id:profile_id,
                           ...boats!inner(
                             boat_name,
+                            boat_type,
                             boat_images (id,caption,url)
                           )
                         )
@@ -79,7 +80,15 @@ class BookingRepositorySupabase implements BookingRepository {
                          ascending: false,
                     })
 
-               return bookingData?.map((booking) => GetOwnerBookingsDTO.fromRawData(booking))
+               if (bookingError) {
+                    throw new Error(`Error getting bookings tenants: ${bookingError.message}`)
+               }
+
+               if (bookingData.length > 0) {
+                    return bookingData?.map((booking) => GetOwnerBookingsDTO.fromRawData(booking))
+               } else {
+                    return []
+               }
           } catch (error) {
                throw new Error("Failed to fetch owner bookings")
           }

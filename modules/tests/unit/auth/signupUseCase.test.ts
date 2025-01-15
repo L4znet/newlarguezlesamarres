@@ -41,9 +41,8 @@ describe("Signup Use Case", () => {
           const firstnameParsed = parsedData?.data?.firstname.toLowerCase()
           const lastnameParsed = parsedData?.data?.lastname.toLowerCase()
           const usernameParsed = parsedData?.data?.username.toLowerCase()
-          const avatar_urlParsed = parsedData?.data?.avatar_url
 
-          const { user, error } = await signUp(emailParsed, password, firstnameParsed, lastnameParsed, usernameParsed, avatar_urlParsed)
+          const { user, error } = await signUp(emailParsed, password, firstnameParsed, lastnameParsed, usernameParsed)
 
           expect(user).not.toBeNull()
           expect(error).toBeNull()

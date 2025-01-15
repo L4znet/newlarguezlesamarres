@@ -45,10 +45,7 @@ class OfferRepositorySupabase implements OfferRepository {
      }
 
      async updateOffer({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; isArchived?: boolean }): Promise<OfferIdResponseDTO | undefined> {
-          console.log("Je passe là")
           try {
-               console.log("Je passe ici")
-
                const updateOfferDTO = new UpdateOfferDTO({
                     boatId,
                     title,
@@ -73,10 +70,7 @@ class OfferRepositorySupabase implements OfferRepository {
                if (offerIdResponse) {
                     return OfferIdResponseDTO.fromRawData(offerIdResponse)
                }
-
-               console.log(error)
           } catch (error) {
-               console.log("Error", error)
                throw new Error((error as Error).message)
           }
      }

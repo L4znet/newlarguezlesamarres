@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getTenantBookingsUseCase } from "@/modules/application/bookings/getTenantBookingsUseCase"
-import BookingEntity from "@/modules/domain/bookings/BookingEntity"
+import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
 
 export function useTenantBookings() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     return useQuery<BookingEntity[]>({
+     return useQuery<GetTenantsBookingsDTO[] | []>({
           queryKey: ["tenant_bookings"],
           queryFn: () => getTenantBookingsUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,

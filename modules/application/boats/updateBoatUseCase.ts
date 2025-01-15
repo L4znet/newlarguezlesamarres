@@ -26,10 +26,6 @@ export const updateBoatUseCase = async (
      },
      imageSelected: boolean
 ) => {
-     // console.log all data in updatedData but without base64 image data
-
-     console.log("Boat updated")
-
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -45,14 +41,11 @@ export const updateBoatUseCase = async (
           }
 
           if (imageSelected) {
-               console.log("Image selected")
-
                await BoatRepositorySupabase.uploadUpdateImages(boatId, updatedData.boatImages)
           }
 
           router.push("/(app)/(tabs)/(boats)")
      } catch (error) {
-          console.log("error ici", error)
           throw new Error((error as Error).message)
      }
 }

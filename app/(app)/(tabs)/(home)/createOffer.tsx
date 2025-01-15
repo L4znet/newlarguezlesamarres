@@ -26,7 +26,6 @@ export default function createOffer() {
      const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
      const [visible, setVisible] = useState(false)
      const [searchTerm, setSearchTerm] = useState("")
-     const theme = useTheme()
 
      const [selectedBoatId, setSelectedBoatId] = useState<string | null>(null)
      const [rentalPeriod, setRentalPeriod] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({ startDate: undefined, endDate: undefined })
@@ -41,8 +40,6 @@ export default function createOffer() {
 
      const { mutate: createOffer, isPending: isPendingCreateOffer } = useCreateOffer()
      const { mutate: mutateSearchLocation, data: locationData, isPending: isPendingLocationSearch, error: errorFromFetch, reset: resetSearchResults } = useLocationSearch()
-
-     console.log("RENDER")
 
      useFocusEffect(
           useCallback(() => {
@@ -126,15 +123,6 @@ export default function createOffer() {
           }
      }
 
-     if (isPendingCreateOffer) {
-          return (
-               <View style={styles.container}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
-                    <Text>{t("loading_title")}</Text>
-               </View>
-          )
-     }
-
      const onBlurTrigger = async (field: any) => {
           await trigger(field)
      }
@@ -198,9 +186,16 @@ export default function createOffer() {
           )
      }
 
-     console.log("Erreurs", errors)
+     const theme = useTheme()
 
-     console.log(getValues("rentalPeriod"))
+     if (isPendingCreateOffer) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("loading_title")}</Text>
+               </View>
+          )
+     }
 
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>

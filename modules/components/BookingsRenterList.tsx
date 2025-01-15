@@ -10,6 +10,7 @@ import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useOwnerBookings } from "@/modules/hooks/bookings/useOwnerBookings"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
+import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBookingsDTO"
 
 const BookingTenantList = () => {
      const { data: ownerBookings, isPending, error } = useOwnerBookings()
@@ -28,12 +29,37 @@ const BookingTenantList = () => {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     if (isPending) return <ActivityIndicator size="large" />
-     if (error) return <Text style={styles.centered}>Erreur lors de la récupération des données.</Text>
+     if (!ownerBookings && isPending) {
+          return (
+               <View style={styles.container}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text>{t("a_moment_title")}</Text>
+               </View>
+          )
+     }
+
+     if (!ownerBookings) {
+          return null
+     }
 
      const filterReservations = (status: string) => ownerBookings.filter((item) => item.status === status)
 
-     const renderCardItem = ({ item }: { item: BookingEntity }) => {
+     const renderCardItem = ({
+          item,
+     }: {
+          item: {
+               id: string
+               offerTitle: string
+               status: string
+               startDate: string
+               endDate: string
+               boatName: string
+               profileFirstname: string
+               profileLastname: string
+               offerPrice: string
+               boatImages: { id: string; caption: string; url: string }[]
+          }
+     }) => {
           const { totalAmount } = displayTotalPrice(item.offerPrice as string, {
                start: item.startDate,
                end: item.endDate,
@@ -44,7 +70,6 @@ const BookingTenantList = () => {
           if (!item.id) {
                return null
           }
-
           return (
                <Card key={item.id} style={[styles.card]}>
                     <Slideshow images={item.boatImages} />
@@ -86,7 +111,7 @@ const BookingTenantList = () => {
           )
      }
 
-     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
+     const renderTabContent = (data: GetOwnerBookingsDTO[] | undefined, emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
           <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_rented_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>
@@ -113,6 +138,11 @@ const styles = StyleSheet.create({
           textAlign: "center",
           marginVertical: 20,
           fontSize: 16,
+     },
+     container: {
+          flex: 1,
+          width: "90%",
+          alignSelf: "center",
      },
 })
 

@@ -46,7 +46,7 @@ export default function OfferDetail() {
      const getBoatsImages = () => {
           const boatsImages = [] as { id: string; caption: string; url: string }[]
 
-          offerById?.boats?.boatImages.forEach((boatImage) => {
+          offerById?.boat?.images.forEach((boatImage) => {
                boatsImages.push({
                     id: boatImage.id as string,
                     caption: boatImage.caption as string,

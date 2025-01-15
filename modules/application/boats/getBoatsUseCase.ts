@@ -21,10 +21,6 @@ export const getBoatsUseCase = async (
 
           const boats = await BoatRepositorySupabase.getBoats(profileId)
 
-          console.log("boats", boats)
-
-          console.log("-------------------------------")
-
           if (!boats) {
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "An error occurred while loading the boats." })
           }

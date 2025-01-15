@@ -6,6 +6,7 @@ import { MessageType } from "react-native-flash-message"
 import BookingRepository from "@/modules/domain/bookings/BookingRepository"
 import BookingRepositorySupabase from "@/modules/infrastructure/booking/BookingRepositorySupabase"
 import BookingEntity from "@/modules/domain/bookings/BookingEntity"
+import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
 
 export const getTenantBookingsUseCase = async (
      showTranslatedFlashMessage: (
@@ -16,7 +17,7 @@ export const getTenantBookingsUseCase = async (
           },
           locale?: string
      ) => void
-): Promise<BookingEntity[] | []> => {
+): Promise<GetTenantsBookingsDTO[] | []> => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id as string
@@ -27,7 +28,7 @@ export const getTenantBookingsUseCase = async (
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "An error occurred while loading the bookings." })
           }
 
-          return bookings as BookingEntity[] | []
+          return bookings
      } catch (error) {
           throw new Error((error as Error).message)
      }

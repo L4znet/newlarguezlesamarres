@@ -92,8 +92,6 @@ class BoatRepositorySupabase implements BoatRepository {
                     }
 
                     if (uploadError) {
-                         console.log("C'EST PAS OK")
-
                          throw new Error(`Error uploading image: ${uploadError.message}`)
                     }
                }
@@ -115,8 +113,6 @@ class BoatRepositorySupabase implements BoatRepository {
                          if (error) {
                               throw new Error(`Error inserting image: ${error.message}`)
                          }
-
-                         console.log("boatImagesInsert", boatImagesInsert)
                     }
                }
           } catch (error) {
@@ -280,7 +276,6 @@ class BoatRepositorySupabase implements BoatRepository {
           try {
                const { count, error } = await supabase.from("boats").select("*", { count: "exact", head: true }).eq("profile_id", profileId).limit(1)
                if (error) {
-                    console.log("boatError", error)
                     throw new Error(`Error getting boats: ${error.message}`)
                }
 

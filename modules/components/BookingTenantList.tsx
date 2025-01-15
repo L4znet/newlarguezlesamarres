@@ -10,6 +10,7 @@ import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
 import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
 import { useRouter } from "expo-router"
 import { useUpdateBookingStatus } from "@/modules/hooks/bookings/useUpdateBookingStatus"
+import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
 
 const BookingTenantList = () => {
      const { data: tenantBookings, isPending, error } = useTenantBookings()
@@ -23,7 +24,7 @@ const BookingTenantList = () => {
      if (isPending) return <ActivityIndicator size="large" />
      if (error) return <Text style={styles.centered}>Erreur lors de la récupération des données.</Text>
 
-     const handleRentBooking = async (offerId: any, bookingId: string) => {
+     const handleRentBooking = async (offerId: string, bookingId: string) => {
           router.push({
                pathname: "/(app)/(tabs)/(profile)/tenantBookings/checkout",
                params: {
@@ -39,7 +40,7 @@ const BookingTenantList = () => {
 
      const filterReservations = (status: string) => tenantBookings.filter((item) => item.status === status)
 
-     const renderCardItem = ({ item }: { item: BookingEntity }) => {
+     const renderCardItem = ({ item }: { item: GetTenantsBookingsDTO }) => {
           const { totalAmount } = displayTotalPrice(item.offerPrice as string, {
                start: item.startDate,
                end: item.endDate,
@@ -78,27 +79,7 @@ const BookingTenantList = () => {
                          </View>
                     </Card.Content>
                     <Card.Actions>
-                         <Button
-                              mode="contained"
-                              style={styles.button}
-                              disabled={item.status !== "confirmed"}
-                              onPress={() =>
-                                   handleRentBooking(
-                                        {
-                                             id: item.offerId,
-                                             title: item.offerTitle,
-                                             description: item.offerDescription,
-                                             price: item.offerPrice,
-                                             rentalPeriod: {
-                                                  start: item.startDate,
-                                                  end: item.endDate,
-                                             },
-                                             userId: item.userId,
-                                        },
-                                        item.id as string
-                                   )
-                              }
-                         >
+                         <Button mode="contained" style={styles.button} disabled={item.status !== "confirmed"} onPress={() => handleRentBooking(item.offerId as string, item.id as string)}>
                               {t("pay_booking")}
                          </Button>
                          <Button mode="outlined" disabled={item.status === "rented" || item.status === "cancelled"} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
@@ -109,7 +90,7 @@ const BookingTenantList = () => {
           )
      }
 
-     const renderTabContent = (data: BookingEntity[], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
+     const renderTabContent = (data: GetTenantsBookingsDTO[] | [], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
           <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_rented_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>

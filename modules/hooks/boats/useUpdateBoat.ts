@@ -9,12 +9,6 @@ export function useUpdateBoat() {
      const { boatImages, setBoatImages } = useBoatStore()
      return useMutation({
           mutationFn: async ({ boatId, updatedData, imageSelected }: { boatId: string; updatedData: any; imageSelected: boolean }) => {
-               console.log({
-                    boatId: boatId,
-                    updatedData: updatedData,
-                    imageSelected: imageSelected,
-               })
-
                await updateBoatUseCase(boatId, updatedData, imageSelected)
           },
           onSuccess: () => {
