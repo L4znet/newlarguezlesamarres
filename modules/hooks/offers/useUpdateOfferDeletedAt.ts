@@ -1,30 +1,30 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { Equipment } from "@/interfaces/Offer"
-import { getSpecificOfferDataUseCase } from "@/modules/application/offers/getSpecificOfferDataUseCase"
+import { updateOfferOfferDeletedAt } from "@/modules/application/offers/updateOfferDeletedAtUseCase"
 
-export function useSpecificData() {
+export function useUpdateOfferDeletedAt() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
      return useMutation({
-          mutationFn: async ({ offerId, dataToSearch }: { offerId: string; dataToSearch: string }) => {
+          mutationFn: async ({ deletedAt, offerId }: { deletedAt: Date | null; offerId: string }) => {
                try {
-                    return getSpecificOfferDataUseCase(offerId, dataToSearch)
+                    await updateOfferOfferDeletedAt({
+                         offerId: offerId,
+                         deletedAt: deletedAt,
+                    })
                } catch (error) {
                     throw new Error((error as Error).message)
                }
           },
-          onSuccess: (data: {
-               equipment: Equipment[]
-               location: {
-                    city: string
-                    country: string
-                    zipcode: string
-                    address: string
-               }
-          }) => {
+          onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["offers"] })
+               queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
+
+               showTranslatedFlashMessage("success", {
+                    title: "flash_title_danger",
+                    description: "Successfully updated offer deleted at",
+               })
           },
           onError: (error) => {
                showTranslatedFlashMessage("danger", {

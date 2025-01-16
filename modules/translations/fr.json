@@ -6,6 +6,7 @@
      "language_switcher": "Langue de l'application",
      "language_switcher_french_btn": "Français",
      "language_switcher_english_btn": "Anglais",
+     "language_switcher_spanish_btn": "Espagnol",
 
      "login_title": "Vous avez déjà un compte ?",
      "login_subtitle": "Connectez-vous !",
@@ -80,6 +81,7 @@
      "edit_profile_btn": "Modifier le profil",
      "edit_btn": "Enregistrer les changements",
      "delete_btn": "Confirmer la suppression",
+
      "create_boat_button": "Ajouter un bateau",
      "create_offer_button": "Ajouter une offre",
      "edit_offer_button": "Modifier une offre",
@@ -89,6 +91,8 @@
      "change_thumbnail_btn": "Sélectionner des photos",
      "loading_button_text": "Chargement...",
      "delete": "Supprimer",
+     "inactive": "Désactiver",
+     "restore": "Restaurer",
      "edit": "Modifier",
      "save": "Enregistrer",
      "cancel": "Annuler",
@@ -123,6 +127,8 @@
      "select_boat": "Sélectionnez un bateau",
      "your_selection": "Votre sélection",
      "change_avatar_button": "Changer d'avatar",
+     "confirm_delete": "Confirmer la suppression",
+     "cancel_delete": "Annuler la suppression",
 
      "flash_title_danger": "Erreur",
      "flash_title_success": "Succès",
@@ -149,6 +155,9 @@
      "email_change_title": "Besoin d'un changement d'e-mail ?",
      "email_change_subtitle": "C'est comme si c'était fait !",
      "email_change_description": "Un e-mail de confirmation sera envoyé sur votre ancienne et sur votre nouvelle adresse",
+
+     "modal_delete_offer_title": "Vous êtes sur le point de supprimer l'offre",
+     "modal_delete_offer_description": "Cette action est irréversible, êtes-vous sûr de vouloir continuer ?",
 
      "auth_api_error_rate_limit_exceeded": {
           "supabase_message": "Email rate limit exceeded",
@@ -341,6 +350,11 @@
           "translation": "Statut de la réservation modifié avec succès."
      },
 
+     "offer_deleted_at_changed_success": {
+          "supabase_message": "Successfully updated offer deleted at",
+          "translation": "Le status de l'offre a été modifié avec succès."
+     },
+
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
      "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
@@ -360,12 +374,20 @@
      "bookings_owner_rented_empty_message": "Aucune location en cours",
      "bookings_owner_empty_message": "Aucune réservations",
 
+     "owner_offers_empty_message": "Vous n'avez pas encore publié d'offre",
+     "owner_offers_active_empty_message": "Vous n'avez pas encore d'offre active",
+     "owner_offers_inactive_empty_message": "Vous n'avez pas encore d'offre inactive",
+
      "booking_all_btn": "Toutes",
      "booking_cancelled_btn": "Annulées",
      "booking_declined_btn": "Refusées",
      "booking_pending_btn": "En attente",
      "booking_confirmed_btn": "Confirmées",
      "booking_rented_btn": "Louées",
+
+     "owner_offers_all_btn": "Toutes",
+     "owner_offers_active_btn": "Actives",
+     "owner_offers_inactive_btn": "Inactives",
 
      "booking_pending_chip": "En attente de confirmation",
      "booking_confirmed_chip": "Confirmée",
@@ -502,9 +524,9 @@
      "zod_rule_zipcode_invalid": "Le code postal est invalide.",
 
      "zod_rule_equipment_name_required": "Le nom de l'équipement est requis.",
-     "zod_rule_equipment_name_too_short": "Le nom de l'équipement doit contenir au moins 3 caractères.",
+     "zod_rule_equipment_name_min_length": "Le nom de l'équipement doit contenir au moins 3 caractères.",
      "zod_rule_equipment_quantity_required": "La quantité d'équipements est requise.",
-     "zod_rule_equipment_quantity_invalid": "La quantité d'équipements ne peut pas être en dessous de 1",
+     "zod_rule_equipment_quantity_min_length": "La quantité d'équipements ne peut pas être en dessous de 1",
 
      "zod_rule_price_min_value": "Le prix de l'annonce doit être supérieur ou égale à 5€",
 

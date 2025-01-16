@@ -9,14 +9,14 @@ import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 export function useOwnOffers() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     const query = useQuery<GetOffersDTO[], Error>({
+     const query = useQuery<GetOffersDTO[] | [], Error>({
           queryKey: ["ownOffers"],
           queryFn: () => getOwnOffersUseCase(showTranslatedFlashMessage),
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,
           staleTime: Infinity,
-     } as UseQueryOptions<GetOffersDTO[], Error>)
+     })
 
      if (query.isSuccess) {
           queryClient.invalidateQueries({ queryKey: ["ownOffers"] })

@@ -9,6 +9,7 @@ import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
 import { $ } from "@faker-js/faker/dist/airline-BnpeTvY9"
 import { UpdateOfferDTO } from "@/modules/domain/offers/DTO/UpdateOfferDTO"
 import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO"
+import { UpdateOfferDeletedAtDTO } from "@/modules/domain/offers/DTO/UpdateOfferDeletedAtDTO"
 
 class OfferRepositorySupabase implements OfferRepository {
      async createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined> {
@@ -148,7 +149,7 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async getOwnOffers(profileId: string): Promise<GetOffersDTO[] | undefined> {
+     async getOwnOffers(profileId: string): Promise<GetOffersDTO[] | []> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .select(
@@ -175,7 +176,9 @@ class OfferRepositorySupabase implements OfferRepository {
                throw new Error(`Error fetching offers: ${offerError.message}`)
           }
 
-          if (offerData?.length) {
+          if (offerData?.length === 0) {
+               return []
+          } else {
                return offerData.map((offer: OfferRawData) => {
                     return GetOffersDTO.fromRawData(offer)
                })
@@ -205,20 +208,29 @@ class OfferRepositorySupabase implements OfferRepository {
           if (offerIdResponse) {
                return OfferIdResponseDTO.fromRawData(offerIdResponse)
           }
+          if (error) {
+               throw new Error(`Error updating offer availability: ${error.message}`)
+          }
      }
 
-     async getSpecificOfferData({ offerId, dataToSelect }: { offerId: string; dataToSelect: string }): Promise<any> {
-          const { data: offerData, error: offerError } = await supabase.from("offers").select(dataToSelect).eq("id", offerId)
+     async updateOfferDeletedAt({ deletedAt, offerId }: { deletedAt: Date | null; offerId: string }): Promise<OfferIdResponseDTO | undefined> {
+          try {
+               const updateOfferDTO = new UpdateOfferDeletedAtDTO(deletedAt)
 
-          if (offerError) {
-               throw new Error(`Error fetching offer: ${offerError.message}`)
+               const {
+                    data: offerIdResponse,
+                    error,
+               }: {
+                    data: { id: string } | null
+                    error: any
+               } = await supabase.from("offers").update(UpdateOfferDeletedAtDTO.toRawData(updateOfferDTO)).eq("id", offerId).select("id").single()
+
+               if (offerIdResponse) {
+                    return OfferIdResponseDTO.fromRawData(offerIdResponse)
+               }
+          } catch (error) {
+               throw new Error((error as Error).message)
           }
-
-          if (offerData?.length) {
-               return offerData[0]
-          }
-
-          throw new Error("No data returned from offer fetch.")
      }
 }
 

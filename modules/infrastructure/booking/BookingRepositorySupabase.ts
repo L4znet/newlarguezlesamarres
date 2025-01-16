@@ -34,6 +34,9 @@ class BookingRepositorySupabase implements BookingRepository {
                         )
                         `
                )
+               .order("created_at", {
+                    ascending: false,
+               })
                .eq("user_id", userId)
 
           if (bookingError) {

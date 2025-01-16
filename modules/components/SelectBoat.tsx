@@ -31,18 +31,21 @@ export default function SelectBoat({ handleSelectBoat, selectedBoatId }: { handl
                <Text style={styles.selectionTitle}>{t("select_boat_title")}</Text>
 
                {boats && (
-                    <FlatList
-                         ListEmptyComponent={EmptyList}
-                         data={boats}
-                         keyExtractor={(item) => item.id}
-                         renderItem={({ item }) => {
-                              return (
-                                   <Button mode={"contained"} icon={selectedBoatId === item.id ? "check" : ""} style={selectedBoatId === item.id ? [styles.boatItem, { backgroundColor: theme.colors.primary }] : [styles.boatItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 2 }]} onPress={() => handleSelectBoat(item.id)}>
-                                        <Text style={selectedBoatId === item.id ? [styles.boatName, { color: theme.colors.background }] : styles.boatName}>{item.boatName}</Text>
-                                   </Button>
-                              )
-                         }}
-                    />
+                    <View>
+                         <FlatList
+                              nestedScrollEnabled={true}
+                              ListEmptyComponent={EmptyList}
+                              data={boats}
+                              keyExtractor={(item) => item.id}
+                              renderItem={({ item }) => {
+                                   return (
+                                        <Button mode={"contained"} icon={selectedBoatId === item.id ? "check" : ""} style={selectedBoatId === item.id ? [styles.boatItem, { backgroundColor: theme.colors.primary }] : [styles.boatItem, { backgroundColor: theme.colors.surface, borderColor: theme.colors.primary, borderWidth: 2 }]} onPress={() => handleSelectBoat(item.id)}>
+                                             <Text style={selectedBoatId === item.id ? [styles.boatName, { color: theme.colors.background }] : styles.boatName}>{item.boatName}</Text>
+                                        </Button>
+                                   )
+                              }}
+                         />
+                    </View>
                )}
           </View>
      )

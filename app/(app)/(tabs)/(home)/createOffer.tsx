@@ -58,9 +58,7 @@ export default function createOffer() {
           handleSubmit,
           trigger,
           setValue,
-          getValues,
           reset,
-          resetField,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(OfferSchema),
@@ -188,6 +186,8 @@ export default function createOffer() {
 
      const theme = useTheme()
 
+     console.log("errors.equipments", errors.equipments)
+
      if (isPendingCreateOffer) {
           return (
                <View style={styles.container}>
@@ -200,187 +200,234 @@ export default function createOffer() {
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
-                    <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }}>
-                         <Controller
-                              name="title"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                   <View>
-                                        <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={value} onChangeText={onChange} error={!!errors.title} />
-                                        {errors.title && <Text style={styles.errorText}>{t(errors.title.message as string)}</Text>}
-                                   </View>
-                              )}
-                         />
-
-                         <Controller
-                              name="description"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                   <View>
-                                        <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={value} onChangeText={onChange} error={!!errors.description} />
-                                        {errors.description && <Text style={styles.errorText}>{t(errors.description.message as string)}</Text>}
-                                   </View>
-                              )}
-                         />
-                         <Controller
-                              name="price"
-                              control={control}
-                              render={({ field: { onChange, value } }) => {
-                                   return (
-                                        <View>
-                                             <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={value} onChangeText={onChange} onBlur={() => onBlurTrigger("price")} error={!!errors.price} />
-                                             {errors.price && <Text style={styles.errorText}>{t(errors.price.message as string)}</Text>}
-                                        </View>
-                                   )
-                              }}
-                         />
-
-                         <Controller
-                              name="isAvailable"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                   <View style={styles.inputRow}>
-                                        <Text>{t("is_available_label")}</Text>
-                                        <Switch value={value} onValueChange={onChange} />
-                                        {errors.isAvailable && <Text style={styles.errorText}>{t(errors.isAvailable.message as string)}</Text>}
-                                   </View>
-                              )}
-                         />
-
-                         <Controller
-                              name="isSkipperAvailable"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                   <View style={styles.inputRow}>
-                                        <Text>{t("is_skipper_available_label")}</Text>
-                                        <Switch value={value} onValueChange={onChange} />
-                                        {errors.isSkipperAvailable && <Text style={styles.errorText}>{t(errors.isSkipperAvailable.message as string)}</Text>}
-                                   </View>
-                              )}
-                         />
-                         <Controller
-                              name="isTeamAvailable"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                   <View style={styles.inputRow}>
-                                        <Text>{t("is_team_available_label")}</Text>
-                                        <Switch value={value} onValueChange={onChange} />
-                                        {errors.isTeamAvailable && <Text style={styles.errorText}>{t(errors.isTeamAvailable.message as string)}</Text>}
-                                   </View>
-                              )}
-                         />
-
-                         <View style={styles.step}>
-                              <Text style={styles.selectionTitle}>{t("select_location_title")}</Text>
-                              <Controller
-                                   name="location"
-                                   control={control}
-                                   render={({ field: { onChange } }) => (
-                                        <TextInput
-                                             label={t("location_search_label")}
-                                             placeholder={t("location_search_placeholder")}
-                                             value={searchTerm}
-                                             style={styles.input}
-                                             onChangeText={(text) => {
-                                                  onChange(text)
-                                                  setSearchTerm(text)
-                                             }}
-                                             onEndEditing={handleSearch}
+                    <FlatList
+                         data={[
+                              {
+                                   key: "title",
+                                   content: (
+                                        <Controller
+                                             name="title"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View>
+                                                       <TextInput style={styles.input} placeholder={t("offer_title_placeholder")} label={t("offer_title_label")} value={value} onChangeText={onChange} error={!!errors.title} />
+                                                       {errors.title && <Text style={styles.errorText}>{t(errors.title.message as string)}</Text>}
+                                                  </View>
+                                             )}
                                         />
-                                   )}
-                              />
-                              {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+                                   ),
+                              },
+                              {
+                                   key: "description",
+                                   content: (
+                                        <Controller
+                                             name="description"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View>
+                                                       <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={value} onChangeText={onChange} error={!!errors.description} />
+                                                       {errors.description && <Text style={styles.errorText}>{t(errors.description.message as string)}</Text>}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "price",
+                                   content: (
+                                        <Controller
+                                             name="price"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View>
+                                                       <TextInput style={styles.input} keyboardType="decimal-pad" placeholder={t("offer_price_placeholder")} label={t("offer_price_label")} value={value} onChangeText={onChange} error={!!errors.price} />
+                                                       {errors.price && <Text style={styles.errorText}>{t(errors.price.message as string)}</Text>}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "isAvailable",
+                                   content: (
+                                        <Controller
+                                             name="isAvailable"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View style={styles.inputRow}>
+                                                       <Text>{t("is_available_label")}</Text>
+                                                       <Switch value={value} onValueChange={onChange} />
+                                                       {errors.isAvailable && <Text style={styles.errorText}>{t(errors.isAvailable.message as string)}</Text>}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "isSkipperAvailable",
+                                   content: (
+                                        <Controller
+                                             name="isSkipperAvailable"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View style={styles.inputRow}>
+                                                       <Text>{t("is_skipper_available_label")}</Text>
+                                                       <Switch value={value} onValueChange={onChange} />
+                                                       {errors.isSkipperAvailable && <Text style={styles.errorText}>{t(errors.isSkipperAvailable.message as string)}</Text>}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "isTeamAvailable",
+                                   content: (
+                                        <Controller
+                                             name="isTeamAvailable"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => (
+                                                  <View style={styles.inputRow}>
+                                                       <Text>{t("is_team_available_label")}</Text>
+                                                       <Switch value={value} onValueChange={onChange} />
+                                                       {errors.isTeamAvailable && <Text style={styles.errorText}>{t(errors.isTeamAvailable.message as string)}</Text>}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "location",
+                                   content: (
+                                        <Controller
+                                             name="location"
+                                             control={control}
+                                             render={({ field: { onChange } }) => (
+                                                  <View style={{ marginTop: 30 }}>
+                                                       <Text style={styles.selectionTitle}>{t("select_location_title")}</Text>
+                                                       <TextInput
+                                                            label={t("location_search_label")}
+                                                            placeholder={t("location_search_placeholder")}
+                                                            value={searchTerm}
+                                                            style={styles.input}
+                                                            onChangeText={(text) => {
+                                                                 onChange(text)
+                                                                 setSearchTerm(text)
+                                                            }}
+                                                            onEndEditing={handleSearch}
+                                                       />
+                                                       {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
 
-                              {isPendingLocationSearch && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
+                                                       {isPendingLocationSearch && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
-                              {errorFromFetch && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
-                              {locationData && locationData.length > 0 && (
-                                   <FlatList
-                                        data={locationData}
-                                        keyExtractor={(item, index) => index.toString()}
-                                        renderItem={({ item }) => (
-                                             <TouchableOpacity style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
-                                                  <Text style={styles.resultText}>{item.address.freeformAddress}</Text>
-                                             </TouchableOpacity>
-                                        )}
-                                   />
-                              )}
+                                                       {errorFromFetch && <Text style={styles.errorText}>Une erreur est survenue lors de la recherche.</Text>}
 
-                              {!isPendingLocationSearch && locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+                                                       {locationData && locationData.length > 0 && (
+                                                            <View>
+                                                                 {locationData.map((item, index) => (
+                                                                      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
+                                                                           <Text style={styles.resultText}>{item.address.freeformAddress}</Text>
+                                                                      </TouchableOpacity>
+                                                                 ))}
+                                                            </View>
+                                                       )}
 
-                              {locationData && locationData.length === 0 && <Text style={styles.noResultsText}>{t("no_results")}</Text>}
+                                                       {location.address && (
+                                                            <Card style={styles.selectionCard}>
+                                                                 <Card.Content>
+                                                                      <Text>{location.address + ", " + location.zipcode + " " + location.city + ", " + location.country}</Text>
+                                                                 </Card.Content>
+                                                            </Card>
+                                                       )}
+                                                  </View>
+                                             )}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "rentalPeriod",
+                                   content: (
+                                        <View style={{ marginTop: 30 }}>
+                                             <Text style={styles.selectionTitle}>{t("select_rental_title")}</Text>
+                                             <Button onPress={() => setOpen(true)} mode="contained">
+                                                  {t("select_rental_period_button")}
+                                             </Button>
+                                             {errors.rentalPeriod && (
+                                                  <Text
+                                                       style={[
+                                                            styles.errorText,
+                                                            {
+                                                                 marginTop: 10,
+                                                            },
+                                                       ]}
+                                                  >
+                                                       {t(errors.rentalPeriod.message as string)}
+                                                  </Text>
+                                             )}
 
-                              {location.address && location.country && location.zipcode && location.city && (
-                                   <View>
-                                        <Card style={styles.selectionCard}>
-                                             <Card.Content>
-                                                  <Text>{location.address + ", " + location.zipcode + " " + location.city + ", " + location.country}</Text>
-                                             </Card.Content>
-                                        </Card>
-                                   </View>
-                              )}
-                         </View>
-
-                         <View style={styles.step}>
-                              <Text style={styles.selectionTitle}>{t("select_rental_title")}</Text>
-                              <Button onPress={() => setOpen(true)} uppercase={false} mode="contained">
-                                   {t("select_rental_period_button")}
-                              </Button>
-
-                              <Controller
-                                   name={"rentalPeriod"}
-                                   control={control}
-                                   render={({ field: { onChange, value } }) => (
-                                        <View>
-                                             <DatePickerModal
-                                                  locale={locale}
-                                                  onChange={() => {
-                                                       onChange({ start: range.startDate?.toDateString(), end: range.endDate?.toDateString() })
-                                                       setRentalPeriod({ startDate: range.startDate, endDate: range.endDate })
+                                             <Controller
+                                                  name="rentalPeriod"
+                                                  control={control}
+                                                  render={({ field: { onChange, value } }) => {
+                                                       return <DatePickerModal locale={locale} visible={open} mode="range" onDismiss={onDismiss} startDate={range.startDate} endDate={range.endDate} onConfirm={onConfirm} />
                                                   }}
-                                                  mode="range"
-                                                  visible={open}
-                                                  onDismiss={onDismiss}
-                                                  startDate={range.startDate}
-                                                  endDate={range.endDate}
-                                                  onConfirm={onConfirm}
                                              />
 
                                              {rentalPeriod.startDate && rentalPeriod.endDate && (
                                                   <View style={styles.selectedDates}>
-                                                       <Text style={[styles.dateText, { color: theme.colors.primary }]}>
+                                                       <Text style={styles.dateText}>
                                                             {t("start_date_label")}: {rentalPeriod.startDate ? displaySpecificRentalDate(rentalPeriod.startDate, locale) : ""}
                                                        </Text>
-                                                       <Text style={[styles.dateText, { color: theme.colors.primary }]}>
+                                                       <Text style={styles.dateText}>
                                                             {t("end_date_label")}: {rentalPeriod.endDate ? displaySpecificRentalDate(rentalPeriod.endDate, locale) : ""}
                                                        </Text>
                                                   </View>
                                              )}
                                         </View>
-                                   )}
-                              />
-                         </View>
-
-                         <View style={styles.step}>
-                              <Text style={styles.selectionTitle}>{t("select_equipment_title")}</Text>
-
-                              <Controller name="equipments" control={control} render={({ field: { onChange, value } }) => <SelectEquipments equipments={value} setEquipments={onChange} />} />
-                         </View>
-
-                         <View style={styles.step}>
-                              <Controller
-                                   name="selectedBoatId"
-                                   control={control}
-                                   render={({ field: { onChange, value } }) => {
-                                        return <SelectBoat selectedBoatId={value} handleSelectBoat={onChange} />
-                                   }}
-                              />
-                         </View>
-
-                         <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPendingCreateOffer} disabled={isPendingCreateOffer}>
-                              {isPendingCreateOffer ? t("loading_button_text") : t("create_offer_button")}
-                         </Button>
-                    </ScrollView>
+                                   ),
+                              },
+                              {
+                                   key: "equipments",
+                                   content: (
+                                        <Controller
+                                             name="equipments"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => {
+                                                  console.log("value", value)
+                                                  return (
+                                                       <>
+                                                            <SelectEquipments equipments={value} setEquipments={onChange} errors={errors.equipments ? errors.equipments : null} />
+                                                       </>
+                                                  )
+                                             }}
+                                        />
+                                   ),
+                              },
+                              {
+                                   key: "boats",
+                                   content: (
+                                        <Controller
+                                             name="selectedBoatId"
+                                             control={control}
+                                             render={({ field: { onChange, value } }) => {
+                                                  return (
+                                                       <>
+                                                            <SelectBoat selectedBoatId={value} handleSelectBoat={onChange} />
+                                                            {errors.selectedBoatId && <Text style={styles.errorText}>{t(errors.selectedBoatId.message as string)}</Text>}
+                                                       </>
+                                                  )
+                                             }}
+                                        />
+                                   ),
+                              },
+                         ]}
+                         keyExtractor={(item) => item.key}
+                         renderItem={({ item }) => item.content}
+                         ListFooterComponent={
+                              <Button mode="contained" style={styles.submitButton} onPress={handleSubmit(onSubmit, onError)} loading={isPendingCreateOffer} disabled={isPendingCreateOffer}>
+                                   {isPendingCreateOffer ? t("loading_button_text") : t("create_offer_button")}
+                              </Button>
+                         }
+                    />
                </SafeAreaView>
           </KeyboardAvoidingView>
      )

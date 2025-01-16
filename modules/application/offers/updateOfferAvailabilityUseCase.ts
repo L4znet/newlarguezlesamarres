@@ -1,7 +1,6 @@
 import { MessageType } from "react-native-flash-message"
-import { Equipment, Offer, RentalPeriod } from "@/interfaces/Offer"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
-import { router } from "expo-router"
+import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 
 export const updateOfferAvailabilityUseCase = async (
      {
@@ -12,9 +11,9 @@ export const updateOfferAvailabilityUseCase = async (
           isAvailable: boolean
      },
      showTranslatedFlashMessage: (type: MessageType, message: { title: string; description: string }) => void
-): Promise<void> => {
+): Promise<OfferIdResponseDTO | undefined> => {
      try {
-          const updatedOffer = await OfferRepositorySupabase.updateOfferAvailability({
+          return await OfferRepositorySupabase.updateOfferAvailability({
                offerId: offerId,
                isAvailable: isAvailable,
           })

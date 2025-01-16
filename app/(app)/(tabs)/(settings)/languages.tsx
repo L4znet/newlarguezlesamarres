@@ -23,7 +23,9 @@ export default function Index() {
           <View style={styles.container}>
                <Text variant="titleLarge">{t("settings_app_currently_in")}</Text>
                <Text variant="titleLarge">{language}</Text>
-               <Text variant="titleMedium">{t("settings_change_language")}</Text>
+               <Text style={{ marginBottom: 20 }} variant="titleMedium">
+                    {t("settings_change_language")}
+               </Text>
                <LanguageSwitcher />
           </View>
      )

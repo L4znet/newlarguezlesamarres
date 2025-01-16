@@ -4,6 +4,7 @@ import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentS
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
+import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 export const getOwnOffersUseCase = async (
      showTranslatedFlashMessage: (
@@ -14,7 +15,7 @@ export const getOwnOffersUseCase = async (
           },
           locale?: string
      ) => void
-): Promise<OfferEntity[] | []> => {
+): Promise<GetOffersDTO[] | []> => {
      const session = await getCurrentSessionUseCase()
      const profileId = session.data.session?.user.id as string
 
@@ -29,7 +30,7 @@ export const getOwnOffersUseCase = async (
                return []
           }
 
-          return offers as OfferEntity[] | []
+          return offers
      } catch (error) {
           showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: (error as Error).message })
 

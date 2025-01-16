@@ -1,53 +1,79 @@
 {
-     "home_title": "Hello and welcome to Larguez les amarres!",
-     "home_subtitle": "For a more comfortable onboard experience, log in!",
+     "home_title": "Welcome to Larguez les amarres!",
+     "home_subtitle": "For a more comfortable experience on board, log in!",
      "home_noaccount": "If you don't have an account yet, sign up!",
+
      "language_switcher": "Application language",
      "language_switcher_french_btn": "French",
      "language_switcher_english_btn": "English",
+     "language_switcher_spanish_btn": "Spanish",
+
      "login_title": "Already have an account?",
      "login_subtitle": "Log in!",
-     "login_forgot_password": "Forgot password?",
+
+     "login_forgot_password": "Forgot your password?",
      "login_noaccount": "No account? No problem!",
-     "login_signup_btn": "Create an account",
+     "login_signup_btn": "I'll go create an account",
      "login_submit": "Log in",
-     "register_title": "Is this your first time here?",
+
+     "register_title": "First time here?",
      "register_subtitle": "Create your account!",
-     "lastname_label": "Lastname",
-     "firstname_label": "Firstname",
-     "username_label": "Usernaame",
+
+     "lastname_label": "Last name",
+     "firstname_label": "First name",
+     "username_label": "Username",
      "email_label": "Email",
      "password_label": "Password",
      "password_confirm_label": "Confirm password",
-     "lastname_placeholder": "Lastname",
-     "firstname_placeholder": "Firstname",
+
+     "lastname_placeholder": "Last name",
+     "firstname_placeholder": "First name",
      "username_placeholder": "Username",
      "email_placeholder": "Email",
      "password_placeholder": "Password",
      "password_confirm_placeholder": "Confirm password",
+
      "register_already_account": "Already have an account? Log in",
      "register_login_btn": "I already have an account!",
      "register_submit": "Sign up",
+     "no_account_found": "No account found! This must be an error. Log out and try again.",
+
      "forgot_password_title": "Can't remember your password?",
      "forgot_password_subtitle": "It happens! We'll help you recover it",
+
      "forgot_password_email_label": "Email",
      "forgot_password_email_placeholder": "Email",
      "forgot_password_submit": "Recover my password",
-     "forgot_remembered_password_title": "I remember it after all!",
-     "forgot_remembered_password_login": "Log in!",
+     "forgot_remembered_password_title": "Actually, I remember it!",
+     "forgot_remembered_password_login": "Let me log in!",
+
      "reset_password_title": "Reset password",
      "reset_password_new_password": "New password",
      "reset_password_new_password_confirm": "Confirm new password",
      "reset_password_submit": "Reset password",
+
+     "boat_name_label": "Boat name",
+     "boat_description_label": "Boat description",
+     "boat_capacity_label": "Boat capacity",
+
+     "boat_type_placeholder": "Boat type",
+     "boat_name_placeholder": "Boat name",
+     "boat_description_placeholder": "Boat description",
+     "boat_capacity_placeholder": "Boat capacity",
+     "nothing_to_show": "Nothing to display at the moment",
+
      "bottom_bar_(home)/index": "Home",
+     "bottom_bar_index": "Home",
      "bottom_bar_(profile)": "Profile",
-     "bottom_bar_(offers)": "My offers",
-     "bottom_bar_(boats)": "My boats",
-     "bottom_bar_login": "Log in",
+     "bottom_bar_(boats)": "Boats",
+     "bottom_bar_settings": "Settings",
+     "bottom_bar_login": "Login",
      "bottom_bar_register": "Sign up",
      "bottom_bar_feed": "Feed",
-     "bottom_bar_settings": "Settings",
-     "login_btn": "Log in",
+     "bottom_bar_(offers)": "Offers",
+     "bottom_bar_(bookings)": "Bookings",
+
+     "login_btn": "Login",
      "register_btn": "Sign up",
      "logout_btn": "Log out",
      "forgot_password_btn": "Forgot password",
@@ -55,6 +81,55 @@
      "edit_profile_btn": "Edit profile",
      "edit_btn": "Save changes",
      "delete_btn": "Confirm deletion",
+
+     "create_boat_button": "Add a boat",
+     "create_offer_button": "Add an offer",
+     "edit_offer_button": "Edit offer",
+     "edit_boat_button": "Edit boat",
+     "close_btn": "Close",
+     "done_btn": "Done",
+     "change_thumbnail_btn": "Select photos",
+     "loading_button_text": "Loading...",
+     "delete": "Delete",
+     "inactive": "Deactivate",
+     "restore": "Restore",
+     "edit": "Edit",
+     "save": "Save",
+     "cancel": "Cancel",
+     "confirm": "Confirm",
+     "money_symbol": "$",
+     "published_at": "Published on",
+     "published_by": "Published by",
+     "price": "Price",
+     "pay": "Pay",
+     "add": "Add",
+     "days": "days",
+     "weeks": "weeks",
+     "week": "week",
+     "month": "month",
+     "months": "months",
+     "year": "year",
+     "and": "and",
+     "years": "years",
+     "unit_price": "Unit price",
+     "moreDetails": "See more details",
+     "rental_date": "Rental date",
+     "checkout": "Checkout",
+     "your_rental": "Your rental",
+     "book_offer": "Book the offer",
+     "already_reserved": "Already reserved",
+     "pay_booking": "Pay for booking",
+     "cancel_booking": "Cancel",
+     "booking_decline_btn": "Decline",
+     "booking_confirm_btn": "Confirm",
+     "from_date": "From",
+     "to_date": "To",
+     "select_boat": "Select a boat",
+     "your_selection": "Your selection",
+     "change_avatar_button": "Change avatar",
+     "confirm_delete": "Confirm deletion",
+     "cancel_delete": "Cancel deletion",
+
      "flash_title_danger": "Error",
      "flash_title_success": "Success",
      "flash_title_warning": "Warning",
@@ -75,6 +150,15 @@
      "validation_lastname_required": "Last name is required.",
      "validation_username_required": "Username is required.",
      "validation_passwords_do_not_match": "Passwords do not match.",
+     "loading_title": "Hold on, we're on it!",
+     "edit_boat_loading": "The shipyard is working on it, it will be ready soon!",
+     "email_change_title": "Need to change your email?",
+     "email_change_subtitle": "Consider it done!",
+     "email_change_description": "A confirmation email will be sent to both your old and new addresses.",
+
+     "modal_delete_offer_title": "You're about to delete the offer",
+     "modal_delete_offer_description": "This action is irreversible, are you sure you want to proceed?",
+
      "auth_api_error_rate_limit_exceeded": {
           "supabase_message": "Email rate limit exceeded",
           "translation": "You have exceeded the email rate limit."
@@ -89,7 +173,7 @@
      },
      "auth_api_error_user_already_registered": {
           "supabase_message": "User already registered",
-          "translation": "You already have an account with this email address."
+          "translation": "An account with this email already exists."
      },
      "auth_api_error_email_not_confirmed": {
           "supabase_message": "Email not confirmed",
@@ -113,11 +197,11 @@
      },
      "auth_api_success_password_reset": {
           "supabase_message": "Password successfully reset",
-          "translation": "Password has been successfully reset."
+          "translation": "Password successfully reset."
      },
      "auth_api_success_password_changed": {
           "supabase_message": "Password successfully changed",
-          "translation": "Password has been successfully changed."
+          "translation": "Password successfully changed."
      },
      "auth_api_success_email_changed": {
           "supabase_message": "Email successfully changed",
@@ -125,11 +209,11 @@
      },
      "auth_api_success_user_updated": {
           "supabase_message": "User profile updated",
-          "translation": "Profile successfully updated."
+          "translation": "Profile updated successfully."
      },
      "auth_api_success_user_deleted": {
           "supabase_message": "User account deleted",
-          "translation": "Account successfully deleted."
+          "translation": "User account successfully deleted."
      },
      "auth_api_success_email_sent": {
           "supabase_message": "Email sent successfully",
@@ -137,74 +221,58 @@
      },
      "auth_api_success_user_logged_out": {
           "supabase_message": "User logged out successfully",
-          "translation": "You have been successfully logged out."
+          "translation": "You have been logged out successfully."
      },
      "auth_api_success_user_logged_in": {
           "supabase_message": "User logged in successfully",
           "translation": "You are now logged in."
      },
-     "drawer_setting_btn": "Settings",
-     "drawer_settings_change_language": "Change language",
-     "profile_title": "My profile",
-     "settings_title": "My settings",
-     "settings_language": "Change language",
-     "settings_app_currently_in": "The application is currently in",
-     "settings_change_language": "Wanna change it?",
-     "boat_name_label": "Boat name",
-     "boat_description_label": "Boat description",
-     "boat_capacity_label": "Boat capacity",
-     "boat_type_placeholder": "Boat type",
-     "boat_name_placeholder": "Boat name",
-     "boat_description_placeholder": "Boat description",
-     "boat_capacity_placeholder": "Boat capacity",
-     "bottom_bar_index": "Home",
-     "create_boat_button": "Add a boat",
-     "create_offer_button": "Add an offer",
-     "edit_boat_button": "Edit boat",
-     "close_btn": "Close",
-     "done_btn": "Done",
-     "change_thumbnail_btn": "Select photos",
-     "loading_button_text": "Loading...",
-     "loading_title": "Please be patient, we're on it!",
-     "edit_boat_loading": "The shipyard is on it, it'll be ready soon!",
-     "delete": "Delete",
-     "edit": "Edit",
-     "price": "Price",
-     "unit_price": "Unit price",
-     "published_by": "Published by",
-     "money_symbol": "$",
-     "moreDetails": "More details",
-     "rental_date": "Rental date",
-     "your_boats": "Your boats",
-     "checkout": "Checkout",
-     "continue_to_payment": "Continue to payment",
      "supabase_boat_success_deleted_boat": {
           "supabase_message": "Boat deleted successfully!",
-          "translation": "Boat deleted successfully!"
+          "translation": "Boat successfully deleted!"
      },
      "supabase_boat_success_added_boat": {
           "supabase_message": "Boat added successfully!",
-          "translation": "Boat added successfully!"
+          "translation": "Boat successfully added!"
      },
      "supabase_boat_success_updated_boat": {
           "supabase_message": "Boat updated successfully!",
-          "translation": "Boat updated successfully!"
+          "translation": "Boat successfully updated!"
      },
-
      "supabase_offer_success_created_offer": {
           "supabase_message": "Offer created",
-          "translation": "Offer created successfully!"
+          "translation": "Offer successfully created!"
      },
 
      "payment_success": {
           "supabase_message": "Payment successful",
-          "translation": "Payment successful"
-     },
-     "supabase_offer_success_deleted_offer": {
-          "supabase_message": "Offer deleted successfully!",
-          "translation": "Offer deleted successfully!"
+          "translation": "Payment successfully completed."
      },
 
+     "supabase_offer_success_deleted_offer": {
+          "supabase_message": "Offer deleted successfully!",
+          "translation": "Offer successfully deleted!"
+     },
+     "supabase_offer_success_added_offer": {
+          "supabase_message": "Offer added successfully!",
+          "translation": "Offer successfully added!"
+     },
+     "supabase_offer_success_updated_offer": {
+          "supabase_message": "Offer updated successfully!",
+          "translation": "Offer successfully updated!"
+     },
+     "supabase_boat_error_deleted_boat": {
+          "supabase_message": "An error occurred while deleting the boat",
+          "translation": "An error occurred while deleting the boat."
+     },
+     "supabase_boat_error_added_boat": {
+          "supabase_message": "An error occurred while adding the boat",
+          "translation": "An error occurred while adding the boat."
+     },
+     "supabase_boat_error_updated_boat": {
+          "supabase_message": "An error occurred while updating the boat",
+          "translation": "An error occurred while updating the boat."
+     },
      "supabase_offer_error_deleted_offer": {
           "supabase_message": "An error occurred while deleting the offer",
           "translation": "An error occurred while deleting the offer."
@@ -228,71 +296,180 @@
           "supabase_message": "All fields are required",
           "translation": "All fields are required."
      },
+     "cant_create_offer_without_boats": {
+          "supabase_message": "flash_description_no_boats",
+          "translation": "You must add a boat to create an offer."
+     },
 
      "offers_not_found": {
           "supabase_message": "No offers found",
           "translation": "No offers found."
      },
 
-     "supabase_offer_success_added_offer": {
-          "supabase_message": "Offer added successfully!",
-          "translation": "Offer added successfully!"
-     },
-     "supabase_offer_success_updated_offer": {
-          "supabase_message": "Offer updated successfully!",
-          "translation": "Offer updated successfully!"
-     },
-     "supabase_boat_error_deleted_boat": {
-          "supabase_message": "An error occurred while deleting the boat",
-          "translation": "An error occurred while deleting the boat."
-     },
-     "supabase_boat_error_added_boat": {
-          "supabase_message": "An error occurred while adding the boat",
-          "translation": "An error occurred while adding the boat."
-     },
-     "supabase_boat_error_updated_boat": {
-          "supabase_message": "An error occurred while updating the boat",
-          "translation": "An error occurred while updating the boat."
-     },
      "location_selected_success": {
           "supabase_message": "Location selected successfully",
-          "translation": "Location selected successfully."
+          "translation": "Location successfully selected."
      },
      "location_selected_error": {
           "supabase_message": "An error occurred while searching for locations",
-          "translation": "An error occurred while searching for locations."
+          "translation": "An error occurred while selecting the location."
      },
-     "validation_avatar_required": "A profile photo is required.",
+
+     "email_updated_success": {
+          "supabase_message": "Email updated successfully!",
+          "translation": "Email successfully updated."
+     },
+
+     "booking_created_success": {
+          "supabase_message": "Your booking has been created successfully.",
+          "translation": "Booking successfully created."
+     },
+
+     "booking_updated_success": {
+          "supabase_message": "Your booking has been updated successfully.",
+          "translation": "Booking successfully updated."
+     },
+
+     "booking_deleted_success": {
+          "supabase_message": "Your booking has been deleted successfully.",
+          "translation": "Booking successfully deleted."
+     },
+
+     "booking_declined_success": {
+          "supabase_message": "Your booking has been declined successfully.",
+          "translation": "Booking successfully declined."
+     },
+
+     "booking_cancelled_success": {
+          "supabase_message": "Your booking has been cancelled successfully.",
+          "translation": "Booking successfully cancelled."
+     },
+
+     "booking_status_changed_success": {
+          "supabase_message": "The booking status has been updated successfully.",
+          "translation": "Booking status successfully updated."
+     },
+
+     "offer_deleted_at_changed_success": {
+          "supabase_message": "Successfully updated offer deleted at",
+          "translation": "The offer status was successfully updated."
+     },
+
+     "offers_fetch_error": "Error fetching offers",
+     "offers_empty_message": "You haven't published any offers yet",
+     "bookings_renter_empty_message": "You don't have any bookings yet",
+     "bookings_tenant_pending_empty_message": "No pending rentals",
+     "bookings_tenant_cancelled_empty_message": "No cancelled rentals",
+     "bookings_tenant_confirmed_empty_message": "No confirmed rentals",
+     "bookings_tenant_declined_empty_message": "No declined bookings",
+     "bookings_tenant_rented_empty_message": "No rentals in progress",
+     "bookings_tenant_empty_message": "No rentals",
+     "select_boat_empty_message": "You don't have any boats yet",
+     "boats_empty_message": "You don't have any boats yet",
+
+     "bookings_owner_pending_empty_message": "No pending bookings",
+     "bookings_owner_cancelled_empty_message": "No cancelled bookings",
+     "bookings_owner_confirmed_empty_message": "No confirmed bookings",
+     "bookings_owner_declined_empty_message": "No declined bookings",
+     "bookings_owner_rented_empty_message": "No rentals in progress",
+     "bookings_owner_empty_message": "No bookings",
+
+     "owner_offers_empty_message": "You haven't published any offers yet",
+     "owner_offers_active_empty_message": "You don't have any active offers",
+     "owner_offers_inactive_empty_message": "You don't have any inactive offers",
+
+     "booking_all_btn": "All",
+     "booking_cancelled_btn": "Cancelled",
+     "booking_declined_btn": "Declined",
+     "booking_pending_btn": "Pending",
+     "booking_confirmed_btn": "Confirmed",
+     "booking_rented_btn": "Rented",
+
+     "owner_offers_all_btn": "All",
+     "owner_offers_active_btn": "Active",
+     "owner_offers_inactive_btn": "Inactive",
+
+     "booking_pending_chip": "Pending confirmation",
+     "booking_confirmed_chip": "Confirmed",
+     "booking_cancelled_chip": "Cancelled",
+     "booking_declined_chip": "Declined",
+     "booking_rented_chip": "Rented",
+
+     "bookings_fetch_error": "Error fetching bookings",
+
+     "validation_avatar_required": "A profile picture is required.",
+
+     "drawer_setting_btn": "Settings",
+     "drawer_settings_change_language": "Change language",
+     "drawer_profile": "My profile",
+     "drawer_edit_profile": "Edit my profile",
+     "drawer_edit_email": "Edit my email address",
+     "drawer_my_boats": "My boats",
+     "drawer_add_boat": "Add a boat",
+     "drawer_edit_boat": "Edit a boat",
+     "drawer_home": "Home",
+     "drawer_add_offer": "Add an offer",
+     "drawer_edit_offer": "Edit an offer",
+     "drawer_offer_detail": "Offer details",
+     "drawer_checkout": "Proceed to payment",
+     "drawer_select_location": "Offer location",
+     "drawer_select_rental_period": "Rental period",
+     "drawer_select_equipments": "Equipment",
+     "drawer_select_boat": "Boat selection",
+     "drawer_my_offers": "My offers",
+     "drawer_my_bookings_as_renter": "My bookings",
+     "drawer_my_bookings_as_tenants": "My rentals",
+
+     "profile_title": "My profile",
+
+     "settings_title": "My settings",
+     "settings_language": "Change language",
+     "settings_app_currently_in": "The app is currently in",
+     "settings_change_language": "To change the language",
+
      "sailboat": "Sailboat",
      "motorboat": "Motorboat",
      "catamaran": "Catamaran",
      "trimaran": "Trimaran",
      "yacht": "Yacht",
+
      "offer_title_label": "Offer title",
      "offer_description_label": "Offer description",
      "offer_price_label": "Offer price",
      "offer_city_label": "City",
      "offer_country_label": "Country",
+
      "offer_title_placeholder": "Offer title",
      "offer_description_placeholder": "Offer description",
-     "offer_price_placeholder": "Rental price per",
+     "offer_price_placeholder": "Rental price",
      "offer_city_placeholder": "City",
      "offer_country_placeholder": "Country",
-     "offer_price_per_hour": "hour",
-     "offer_price_per_day": "day",
-     "offer_price_per_week": "week",
-     "offer_price_per_month": "month",
-     "offer_price_per_year": "year",
      "offer_create_title": "Create an offer",
+
      "select_boat_title": "Select a boat to associate with the offer",
-     "select_boat_button": "Select boat",
+     "select_boat_button": "Select the boat",
+
+     "select_equipment_name": "Equipment name",
+     "select_equipment_quantity": "Quantity",
+
      "close_modal_button": "Close",
      "is_available_label": "Offer available upon publication",
      "is_skipper_available_label": "Is the skipper included?",
-     "is_team_available_label": "Is a team included?",
+     "is_team_available_label": "Is a crew included?",
      "select_rental_period_title": "Select the rental period",
-     "select_rental_period_button": "Select the periods",
+     "select_rental_period_button": "Select rental period",
      "rental_period_title": "Rental period",
+
+     "select_location_title": "Offer location",
+     "select_rental_title": "Rental period",
+     "select_equipment_title": "Included equipment",
+
+     "location_search_label": "Search for a location",
+     "location_search_placeholder": "Search for a location",
+
+     "equipment_title": "Add the equipment included in the rental",
+     "equipment_description": "This will add value to your listing, but it is not mandatory",
+
      "select_dates_button": "Select dates",
      "start_date_label": "Start date",
      "end_date_label": "End date",
@@ -322,62 +499,50 @@
      "select_location_button": "Select location",
      "select_equipment_button": "Define equipment",
      "cancel_button": "Cancel",
-     "start_date_required": "You must select a rental period.",
-     "end_date_required": "The end date is required.",
-     "loading_offer": "Loading the offer...",
-     "processing_button": "Processing...",
-     "save": "Save",
-     "published_at": "Published on",
-     "pay": "Pay",
-     "add": "Add",
-     "cancel": "Cancel",
-     "confirm": "Confirm",
-     "your_rental": "Your rental",
-     "from_date": "From",
-     "to_date": "To",
-     "select_boat": "Select a boat",
-     "add_enquipments_include": "Add the equipment included in the rental",
-     "add_equipments_description": "This will add value to your listing, but it is not mandatory",
-     "your_selection": "Your selection",
-     "change_avatar_button": "Change avatar",
-     "email_change_title": "Need to change your email?",
-     "email_change_subtitle": "Consider it done!",
-     "email_change_description": "A confirmation email will be sent to both your old and new addresses",
-     "offers_fetch_error": "Error fetching offers",
-     "offers_empty_message": "You haven't published any offers yet",
-     "drawer_profile": "My profile",
-     "drawer_edit_profile": "Edit my profile",
-     "drawer_edit_email": "Edit my email address",
-     "drawer_my_boats": "My boats",
-     "drawer_add_boat": "Add a boat",
-     "drawer_edit_boat": "Edit a boat",
-     "drawer_home": "Home",
-     "drawer_add_offer": "Add an offer",
-     "drawer_edit_offer": "Edit an offer",
-     "drawer_offer_detail": "Offer details",
-     "drawer_checkout": "Proceed to payment",
-     "drawer_select_location": "Offer location",
-     "drawer_select_rental_period": "Rental period",
-     "drawer_select_equipments": "Equipments",
-     "drawer_select_boat": "Select a boat",
-     "drawer_my_offers": "My offers",
-     "start_date_invalid": "The start date must be before the end date.",
-     "end_date_invalid": "The end date must be after the start date.",
-     "not_specified": "Waiting for selection",
+     "end_date_required": "End date is required.",
+     "loading_offer": "Loading offer...",
+     "a_moment_title": "One moment...",
+     "processing_button": "Processing",
+     "your_boats": "Your boats",
+     "not_specified": "Awaiting selection",
+     "location_not_specified": "Awaiting selection",
 
-     "zod_rule_title_required": "The title is required.",
-     "zod_rule_title_min_length": "The title must contain at least 10 characters.",
-     "zod_rule_title_max_length": "The title must not exceed 100 characters.",
-     "zod_rule_description_min_length": "The description must contain at least 20 characters.",
-     "zod_rule_description_max_length": "The description must not exceed 500 characters.",
-     "zod_rule_price_required": "The price is required.",
-     "zod_rule_price_invalid": "The price must be a number.",
-     "zod_rule_price_min": "The price must be greater than 0.",
+     "zod_rule_title_required": "The offer title is required.",
+     "zod_rule_title_min_length": "The offer title must be at least 10 characters long.",
+     "zod_rule_title_max_length": "The offer title must not exceed 100 characters.",
+     "zod_rule_description_required": "The offer description is required.",
+     "zod_rule_description_min_length": "The offer description must be at least 20 characters long.",
+     "zod_rule_description_max_length": "The offer description must not exceed 500 characters.",
+     "zod_rule_price_min": "The offer price must be greater than 0.",
      "zod_rule_end_date_must_be_after_start_date": "The end date must be after the start date.",
-     "zod_rule_start_date_required": "The start date is required.",
-     "zod_rule_end_date_required": "The end date is required.",
+     "zod_rule_rental_period_required": "You must select a rental period.",
+     "zod_rule_end_date_required": "End date is required.",
+     "zod_rule_period_too_short": "The rental period must be at least 3 days.",
+     "zod_rule_boat_required": "You must select a boat.",
+     "zod_rule_location_required": "You must select a location.",
+     "zod_rule_zipcode_too_short": "The zip code must be at least 5 characters long.",
+     "zod_rule_zipcode_invalid": "The zip code is invalid.",
 
-     "zod_rule_rental_period_invalid_days": "The rental period must be between 1 and 7 days inclusive.",
-     "zod_rule_rental_period_invalid_weeks": "The rental period must be between 1 and 4 weeks inclusive.",
-     "zod_rule_rental_period_invalid_months": "The rental period must be between 1 and 12 months inclusive."
+     "zod_rule_equipment_name_required": "The equipment name is required.",
+     "zod_rule_equipment_name_min_length": "The equipment name must be at least 3 characters long.",
+     "zod_rule_equipment_quantity_required": "The equipment quantity is required.",
+     "zod_rule_equipment_quantity_min_length": "The equipment quantity cannot be less than 1",
+
+     "zod_rule_price_min_value": "The offer price must be at least $5",
+
+     "zod_rule_boat_name_no_empty": "The boat name is required.",
+     "zod_rule_boat_description_no_empty": "The boat description is required.",
+
+     "zod_rule_boat_name_min_3": "The boat name must be at least 3 characters long.",
+     "zod_rule_boat_description_min_10": "The boat description must be at least 10 characters long.",
+
+     "zod_rule_boat_capacity_min_value": "The boat capacity must be at least 1.",
+
+     "zod_rule_boat_images_min_length": "You must select at least one photo for your boat.",
+
+     "zod_rule_address_required": "The address is required.",
+     "zod_rule_city_required": "The city is required.",
+     "zod_rule_country_required": "The country is required.",
+     "zod_rule_zipcode_required": "The zip code is required.",
+     "zod_rule_email_required": "The email address is required."
 }

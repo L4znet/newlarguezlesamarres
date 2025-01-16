@@ -14,6 +14,8 @@ interface OfferRepository {
      getSingleOffer({ offerId }: { offerId: string }): Promise<OfferIdResponseDTO | undefined>
      getOffers(profileId: string): Promise<GetOffersDTO[] | undefined>
      getOwnOffers(profileId: string): Promise<GetOffersDTO[] | undefined>
+     updateOfferAvailability({ offerId, isAvailable }: { offerId: string; isAvailable: boolean }): Promise<OfferIdResponseDTO | undefined>
+     updateOfferDeletedAt({ offerId, deletedAt }: { offerId: string; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined>
 }
 
 export default OfferRepository

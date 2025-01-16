@@ -1,74 +1,64 @@
 {
-     "home_title": "¡Hola y bienvenido a Larguez les amarres!",
-     "home_subtitle": "Para una experiencia más cómoda a bordo, ¡inicia sesión!",
+     "home_title": "¡Hola y bienvenido a Largad las amarras!",
+     "home_subtitle": "¡Para una experiencia más cómoda a bordo, inicia sesión!",
      "home_noaccount": "Si aún no tienes una cuenta, ¡regístrate!",
-
      "language_switcher": "Idioma de la aplicación",
      "language_switcher_french_btn": "Francés",
      "language_switcher_english_btn": "Inglés",
-
+     "language_switcher_spanish_btn": "Español",
      "login_title": "¿Ya tienes una cuenta?",
      "login_subtitle": "¡Inicia sesión!",
-
      "login_forgot_password": "¿Olvidaste tu contraseña?",
-     "login_noaccount": "¿No tienes cuenta? ¡No hay problema!",
+     "login_noaccount": "¿No tienes una cuenta? ¡No hay problema!",
      "login_signup_btn": "Voy a crear una cuenta",
      "login_submit": "Iniciar sesión",
-
      "register_title": "¿Es tu primera vez aquí?",
      "register_subtitle": "¡Crea tu cuenta!",
-
      "lastname_label": "Apellido",
      "firstname_label": "Nombre",
      "username_label": "Nombre de usuario",
      "email_label": "Correo electrónico",
      "password_label": "Contraseña",
      "password_confirm_label": "Confirma la contraseña",
-
      "lastname_placeholder": "Apellido",
      "firstname_placeholder": "Nombre",
      "username_placeholder": "Nombre de usuario",
      "email_placeholder": "Correo electrónico",
      "password_placeholder": "Contraseña",
      "password_confirm_placeholder": "Confirma la contraseña",
-
      "register_already_account": "¿Ya tienes una cuenta? Inicia sesión",
      "register_login_btn": "¡Ya tengo una cuenta!",
      "register_submit": "Registrarse",
-
+     "no_account_found": "¡No se encontró ninguna cuenta! Esto debe ser un error. Cierra sesión e inténtalo de nuevo.",
      "forgot_password_title": "¿No puedes recordar tu contraseña?",
-     "forgot_password_subtitle": "¡Sucede! Te ayudaremos a recuperarla",
-
+     "forgot_password_subtitle": "¡Eso pasa! Vamos a ayudarte a recuperarla",
      "forgot_password_email_label": "Correo electrónico",
      "forgot_password_email_placeholder": "Correo electrónico",
      "forgot_password_submit": "Recuperar mi contraseña",
-     "forgot_remembered_password_title": "¡Finalmente la recuerdo!",
-     "forgot_remembered_password_login": "¡Inicia sesión!",
-
-     "reset_password_title": "Restablecer contraseña",
+     "forgot_remembered_password_title": "¡Al final sí la recuerdo!",
+     "forgot_remembered_password_login": "¡Inicio sesión!",
+     "reset_password_title": "Restablecer la contraseña",
      "reset_password_new_password": "Nueva contraseña",
      "reset_password_new_password_confirm": "Confirma la nueva contraseña",
-     "reset_password_submit": "Restablecer contraseña",
-
+     "reset_password_submit": "Restablecer la contraseña",
      "boat_name_label": "Nombre del barco",
      "boat_description_label": "Descripción del barco",
      "boat_capacity_label": "Capacidad del barco",
-
      "boat_type_placeholder": "Tipo de barco",
      "boat_name_placeholder": "Nombre del barco",
      "boat_description_placeholder": "Descripción del barco",
      "boat_capacity_placeholder": "Capacidad del barco",
-
+     "nothing_to_show": "Nada que mostrar por ahora",
      "bottom_bar_(home)/index": "Inicio",
      "bottom_bar_index": "Inicio",
      "bottom_bar_(profile)": "Perfil",
      "bottom_bar_(boats)": "Barcos",
-     "bottom_bar_settings": "Configuraciones",
+     "bottom_bar_settings": "Configuración",
      "bottom_bar_login": "Iniciar sesión",
-     "bottom_bar_register": "Registro",
+     "bottom_bar_register": "Registrarse",
      "bottom_bar_feed": "Feed",
      "bottom_bar_(offers)": "Ofertas",
-
+     "bottom_bar_(bookings)": "Reservas",
      "login_btn": "Iniciar sesión",
      "register_btn": "Registrarse",
      "logout_btn": "Cerrar sesión",
@@ -79,69 +69,86 @@
      "delete_btn": "Confirmar eliminación",
      "create_boat_button": "Añadir un barco",
      "create_offer_button": "Añadir una oferta",
+     "edit_offer_button": "Editar oferta",
      "edit_boat_button": "Editar barco",
      "close_btn": "Cerrar",
-     "done_btn": "Terminado",
+     "done_btn": "Hecho",
      "change_thumbnail_btn": "Seleccionar fotos",
-
      "loading_button_text": "Cargando...",
      "delete": "Eliminar",
+     "inactive": "Desactivar",
+     "restore": "Restaurar",
      "edit": "Editar",
      "save": "Guardar",
+     "cancel": "Cancelar",
+     "confirm": "Confirmar",
      "money_symbol": "€",
      "published_at": "Publicado el",
      "published_by": "Publicado por",
      "price": "Precio",
      "pay": "Pagar",
      "add": "Añadir",
-     "confirm": "Confirmar",
-     "cancel": "Cancelar",
+     "days": "días",
+     "weeks": "semanas",
+     "week": "semana",
+     "month": "mes",
+     "months": "meses",
+     "year": "año",
+     "and": "y",
+     "years": "años",
      "unit_price": "Precio unitario",
      "moreDetails": "Ver más detalles",
      "rental_date": "Fecha de reserva",
      "checkout": "Pagar",
      "your_rental": "Tu reserva",
-     "continue_to_payment": "Continuar al pago",
-     "from_date": "De",
-     "to_date": "A",
+     "book_offer": "Reservar la oferta",
+     "already_reserved": "Ya reservado",
+     "pay_booking": "Pagar la reserva",
+     "cancel_booking": "Cancelar",
+     "booking_decline_btn": "Rechazar",
+     "booking_confirm_btn": "Confirmar",
+     "from_date": "Desde",
+     "to_date": "Hasta",
      "select_boat": "Selecciona un barco",
-     "add_enquipments_include": "Añade el equipo incluido en el alquiler",
-     "add_equipments_description": "Esto agregará valor a tu anuncio, pero no es obligatorio",
      "your_selection": "Tu selección",
      "change_avatar_button": "Cambiar avatar",
-
+     "confirm_delete": "Confirmar eliminación",
+     "cancel_delete": "Cancelar eliminación",
      "flash_title_danger": "Error",
      "flash_title_success": "Éxito",
      "flash_title_warning": "Advertencia",
      "flash_title_info": "Información",
      "flash_title_default": "Información",
      "flash_title_none": "Información",
-
+     "flash_title_payment_success": "Pago realizado",
+     "flash_title_payment_error": "Error en el pago",
+     "flash_title_payment_pending": "Pago pendiente",
+     "flash_title_payment_canceled": "Pago cancelado",
      "fix_errors_before_submitting": "Por favor, corrige los errores antes de enviar el formulario.",
-
      "validation_email_invalid": "La dirección de correo electrónico no es válida.",
      "validation_password_too_short": "La contraseña debe tener al menos 8 caracteres.",
      "validation_firstname_required": "El nombre es obligatorio.",
      "validation_lastname_required": "El apellido es obligatorio.",
      "validation_username_required": "El nombre de usuario es obligatorio.",
      "validation_passwords_do_not_match": "Las contraseñas no coinciden.",
-     "loading_title": "Por favor, ten paciencia, estamos en ello.",
-     "edit_boat_loading": "El astillero se encarga, pronto estará listo.",
+     "loading_title": "Un poco de paciencia, ¡lo estamos resolviendo!",
+     "edit_boat_loading": "El astillero se está encargando, ¡pronto estará listo!",
      "email_change_title": "¿Necesitas cambiar tu correo electrónico?",
-     "email_change_subtitle": "¡Considéralo hecho!",
-     "email_change_description": "Se enviará un correo de confirmación a tu dirección antigua y nueva",
-
+     "email_change_subtitle": "¡Hecho en un momento!",
+     "email_change_description": "Se enviará un correo de confirmación a tu dirección anterior y a la nueva.",
+     "modal_delete_offer_title": "Estás a punto de eliminar la oferta",
+     "modal_delete_offer_description": "Esta acción es irreversible, ¿estás seguro de que quieres continuar?",
      "auth_api_error_rate_limit_exceeded": {
-          "supabase_message": "Límite de tasa de correos superado",
-          "translation": "Has superado el límite de correos."
+          "supabase_message": "Límite de frecuencia de correos electrónicos superado",
+          "translation": "Has superado el límite de frecuencia de correos electrónicos."
      },
      "auth_api_error_invalid_email": {
-          "supabase_message": "Correo electrónico inválido",
-          "translation": "Dirección de correo electrónico inválida."
+          "supabase_message": "Correo electrónico no válido",
+          "translation": "Dirección de correo electrónico no válida."
      },
      "auth_api_error_invalid_password": {
-          "supabase_message": "Contraseña inválida",
-          "translation": "Contraseña inválida."
+          "supabase_message": "Contraseña no válida",
+          "translation": "Contraseña no válida."
      },
      "auth_api_error_user_already_registered": {
           "supabase_message": "Usuario ya registrado",
@@ -152,100 +159,200 @@
           "translation": "La dirección de correo electrónico no ha sido confirmada."
      },
      "auth_api_error_invalid_credentials": {
-          "supabase_message": "Credenciales inválidas",
-          "translation": "Credenciales de inicio de sesión inválidas."
+          "supabase_message": "Credenciales de inicio de sesión no válidas",
+          "translation": "Credenciales de inicio de sesión no válidas."
      },
-
      "auth_api_success_user_registered": {
           "supabase_message": "Usuario registrado con éxito",
           "translation": "Registro exitoso."
      },
      "auth_api_success_password_reset_sent": {
-          "supabase_message": "Correo de restablecimiento enviado",
+          "supabase_message": "Correo de restablecimiento de contraseña enviado",
           "translation": "Se ha enviado un correo para restablecer la contraseña."
      },
      "auth_api_success_email_confirmed": {
-          "supabase_message": "Correo electrónico confirmado",
-          "translation": "El correo electrónico ha sido confirmado con éxito."
+          "supabase_message": "Correo electrónico confirmado con éxito",
+          "translation": "La dirección de correo electrónico ha sido confirmada con éxito."
      },
      "auth_api_success_password_reset": {
-          "supabase_message": "Contraseña restablecida",
-          "translation": "La contraseña ha sido restablecida con éxito."
+          "supabase_message": "Contraseña restablecida con éxito",
+          "translation": "La contraseña se ha restablecido con éxito."
      },
      "auth_api_success_password_changed": {
-          "supabase_message": "Contraseña cambiada",
-          "translation": "La contraseña ha sido cambiada con éxito."
+          "supabase_message": "Contraseña cambiada con éxito",
+          "translation": "La contraseña se ha cambiado con éxito."
      },
      "auth_api_success_email_changed": {
-          "supabase_message": "Correo electrónico cambiado",
-          "translation": "El correo electrónico ha sido cambiado con éxito."
+          "supabase_message": "Correo electrónico cambiado con éxito",
+          "translation": "La dirección de correo electrónico se ha cambiado con éxito."
      },
      "auth_api_success_user_updated": {
           "supabase_message": "Perfil de usuario actualizado",
-          "translation": "El perfil ha sido actualizado con éxito."
+          "translation": "El perfil se ha actualizado con éxito."
      },
      "auth_api_success_user_deleted": {
-          "supabase_message": "Usuario eliminado",
-          "translation": "La cuenta ha sido eliminada con éxito."
+          "supabase_message": "Cuenta de usuario eliminada",
+          "translation": "La cuenta se ha eliminado con éxito."
      },
      "auth_api_success_email_sent": {
           "supabase_message": "Correo enviado con éxito",
-          "translation": "Correo enviado con éxito."
+          "translation": "El correo se ha enviado con éxito."
      },
      "auth_api_success_user_logged_out": {
-          "supabase_message": "Usuario desconectado",
+          "supabase_message": "Usuario desconectado con éxito",
           "translation": "Has cerrado sesión con éxito."
      },
      "auth_api_success_user_logged_in": {
-          "supabase_message": "Usuario conectado",
-          "translation": "Ahora estás conectado."
+          "supabase_message": "Usuario conectado con éxito",
+          "translation": "Ahora estás conectado"
      },
      "supabase_boat_success_deleted_boat": {
-          "supabase_message": "Barco eliminado con éxito!",
-          "translation": "¡Barco eliminado con éxito!"
+          "supabase_message": "¡Barco eliminado con éxito!",
+          "translation": "¡Eliminación del barco exitosa!"
      },
      "supabase_boat_success_added_boat": {
-          "supabase_message": "Barco añadido con éxito!",
+          "supabase_message": "¡Barco añadido con éxito!",
           "translation": "¡Barco añadido con éxito!"
      },
      "supabase_boat_success_updated_boat": {
-          "supabase_message": "Barco actualizado con éxito!",
+          "supabase_message": "¡Barco actualizado con éxito!",
           "translation": "¡Barco actualizado con éxito!"
      },
+     "supabase_offer_success_created_offer": {
+          "supabase_message": "Oferta creada",
+          "translation": "¡Oferta creada con éxito!"
+     },
+     "payment_success": {
+          "supabase_message": "Pago exitoso",
+          "translation": "Pago realizado con éxito."
+     },
      "supabase_offer_success_deleted_offer": {
-          "supabase_message": "Oferta eliminada con éxito!",
+          "supabase_message": "¡Oferta eliminada con éxito!",
           "translation": "¡Oferta eliminada con éxito!"
      },
      "supabase_offer_success_added_offer": {
-          "supabase_message": "Oferta añadida con éxito!",
+          "supabase_message": "¡Oferta añadida con éxito!",
           "translation": "¡Oferta añadida con éxito!"
      },
      "supabase_offer_success_updated_offer": {
-          "supabase_message": "Oferta actualizada con éxito!",
+          "supabase_message": "¡Oferta actualizada con éxito!",
           "translation": "¡Oferta actualizada con éxito!"
      },
      "supabase_boat_error_deleted_boat": {
-          "supabase_message": "Ocurrió un error al eliminar el barco",
-          "translation": "Ocurrió un error al eliminar el barco."
+          "supabase_message": "Se produjo un error al eliminar el barco",
+          "translation": "Se produjo un error al eliminar el barco."
      },
      "supabase_boat_error_added_boat": {
-          "supabase_message": "Ocurrió un error al añadir el barco",
-          "translation": "Ocurrió un error al añadir el barco."
+          "supabase_message": "Se produjo un error al añadir el barco",
+          "translation": "Se produjo un error al añadir el barco."
      },
      "supabase_boat_error_updated_boat": {
-          "supabase_message": "Ocurrió un error al actualizar el barco",
-          "translation": "Ocurrió un error al actualizar el barco."
+          "supabase_message": "Se produjo un error al actualizar el barco",
+          "translation": "Se produjo un error al actualizar el barco."
+     },
+     "supabase_offer_error_deleted_offer": {
+          "supabase_message": "Se produjo un error al eliminar la oferta",
+          "translation": "Se produjo un error al eliminar la oferta."
+     },
+     "supabase_offer_error_added_offer": {
+          "supabase_message": "Se produjo un error al añadir la oferta",
+          "translation": "Se produjo un error al añadir la oferta."
+     },
+     "supabase_offer_error_updated_offer": {
+          "supabase_message": "Se produjo un error al actualizar la oferta",
+          "translation": "Se produjo un error al actualizar la oferta."
+     },
+     "supabase_offer_error_created_offer": {
+          "supabase_message": "Se produjo un error al crear la oferta",
+          "translation": "Se produjo un error al crear la oferta."
+     },
+     "all_fields_required": {
+          "supabase_message": "Todos los campos son obligatorios",
+          "translation": "Todos los campos son obligatorios."
+     },
+     "cant_create_offer_without_boats": {
+          "supabase_message": "flash_description_no_boats",
+          "translation": "Debes añadir un barco para crear una oferta."
+     },
+     "offers_not_found": {
+          "supabase_message": "No se encontraron ofertas",
+          "translation": "No se encontraron ofertas."
      },
      "location_selected_success": {
-          "supabase_message": "Ubicación seleccionada con éxito",
-          "translation": "Ubicación seleccionada con éxito."
+          "supabase_message": "Localización seleccionada con éxito",
+          "translation": "Localización seleccionada con éxito."
      },
      "location_selected_error": {
-          "supabase_message": "Ocurrió un error al buscar ubicaciones",
-          "translation": "Ocurrió un error al buscar ubicaciones."
+          "supabase_message": "Se produjo un error al buscar localizaciones",
+          "translation": "Error al seleccionar la localización."
      },
-     "offers_fetch_error": "Error al recuperar las ofertas",
-     "offers_empty_message": "Todavía no has publicado ninguna oferta",
+     "email_updated_success": {
+          "supabase_message": "¡Correo electrónico actualizado con éxito!",
+          "translation": "Dirección de correo electrónico actualizada con éxito."
+     },
+     "booking_created_success": {
+          "supabase_message": "Tu reserva ha sido creada con éxito.",
+          "translation": "Reserva creada con éxito."
+     },
+     "booking_updated_success": {
+          "supabase_message": "Tu reserva ha sido actualizada con éxito.",
+          "translation": "Reserva modificada con éxito."
+     },
+     "booking_deleted_success": {
+          "supabase_message": "Tu reserva ha sido eliminada con éxito.",
+          "translation": "Reserva eliminada con éxito."
+     },
+     "booking_declined_success": {
+          "supabase_message": "Tu reserva ha sido rechazada con éxito.",
+          "translation": "Reserva rechazada con éxito."
+     },
+     "booking_cancelled_success": {
+          "supabase_message": "Tu reserva ha sido cancelada con éxito.",
+          "translation": "Reserva cancelada con éxito."
+     },
+     "booking_status_changed_success": {
+          "supabase_message": "El estado de la reserva ha sido actualizado con éxito.",
+          "translation": "Estado de la reserva actualizado con éxito."
+     },
+     "offer_deleted_at_changed_success": {
+          "supabase_message": "¡Oferta eliminada con éxito!",
+          "translation": "¡El estado de la oferta se ha actualizado con éxito!"
+     },
+     "offers_fetch_error": "Error al obtener las ofertas",
+     "offers_empty_message": "Aún no has publicado ninguna oferta",
+     "bookings_renter_empty_message": "Aún no tienes reservas",
+     "bookings_tenant_pending_empty_message": "No hay alquileres pendientes",
+     "bookings_tenant_cancelled_empty_message": "No hay alquileres cancelados",
+     "bookings_tenant_confirmed_empty_message": "No hay alquileres confirmados",
+     "bookings_tenant_declined_empty_message": "No hay reservas rechazadas",
+     "bookings_tenant_rented_empty_message": "No hay alquileres en curso",
+     "bookings_tenant_empty_message": "Sin alquileres",
+     "select_boat_empty_message": "Aún no tienes un barco",
+     "boats_empty_message": "Aún no tienes barcos",
+     "bookings_owner_pending_empty_message": "No hay reservas pendientes",
+     "bookings_owner_cancelled_empty_message": "No hay reservas canceladas",
+     "bookings_owner_confirmed_empty_message": "No hay reservas confirmadas",
+     "bookings_owner_declined_empty_message": "No hay reservas rechazadas",
+     "bookings_owner_rented_empty_message": "No hay alquileres en curso",
+     "bookings_owner_empty_message": "No hay reservas",
+     "owner_offers_empty_message": "Aún no has publicado ninguna oferta",
+     "owner_offers_active_empty_message": "Aún no tienes ofertas activas",
+     "owner_offers_inactive_empty_message": "Aún no tienes ofertas inactivas",
+     "booking_all_btn": "Todas",
+     "booking_cancelled_btn": "Canceladas",
+     "booking_declined_btn": "Rechazadas",
+     "booking_pending_btn": "Pendientes",
+     "booking_confirmed_btn": "Confirmadas",
+     "booking_rented_btn": "Alquiladas",
+     "owner_offers_all_btn": "Todas",
+     "owner_offers_active_btn": "Activas",
+     "owner_offers_inactive_btn": "Inactivas",
+     "booking_pending_chip": "Pendiente de confirmación",
+     "booking_confirmed_chip": "Confirmada",
+     "booking_cancelled_chip": "Cancelada",
+     "booking_declined_chip": "Rechazada",
+     "booking_rented_chip": "Alquilada",
+     "bookings_fetch_error": "Error al recuperar las reservas",
      "validation_avatar_required": "Se requiere una foto de perfil.",
      "drawer_setting_btn": "Configuración",
      "drawer_settings_change_language": "Cambiar idioma",
@@ -259,17 +366,19 @@
      "drawer_add_offer": "Añadir una oferta",
      "drawer_edit_offer": "Editar una oferta",
      "drawer_offer_detail": "Detalles de la oferta",
-     "drawer_checkout": "Realizar pago",
+     "drawer_checkout": "Proceder al pago",
      "drawer_select_location": "Ubicación de la oferta",
      "drawer_select_rental_period": "Periodo de alquiler",
      "drawer_select_equipments": "Equipos",
-     "drawer_select_boat": "Seleccionar un barco",
+     "drawer_select_boat": "Selección del barco",
      "drawer_my_offers": "Mis ofertas",
+     "drawer_my_bookings_as_renter": "Mis reservas",
+     "drawer_my_bookings_as_tenants": "Mis alquileres",
      "profile_title": "Mi perfil",
      "settings_title": "Mis configuraciones",
      "settings_language": "Cambiar idioma",
      "settings_app_currently_in": "La aplicación está actualmente en",
-     "settings_change_language": "¿Quieres cambiarlo?",
+     "settings_change_language": "Para cambiar el idioma",
      "sailboat": "Velero",
      "motorboat": "Lancha",
      "catamaran": "Catamarán",
@@ -282,25 +391,29 @@
      "offer_country_label": "País",
      "offer_title_placeholder": "Título de la oferta",
      "offer_description_placeholder": "Descripción de la oferta",
-     "offer_price_placeholder": "Precio del alquiler por",
+     "offer_price_placeholder": "Precio del alquiler",
      "offer_city_placeholder": "Ciudad",
      "offer_country_placeholder": "País",
-     "offer_price_per_hour": "hora",
-     "offer_price_per_day": "día",
-     "offer_price_per_week": "semana",
-     "offer_price_per_month": "mes",
-     "offer_price_per_year": "año",
      "offer_create_title": "Crear una oferta",
      "select_boat_title": "Selecciona un barco para asociarlo a la oferta",
-     "select_boat_button": "Seleccionar barco",
+     "select_boat_button": "Seleccionar el barco",
+     "select_equipment_name": "Nombre del equipo",
+     "select_equipment_quantity": "Cantidad",
      "close_modal_button": "Cerrar",
-     "is_available_label": "Oferta disponible al publicarse",
-     "is_skipper_available_label": "¿Incluye patrón?",
-     "is_team_available_label": "¿Incluye equipo?",
-     "select_rental_period_title": "Seleccionar el periodo de alquiler",
-     "select_rental_period_button": "Seleccionar periodos",
+     "is_available_label": "Oferta disponible al momento de la publicación",
+     "is_skipper_available_label": "¿El capitán está incluido?",
+     "is_team_available_label": "¿Se incluye un equipo?",
+     "select_rental_period_title": "Selecciona el periodo de alquiler",
+     "select_rental_period_button": "Seleccionar el periodo de alquiler",
      "rental_period_title": "Periodo de alquiler",
-     "select_dates_button": "Seleccionar fechas",
+     "select_location_title": "Ubicación de la oferta",
+     "select_rental_title": "Periodo de alquiler",
+     "select_equipment_title": "Equipos incluidos",
+     "location_search_label": "Buscar una ubicación",
+     "location_search_placeholder": "Buscar una ubicación",
+     "equipment_title": "Añade los equipos incluidos en el alquiler",
+     "equipment_description": "Esto añadirá valor a tu anuncio, pero no es obligatorio",
+     "select_dates_button": "Selecciona las fechas",
      "start_date_label": "Fecha de inicio",
      "end_date_label": "Fecha de fin",
      "none": "Sin selección",
@@ -329,12 +442,42 @@
      "select_location_button": "Seleccionar ubicación",
      "select_equipment_button": "Definir equipos",
      "cancel_button": "Cancelar",
-     "start_date_required": "Debes seleccionar un periodo de alquiler.",
-     "end_date_required": "La fecha de fin es obligatoria.",
+     "end_date_required": "Se requiere la fecha de fin.",
      "loading_offer": "Cargando la oferta...",
-     "processing_button": "Procesando...",
+     "a_moment_title": "Un momento...",
+     "processing_button": "Procesando",
      "your_boats": "Tus barcos",
-     "start_date_invalid": "La fecha de inicio no puede ser anterior a hoy.",
-     "end_date_invalid": "La fecha de fin no puede ser anterior a la fecha de inicio.",
-     "not_specified": "En espera de selección"
+     "not_specified": "Pendiente de selección",
+     "location_not_specified": "Pendiente de selección",
+     "zod_rule_title_required": "El título de la oferta es obligatorio.",
+     "zod_rule_title_min_length": "El título de la oferta debe tener al menos 10 caracteres.",
+     "zod_rule_title_max_length": "El título de la oferta no debe superar los 100 caracteres.",
+     "zod_rule_description_required": "La descripción de la oferta es obligatoria.",
+     "zod_rule_description_min_length": "La descripción de la oferta debe tener al menos 20 caracteres.",
+     "zod_rule_description_max_length": "La descripción de la oferta no debe superar los 500 caracteres.",
+     "zod_rule_price_min": "El precio de la oferta debe ser superior a 0.",
+     "zod_rule_end_date_must_be_after_start_date": "La fecha de fin debe ser posterior a la fecha de inicio.",
+     "zod_rule_rental_period_required": "Debes seleccionar un periodo de alquiler.",
+     "zod_rule_end_date_required": "Se requiere la fecha de fin.",
+     "zod_rule_period_too_short": "El periodo de alquiler debe ser de al menos 3 días.",
+     "zod_rule_boat_required": "Debes seleccionar un barco.",
+     "zod_rule_location_required": "Debes seleccionar una ubicación.",
+     "zod_rule_zipcode_too_short": "El código postal debe tener al menos 5 caracteres.",
+     "zod_rule_zipcode_invalid": "El código postal es inválido.",
+     "zod_rule_equipment_name_required": "El nombre del equipo es obligatorio.",
+     "zod_rule_equipment_name_min_length": "El nombre del equipo debe tener al menos 3 caracteres.",
+     "zod_rule_equipment_quantity_required": "La cantidad de equipos es obligatoria.",
+     "zod_rule_equipment_quantity_min_length": "La cantidad de equipos no puede ser inferior a 1",
+     "zod_rule_price_min_value": "El precio de la oferta debe ser al menos €5",
+     "zod_rule_boat_name_no_empty": "El nombre del barco es obligatorio.",
+     "zod_rule_boat_description_no_empty": "La descripción del barco es obligatoria.",
+     "zod_rule_boat_name_min_3": "El nombre del barco debe tener al menos 3 caracteres.",
+     "zod_rule_boat_description_min_10": "La descripción del barco debe tener al menos 10 caracteres.",
+     "zod_rule_boat_capacity_min_value": "La capacidad del barco debe ser al menos 1.",
+     "zod_rule_boat_images_min_length": "Debes seleccionar al menos una foto para tu barco.",
+     "zod_rule_address_required": "La dirección es obligatoria.",
+     "zod_rule_city_required": "La ciudad es obligatoria.",
+     "zod_rule_country_required": "El país es obligatorio.",
+     "zod_rule_zipcode_required": "El código postal es obligatorio.",
+     "zod_rule_email_required": "El correo electrónico es obligatorio."
 }

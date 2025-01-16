@@ -33,13 +33,11 @@ const BookingTenantList = () => {
                },
           })
      }
-
      const handleCancelBooking = (bookingId: string) => {
           updateBookingStatus({ bookingId, status: "cancelled" })
      }
 
      const filterReservations = (status: string) => tenantBookings.filter((item) => item.status === status)
-
      const renderCardItem = ({ item }: { item: GetTenantsBookingsDTO }) => {
           const { totalAmount } = displayTotalPrice(item.offerPrice as string, {
                start: item.startDate,

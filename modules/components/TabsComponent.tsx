@@ -34,6 +34,7 @@ const TabsComponent = ({ tabLabels, children }: { tabLabels: string[]; children:
                          styles.tabContent,
                          {
                               transform: [{ translateX: Animated.multiply(translateX, -1) }],
+                              width: screenWidth * children.length,
                          },
                     ]}
                >
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
      },
      tabContent: {
           flexDirection: "row",
-          width: screenWidth * 6,
           flex: 1,
      },
 })

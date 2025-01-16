@@ -22,22 +22,44 @@ export const OfferSchema = z
                          equipmentQuantity: z.string(),
                     })
                )
-               .optional(),
+               .optional()
+               .superRefine((value, ctx) => {
+                    value?.map((equipment, index) => {
+                         if (value?.length > 0) {
+                              if (equipment.equipmentName === "") {
+                                   ctx.addIssue({
+                                        code: z.ZodIssueCode.custom,
+                                        message: "Equipment name cannot be empty",
+                                        path: ["equipmentName"],
+                                   })
+                              }
+
+                              if (equipment.equipmentQuantity === "") {
+                                   ctx.addIssue({
+                                        code: z.ZodIssueCode.custom,
+                                        message: "Equipment quantity cannot be empty",
+                                        path: ["equipmentQuantity"],
+                                   })
+                              }
+                         }
+                    })
+               }),
+
           isSkipperAvailable: z.boolean(),
           isTeamAvailable: z.boolean(),
           rentalPeriod: z
                .object({
-                    start: z.string().nonempty("zod_rule_rental_period_required"),
-                    end: z.string().nonempty("zod_rule_end_date_required"),
+                    start: z.undefined().refine((val) => val === undefined, { message: "zod_rule_start_date_required" }),
+                    end: z.undefined().refine((val) => val === undefined, { message: "zod_rule_end_date_required" }),
                })
-               .refine(
-                    (value) => {
-                         return !(value.start === "" || value.end === "")
-                    },
-                    {
-                         message: "zod_rule_rental_period_required",
+               .superRefine((value, ctx) => {
+                    if (value.start === undefined || value.end === undefined) {
+                         ctx.addIssue({
+                              code: z.ZodIssueCode.custom,
+                              message: "zod_rule_rental_period_required",
+                         })
                     }
-               ),
+               }),
           location: z
                .object({
                     city: z.string().nonempty("zod_rule_city_required"),
