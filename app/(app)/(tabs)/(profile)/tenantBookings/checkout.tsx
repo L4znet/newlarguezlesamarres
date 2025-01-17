@@ -153,7 +153,7 @@ export default function Checkout() {
                } else {
                     showTranslatedFlashMessage("danger", {
                          title: "Payment Failed",
-                         description: result.error.message,
+                         description: result?.error?.message as string,
                     })
                }
           } catch (e) {

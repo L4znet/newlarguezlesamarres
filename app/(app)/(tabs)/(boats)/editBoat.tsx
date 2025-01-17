@@ -125,6 +125,13 @@ export default function EditBoat({ route }: { route: any }) {
           )
      }
 
+     const onError = () => {
+          showTranslatedFlashMessage("danger", {
+               title: t("flash_title_danger"),
+               description: t("fix_errors_before_submitting"),
+          })
+     }
+
      return (
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
@@ -181,7 +188,7 @@ export default function EditBoat({ route }: { route: any }) {
 
                          {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
 
-                         <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
+                         <Button mode="contained" onPress={handleSubmit(onSubmit, onError)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
                               {isUpdating ? t("loading_button_text") : t("edit_btn")}
                          </Button>
                     </ScrollView>
