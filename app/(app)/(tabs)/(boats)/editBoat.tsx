@@ -58,7 +58,7 @@ export default function EditBoat({ route }: { route: any }) {
      const handleThumbnailChange = async () => {
           try {
                const result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    mediaTypes: "images",
                     allowsMultipleSelection: true,
                     quality: 1,
                     base64: true,
@@ -130,13 +130,13 @@ export default function EditBoat({ route }: { route: any }) {
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollView}>
                          <Controller control={control} name="boatName" render={({ field: { onChange, value } }) => <TextInput label={t("boat_name_label")} placeholder={t("boat_name_placeholder")} value={value} onChangeText={onChange} error={!!errors.boatName} style={styles.input} />} />
-                         {errors.boatName && <Text style={styles.errorText}>{errors.boatName.message}</Text>}
+                         {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
 
                          <Controller control={control} name="boatDescription" render={({ field: { onChange, value } }) => <TextInput label={t("boat_description_label")} placeholder={t("boat_description_placeholder")} value={value} onChangeText={onChange} error={!!errors.boatDescription} style={styles.input} multiline />} />
-                         {errors.boatDescription && <Text style={styles.errorText}>{errors.boatDescription.message}</Text>}
+                         {errors.boatDescription && <Text style={styles.errorText}>{t(errors.boatDescription.message as string)}</Text>}
 
                          <Controller control={control} name="boatCapacity" render={({ field: { onChange, value } }) => <TextInput label={t("boat_capacity_label")} placeholder={t("boat_capacity_placeholder")} value={value} onChangeText={onChange} keyboardType="numeric" error={!!errors.boatCapacity} style={styles.input} />} />
-                         {errors.boatCapacity && <Text style={styles.errorText}>{errors.boatCapacity.message}</Text>}
+                         {errors.boatCapacity && <Text style={styles.errorText}>{t(errors.boatCapacity.message as string)}</Text>}
 
                          <Controller
                               control={control}
@@ -179,7 +179,7 @@ export default function EditBoat({ route }: { route: any }) {
                               }}
                          />
 
-                         {errors.boatImages && <Text style={styles.errorText}>{t("zod_rule_boat_images_min_length")}</Text>}
+                         {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
 
                          <Button mode="contained" onPress={handleSubmit(onSubmit)} loading={isUpdating} disabled={isUpdating} style={styles.button}>
                               {isUpdating ? t("loading_button_text") : t("edit_btn")}

@@ -65,7 +65,12 @@ export default function SelectEquipments({ equipments, setEquipments }: { equipm
                     <Button mode="contained" onPress={handleAddEquipment} style={styles.addButton}>
                          {t("add")}
                     </Button>
-                    {errors.length > 0 && errors.map((error) => <Text style={styles.errorText}>{t(error.message)}</Text>)}
+                    {errors.length > 0 &&
+                         errors.map((error, index) => (
+                              <Text key={index} style={styles.errorText}>
+                                   {t(error.message)}
+                              </Text>
+                         ))}
                </View>
 
                <View style={styles.listContainer}>

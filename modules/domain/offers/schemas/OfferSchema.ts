@@ -53,8 +53,6 @@ export const OfferSchema = z
                     end: z.undefined().or(z.string()),
                })
                .superRefine((value, ctx) => {
-                    // check if start date is before actual date
-
                     if (value.start && new Date(value.start) < new Date()) {
                          ctx.addIssue({
                               code: z.ZodIssueCode.custom,
@@ -81,15 +79,27 @@ export const OfferSchema = z
                }),
           location: z
                .object({
-                    city: z.string(),
-                    country: z.string(),
-                    address: z.string(),
-                    zipcode: z.string(),
+                    city: z.string().refine((value) => {
+                         return value !== undefined && value !== ""
+                    }, "zod_rule_city_required"),
+                    country: z.string().refine((value) => {
+                         return value !== undefined && value !== ""
+                    }, "zod_rule_country_required"),
+                    address: z.string().refine((value) => {
+                         return value !== undefined && value !== ""
+                    }, "zod_rule_address_required"),
+                    zipcode: z.string().refine((value) => {
+                         return value !== undefined && value !== ""
+                    }, "zod_rule_zipcode_required"),
                })
                .superRefine((value) => {
-                    console.log("Location", value)
+                    if (!value.city || !value.country || !value.address || !value.zipcode) {
+                         return false
+                    }
 
-                    return value.city !== "" && value.country !== "" && value.address !== "" && value.zipcode !== ""
+                    if (!value.city && value.country && value.address && value.zipcode) {
+                         return false
+                    }
                }),
           selectedBoatId: z.string().refine(
                (val) => {

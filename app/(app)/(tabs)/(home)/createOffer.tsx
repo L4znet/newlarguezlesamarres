@@ -16,6 +16,7 @@ import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
 import { displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
 import SelectEquipments from "@/modules/components/SelectEquipments"
 import SelectBoat from "@/modules/components/SelectBoat"
+import { add } from "date-fns"
 
 export default function createOffer() {
      const router = useRouter()
@@ -59,6 +60,8 @@ export default function createOffer() {
           trigger,
           setValue,
           reset,
+          setError,
+          resetField,
           getValues,
           formState: { errors },
      } = useForm({
@@ -85,11 +88,7 @@ export default function createOffer() {
           },
      })
 
-     console.log("values", getValues())
-
      const onSubmit = async (data: any) => {
-          console.log("data", data)
-
           try {
                createOffer({
                     ...data,
@@ -125,38 +124,45 @@ export default function createOffer() {
           })
      }
 
-     const displayErrorIcon = (displayError: boolean) => {
-          if (displayError) {
-               return "close"
-          } else {
-               return "check"
-          }
-     }
-
-     const onBlurTrigger = async (field: any) => {
-          await trigger(field)
-     }
-
      const onDismiss = useCallback(() => {
           setOpen(false)
      }, [setOpen])
 
      const onConfirm = useCallback(
           ({ startDate, endDate }: { startDate: CalendarDate; endDate: CalendarDate }) => {
-               setOpen(false)
-               setRange({ startDate, endDate })
-               setRentalPeriod({ startDate, endDate })
-               setValue("rentalPeriod", {
-                    start: startDate?.toISOString().split("T")[0],
-                    end: endDate?.toISOString().split("T")[0],
-               })
+               const startDateParsed = add(startDate as Date, { hours: 1 })
+               const endDateParsed = add(endDate as Date, { hours: 1 })
 
-               console.log("rentalPeriod", {
-                    start: startDate?.toISOString().split("T")[0],
-                    end: endDate?.toISOString().split("T")[0],
-                    typeofstart: typeof startDate?.toISOString().split("T")[0],
-                    typeofend: typeof endDate?.toISOString().split("T")[0],
-               })
+               if (isNaN(endDateParsed.getTime()) || isNaN(startDateParsed.getTime())) {
+                    setError("rentalPeriod", {
+                         type: "manual",
+                         message: t("must_choose_valid_date_range"),
+                    })
+                    setRange({ startDate: undefined, endDate: undefined })
+                    setValue("rentalPeriod", {
+                         start: undefined,
+                         end: undefined,
+                    })
+                    setRentalPeriod({ startDate: undefined, endDate: undefined })
+               } else {
+                    resetField("rentalPeriod")
+
+                    setOpen(false)
+                    setRange({ startDate: startDateParsed, endDate: endDateParsed })
+                    setRentalPeriod({ startDate: startDateParsed, endDate: endDateParsed })
+
+                    setValue("rentalPeriod", {
+                         start: startDateParsed?.toISOString().split("T")[0],
+                         end: endDateParsed?.toISOString().split("T")[0],
+                    })
+
+                    console.log("rentalPeriod", {
+                         startDate: startDate,
+                         endDate: endDate,
+                         start: startDateParsed?.toISOString().split("T")[0],
+                         end: endDateParsed?.toISOString().split("T")[0],
+                    })
+               }
           },
           [setOpen, setRange, setValue, setRentalPeriod]
      )
@@ -176,37 +182,30 @@ export default function createOffer() {
                },
           })
 
-          onChange({
-               city: municipality,
-               country: country,
-               zipcode: postalCode,
-               address: streetNumber + " " + streetName,
-          })
-
-          setSearchTerm("")
-          setLocation({
-               city: municipality,
-               country: country,
-               zipcode: postalCode,
-               address: streetNumber + " " + streetName,
-          })
-     }
-
-     const handleSelectBoat = (boat: any) => {
-          setSelectedBoatId(boat.id)
-     }
-
-     const EmptyBoatList = () => {
-          return (
-               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text>{t("select_boat_empty_message")}</Text>
-               </View>
-          )
+          if (streetNumber && streetName && municipality && country && postalCode) {
+               resetField("location")
+               setLocation({
+                    city: municipality,
+                    country: country,
+                    zipcode: postalCode,
+                    address: streetNumber + " " + streetName,
+               })
+               onChange({
+                    city: municipality,
+                    country: country,
+                    zipcode: postalCode,
+                    address: streetNumber + " " + streetName,
+               })
+          } else {
+               trigger("location")
+               showTranslatedFlashMessage("danger", {
+                    title: t("flash_title_danger"),
+                    description: "Please make sure you have selected a location with a postal code, city, address, and country.",
+               })
+          }
      }
 
      const theme = useTheme()
-
-     console.log("Salut je suis là")
 
      console.log("errors", errors)
 
@@ -336,7 +335,11 @@ export default function createOffer() {
                                                             }}
                                                             onEndEditing={handleSearch}
                                                        />
-                                                       {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+                                                       {errors.location?.message !== undefined && errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+                                                       {errors.location?.city && <Text style={styles.errorText}>{t(errors.location.city.message as string)}</Text>}
+                                                       {errors.location?.address && <Text style={styles.errorText}>{t(errors.location.address.message as string)}</Text>}
+                                                       {errors.location?.country && <Text style={styles.errorText}>{t(errors.location.country.message as string)}</Text>}
+                                                       {errors.location?.zipcode && <Text style={styles.errorText}>{t(errors.location.zipcode.message as string)}</Text>}
 
                                                        {isPendingLocationSearch && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
@@ -428,7 +431,6 @@ export default function createOffer() {
                                              name="equipments"
                                              control={control}
                                              render={({ field: { onChange, value } }) => {
-                                                  console.log("value", value)
                                                   return (
                                                        <>
                                                             <SelectEquipments equipments={value} setEquipments={onChange} errors={errors.equipments ? errors.equipments : null} />

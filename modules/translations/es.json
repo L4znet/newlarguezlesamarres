@@ -290,6 +290,7 @@
           "supabase_message": "¡Correo electrónico actualizado con éxito!",
           "translation": "Dirección de correo electrónico actualizada con éxito."
      },
+
      "booking_created_success": {
           "supabase_message": "Tu reserva ha sido creada con éxito.",
           "translation": "Reserva creada con éxito."
@@ -318,6 +319,16 @@
           "supabase_message": "¡Oferta eliminada con éxito!",
           "translation": "¡El estado de la oferta se ha actualizado con éxito!"
      },
+     "select_location_error": {
+          "supabase_message": "Please make sure you have selected a location with a postal code, city, address, and country.",
+          "translation": "Asegúrate de haber seleccionado una localización con un código postal, una ciudad, una dirección y un país."
+     },
+
+     "must_choose_valid_date_range": {
+          "supabase_message": "You must choose a valid date range.",
+          "translation": "Debes seleccionar un rango de fechas válido."
+     },
+
      "offers_fetch_error": "Error al obtener las ofertas",
      "offers_empty_message": "Aún no has publicado ninguna oferta",
      "bookings_renter_empty_message": "Aún no tienes reservas",

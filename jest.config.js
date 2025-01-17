@@ -1,15 +1,15 @@
 module.exports = {
      preset: "react-native",
-     testEnvironment: "node",
      transform: {
-          "^.+\\.(ts|tsx|js|jsx)$": "babel-jest",
+          "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
      },
-     setupFiles: ["<rootDir>/jest.setup.ts"],
-     moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-     moduleDirectories: ["node_modules", "src"],
-     roots: ["<rootDir>/modules/tests"],
+     setupFiles: ["dotenv/config", "<rootDir>/modules/tests/config/supabaseClientTest.ts"],
+     setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
      moduleNameMapper: {
-          "^@/(.*)$": "<rootDir>$1",
+          "^@/(.*)$": "<rootDir>/$1",
+          "/modules/lib/supabaseClient": "<rootDir>/modules/tests/config/supabaseClientTest.ts",
      },
-     transformIgnorePatterns: ["node_modules/(?!(@supabase)/)"],
+     transformIgnorePatterns: ["node_modules/(?!((jest-)?react-native|@react-native|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*))"],
+     testEnvironment: "jsdom",
+     globalSetup: "<rootDir>/dotenv/dotenv-test.js",
 }

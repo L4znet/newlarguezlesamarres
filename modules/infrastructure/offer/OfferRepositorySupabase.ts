@@ -6,7 +6,6 @@ import { GetOffersDTO, OfferRawData } from "@/modules/domain/offers/DTO/GetOffer
 import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 import { GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
 import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
-import { $ } from "@faker-js/faker/dist/airline-BnpeTvY9"
 import { UpdateOfferDTO } from "@/modules/domain/offers/DTO/UpdateOfferDTO"
 import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO"
 import { UpdateOfferDeletedAtDTO } from "@/modules/domain/offers/DTO/UpdateOfferDeletedAtDTO"

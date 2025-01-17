@@ -355,6 +355,16 @@
           "translation": "The offer status was successfully updated."
      },
 
+     "select_location_error": {
+          "supabase_message": "Please make sure you have selected a location with a postal code, city, address, and country.",
+          "translation": "Please make sure you have selected a location with a postal code, city, address, and country."
+     },
+
+     "must_choose_valid_date_range": {
+          "supabase_message": "You must choose a valid date range.",
+          "translation": "You must choose a valid date range."
+     },
+
      "offers_fetch_error": "Error fetching offers",
      "offers_empty_message": "You haven't published any offers yet",
      "bookings_renter_empty_message": "You don't have any bookings yet",

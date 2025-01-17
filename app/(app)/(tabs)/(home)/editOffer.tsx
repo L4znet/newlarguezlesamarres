@@ -15,6 +15,7 @@ import { useLocalSearchParams } from "expo-router"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import SelectEquipments from "@/modules/components/SelectEquipments"
 import SelectBoat from "@/modules/components/SelectBoat"
+import { add } from "date-fns"
 
 export default function editOffer() {
      const { showTranslatedFlashMessage } = useFlashMessage()
@@ -24,8 +25,8 @@ export default function editOffer() {
      const { data: offer, isPending: isPendingLoadingOffer, error: errorOffer } = useOfferById(offerId)
      const [open, setOpen] = useState(false)
      const [range, setRange] = useState<{ startDate: CalendarDate; endDate: CalendarDate }>({
-          startDate: new Date(offer?.rentalPeriod.start as string),
-          endDate: new Date(offer?.rentalPeriod.end as string),
+          startDate: undefined,
+          endDate: undefined,
      })
      const [searchTerm, setSearchTerm] = useState("")
 
@@ -40,10 +41,13 @@ export default function editOffer() {
 
      const { mutate: updateOffer, isPending: isPendingEditOffer } = useUpdateOffer()
      const { mutate: mutateSearchLocation, data: locationData, isPending: isPendingLocationSearch, error: errorFromFetch, reset: resetSearchResults } = useLocationSearch()
-     const theme = useTheme()
      useEffect(() => {
           if (offer) {
                setRentalPeriod({
+                    startDate: new Date(offer.rentalPeriod.start as string),
+                    endDate: new Date(offer.rentalPeriod.end as string),
+               })
+               setRange({
                     startDate: new Date(offer.rentalPeriod.start as string),
                     endDate: new Date(offer.rentalPeriod.end as string),
                })
@@ -61,7 +65,9 @@ export default function editOffer() {
           control,
           handleSubmit,
           trigger,
+          setError,
           setValue,
+          resetField,
           reset,
           formState: { errors },
      } = useForm({
@@ -95,13 +101,20 @@ export default function editOffer() {
                     ...data,
                })
                reset()
-               setRentalPeriod({ startDate: undefined, endDate: undefined })
                setSelectedBoatId(null)
                setLocation({
                     city: "",
                     country: "",
                     zipcode: "",
                     address: "",
+               })
+               setRentalPeriod({
+                    startDate: undefined,
+                    endDate: undefined,
+               })
+               setRange({
+                    startDate: undefined,
+                    endDate: undefined,
                })
           } catch (error) {
                showTranslatedFlashMessage("danger", {
@@ -117,34 +130,40 @@ export default function editOffer() {
                description: t("fix_errors_before_submitting"),
           })
      }
-
-     const displayErrorIcon = (displayError: boolean) => {
-          if (displayError) {
-               return "close"
-          } else {
-               return "check"
-          }
-     }
-
-     const onBlurTrigger = async (field: any) => {
-          await trigger(field)
-     }
-
      const onDismiss = useCallback(() => {
           setOpen(false)
      }, [setOpen])
 
      const onConfirm = useCallback(
           ({ startDate, endDate }: { startDate: CalendarDate; endDate: CalendarDate }) => {
-               setOpen(false)
-               setRange({ startDate, endDate })
-               setRentalPeriod({ startDate, endDate })
-               setValue("rentalPeriod", {
-                    start: startDate?.toISOString().split("T")[0],
-                    end: endDate?.toISOString().split("T")[0],
-               })
+               const startDateParsed = add(startDate as Date, { hours: 1 })
+               const endDateParsed = add(endDate as Date, { hours: 1 })
+
+               if (isNaN(endDateParsed.getTime()) || isNaN(startDateParsed.getTime())) {
+                    setError("rentalPeriod", {
+                         type: "manual",
+                         message: t("must_choose_valid_date_range"),
+                    })
+                    setRange({ startDate: undefined, endDate: undefined })
+                    setValue("rentalPeriod", {
+                         start: undefined,
+                         end: undefined,
+                    })
+                    setRentalPeriod({ startDate: undefined, endDate: undefined })
+               } else {
+                    resetField("rentalPeriod")
+
+                    setOpen(false)
+                    setRange({ startDate: startDateParsed, endDate: endDateParsed })
+                    setRentalPeriod({ startDate: startDateParsed, endDate: endDateParsed })
+
+                    setValue("rentalPeriod", {
+                         start: startDateParsed?.toISOString().split("T")[0],
+                         end: endDateParsed?.toISOString().split("T")[0],
+                    })
+               }
           },
-          [setOpen, setRange]
+          [setOpen, setRange, setValue, setRentalPeriod]
      )
 
      const handleSearch = () => {
@@ -153,7 +172,7 @@ export default function editOffer() {
           }
      }
 
-     const handleSelectLocation = (location: any) => {
+     const handleSelectLocation = (location: any, onChange: any) => {
           const { streetNumber, streetName, municipality, country, postalCode } = location.address
 
           mutateSearchLocation("", {
@@ -162,20 +181,30 @@ export default function editOffer() {
                },
           })
 
-          setSearchTerm("")
-          setLocation({
-               city: municipality,
-               country: country,
-               zipcode: postalCode,
-               address: streetNumber + " " + streetName,
-          })
-          setValue("location", {
-               city: municipality,
-               country: country,
-               zipcode: postalCode,
-               address: streetNumber + " " + streetName,
-          })
+          if (streetNumber && streetName && municipality && country && postalCode) {
+               resetField("location")
+               setLocation({
+                    city: municipality,
+                    country: country,
+                    zipcode: postalCode,
+                    address: streetNumber + " " + streetName,
+               })
+               onChange({
+                    city: municipality,
+                    country: country,
+                    zipcode: postalCode,
+                    address: streetNumber + " " + streetName,
+               })
+          } else {
+               trigger("location")
+               showTranslatedFlashMessage("danger", {
+                    title: t("flash_title_danger"),
+                    description: "Please make sure you have selected a location with a postal code, city, address, and country.",
+               })
+          }
      }
+
+     const theme = useTheme()
 
      if (isPendingEditOffer) {
           return (
@@ -192,6 +221,18 @@ export default function editOffer() {
                     <Text>{t("a_moment_title")}</Text>
                </View>
           )
+     }
+
+     const handleOpenCalendar = () => {
+          console.log({
+               start: offer?.rentalPeriod.start,
+               end: offer?.rentalPeriod.end,
+               isPendingLoadingOffer: isPendingLoadingOffer,
+          })
+
+          if (!isPendingLoadingOffer && offer?.rentalPeriod.start !== undefined && offer?.rentalPeriod.end !== undefined) {
+               setOpen(true)
+          }
      }
 
      return (
@@ -307,12 +348,15 @@ export default function editOffer() {
                                                             value={searchTerm}
                                                             style={styles.input}
                                                             onChangeText={(text) => {
-                                                                 onChange(text)
                                                                  setSearchTerm(text)
                                                             }}
                                                             onEndEditing={handleSearch}
                                                        />
-                                                       {errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+                                                       {errors.location?.message !== undefined && errors.location && <Text style={styles.errorText}>{t(errors.location.message as string)}</Text>}
+                                                       {errors.location?.city && <Text style={styles.errorText}>{t(errors.location.city.message as string)}</Text>}
+                                                       {errors.location?.address && <Text style={styles.errorText}>{t(errors.location.address.message as string)}</Text>}
+                                                       {errors.location?.country && <Text style={styles.errorText}>{t(errors.location.country.message as string)}</Text>}
+                                                       {errors.location?.zipcode && <Text style={styles.errorText}>{t(errors.location.zipcode.message as string)}</Text>}
 
                                                        {isPendingLocationSearch && <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loading} />}
 
@@ -321,7 +365,7 @@ export default function editOffer() {
                                                        {locationData && locationData.length > 0 && (
                                                             <View>
                                                                  {locationData.map((item, index) => (
-                                                                      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
+                                                                      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => handleSelectLocation(item, onChange)}>
                                                                            <Text style={styles.resultText}>{item.address.freeformAddress}</Text>
                                                                       </TouchableOpacity>
                                                                  ))}
@@ -345,7 +389,7 @@ export default function editOffer() {
                                    content: (
                                         <View style={{ marginTop: 30 }}>
                                              <Text style={styles.selectionTitle}>{t("select_rental_title")}</Text>
-                                             <Button onPress={() => setOpen(true)} mode="contained">
+                                             <Button onPress={handleOpenCalendar} mode="contained">
                                                   {t("select_rental_period_button")}
                                              </Button>
                                              {errors.rentalPeriod && (
@@ -365,7 +409,22 @@ export default function editOffer() {
                                                   name="rentalPeriod"
                                                   control={control}
                                                   render={({ field: { onChange, value } }) => {
-                                                       return <DatePickerModal locale={locale} visible={open} mode="range" onDismiss={onDismiss} startDate={range.startDate} endDate={range.endDate} onConfirm={onConfirm} />
+                                                       return (
+                                                            <DatePickerModal
+                                                                 validRange={{
+                                                                      startDate: new Date(),
+                                                                      endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+                                                                      disabledDates: [],
+                                                                 }}
+                                                                 locale={locale}
+                                                                 visible={open}
+                                                                 mode="range"
+                                                                 onDismiss={onDismiss}
+                                                                 startDate={range.startDate}
+                                                                 endDate={range.endDate}
+                                                                 onConfirm={onConfirm}
+                                                            />
+                                                       )
                                                   }}
                                              />
 

@@ -354,6 +354,15 @@
           "supabase_message": "Successfully updated offer deleted at",
           "translation": "Le status de l'offre a été modifié avec succès."
      },
+     "select_location_error": {
+          "supabase_message": "Please make sure you have selected a location with a postal code, city, address, and country.",
+          "translation": "Assurez-vous d'avoir sélectionné une localisation avec un code postal, une ville, une adresse et un pays."
+     },
+
+     "must_choose_valid_date_range": {
+          "supabase_message": "You must choose a valid date range.",
+          "translation": "Vous devez choisir une plage de dates valide."
+     },
 
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
