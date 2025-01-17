@@ -340,9 +340,9 @@
           "translation": "Booking successfully declined."
      },
 
-     "booking_cancelled_success": {
-          "supabase_message": "Your booking has been cancelled successfully.",
-          "translation": "Booking successfully cancelled."
+     "booking_canceled_success": {
+          "supabase_message": "Your booking has been canceled successfully.",
+          "translation": "Booking successfully canceled."
      },
 
      "booking_status_changed_success": {
@@ -359,7 +359,7 @@
      "offers_empty_message": "You haven't published any offers yet",
      "bookings_renter_empty_message": "You don't have any bookings yet",
      "bookings_tenant_pending_empty_message": "No pending rentals",
-     "bookings_tenant_cancelled_empty_message": "No cancelled rentals",
+     "bookings_tenant_canceled_empty_message": "No canceled rentals",
      "bookings_tenant_confirmed_empty_message": "No confirmed rentals",
      "bookings_tenant_declined_empty_message": "No declined bookings",
      "bookings_tenant_rented_empty_message": "No rentals in progress",
@@ -368,7 +368,7 @@
      "boats_empty_message": "You don't have any boats yet",
 
      "bookings_owner_pending_empty_message": "No pending bookings",
-     "bookings_owner_cancelled_empty_message": "No cancelled bookings",
+     "bookings_owner_canceled_empty_message": "No canceled bookings",
      "bookings_owner_confirmed_empty_message": "No confirmed bookings",
      "bookings_owner_declined_empty_message": "No declined bookings",
      "bookings_owner_rented_empty_message": "No rentals in progress",
@@ -379,7 +379,7 @@
      "owner_offers_inactive_empty_message": "You don't have any inactive offers",
 
      "booking_all_btn": "All",
-     "booking_cancelled_btn": "Cancelled",
+     "booking_canceled_btn": "Canceled",
      "booking_declined_btn": "Declined",
      "booking_pending_btn": "Pending",
      "booking_confirmed_btn": "Confirmed",
@@ -391,7 +391,7 @@
 
      "booking_pending_chip": "Pending confirmation",
      "booking_confirmed_chip": "Confirmed",
-     "booking_cancelled_chip": "Cancelled",
+     "booking_canceled_chip": "Canceled",
      "booking_declined_chip": "Declined",
      "booking_rented_chip": "Rented",
 
@@ -514,9 +514,10 @@
      "zod_rule_description_min_length": "The offer description must be at least 20 characters long.",
      "zod_rule_description_max_length": "The offer description must not exceed 500 characters.",
      "zod_rule_price_min": "The offer price must be greater than 0.",
-     "zod_rule_end_date_must_be_after_start_date": "The end date must be after the start date.",
+     "zod_rule_rental_period_start_date_before": "The start date must be before the today date.",
      "zod_rule_rental_period_required": "You must select a rental period.",
-     "zod_rule_end_date_required": "End date is required.",
+     "zod_rule_rental_period_start_required": "Start date is required.",
+     "zod_rule_rental_period_end_required": "End date is required.",
      "zod_rule_period_too_short": "The rental period must be at least 3 days.",
      "zod_rule_boat_required": "You must select a boat.",
      "zod_rule_location_required": "You must select a location.",

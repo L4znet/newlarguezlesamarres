@@ -59,6 +59,7 @@ export default function createOffer() {
           trigger,
           setValue,
           reset,
+          getValues,
           formState: { errors },
      } = useForm({
           resolver: zodResolver(OfferSchema),
@@ -71,8 +72,8 @@ export default function createOffer() {
                isTeamAvailable: false,
                equipments: [],
                rentalPeriod: {
-                    start: range.startDate?.toDateString(),
-                    end: range.endDate?.toDateString(),
+                    start: undefined as string | undefined,
+                    end: undefined as string | undefined,
                },
                location: {
                     city: "",
@@ -84,19 +85,30 @@ export default function createOffer() {
           },
      })
 
+     console.log("values", getValues())
+
      const onSubmit = async (data: any) => {
+          console.log("data", data)
+
           try {
                createOffer({
                     ...data,
                })
                reset()
-               setRentalPeriod({ startDate: undefined, endDate: undefined })
                setSelectedBoatId(null)
                setLocation({
                     city: "",
                     country: "",
                     zipcode: "",
                     address: "",
+               })
+               setRentalPeriod({
+                    startDate: undefined,
+                    endDate: undefined,
+               })
+               setRange({
+                    startDate: undefined,
+                    endDate: undefined,
                })
           } catch (error) {
                showTranslatedFlashMessage("danger", {
@@ -138,8 +150,15 @@ export default function createOffer() {
                     start: startDate?.toISOString().split("T")[0],
                     end: endDate?.toISOString().split("T")[0],
                })
+
+               console.log("rentalPeriod", {
+                    start: startDate?.toISOString().split("T")[0],
+                    end: endDate?.toISOString().split("T")[0],
+                    typeofstart: typeof startDate?.toISOString().split("T")[0],
+                    typeofend: typeof endDate?.toISOString().split("T")[0],
+               })
           },
-          [setOpen, setRange]
+          [setOpen, setRange, setValue, setRentalPeriod]
      )
 
      const handleSearch = () => {
@@ -148,7 +167,7 @@ export default function createOffer() {
           }
      }
 
-     const handleSelectLocation = (location: any) => {
+     const handleSelectLocation = (location: any, onChange: any) => {
           const { streetNumber, streetName, municipality, country, postalCode } = location.address
 
           mutateSearchLocation("", {
@@ -157,14 +176,15 @@ export default function createOffer() {
                },
           })
 
-          setSearchTerm("")
-          setLocation({
+          onChange({
                city: municipality,
                country: country,
                zipcode: postalCode,
                address: streetNumber + " " + streetName,
           })
-          setValue("location", {
+
+          setSearchTerm("")
+          setLocation({
                city: municipality,
                country: country,
                zipcode: postalCode,
@@ -186,7 +206,9 @@ export default function createOffer() {
 
      const theme = useTheme()
 
-     console.log("errors.equipments", errors.equipments)
+     console.log("Salut je suis là")
+
+     console.log("errors", errors)
 
      if (isPendingCreateOffer) {
           return (
@@ -310,7 +332,6 @@ export default function createOffer() {
                                                             value={searchTerm}
                                                             style={styles.input}
                                                             onChangeText={(text) => {
-                                                                 onChange(text)
                                                                  setSearchTerm(text)
                                                             }}
                                                             onEndEditing={handleSearch}
@@ -324,7 +345,7 @@ export default function createOffer() {
                                                        {locationData && locationData.length > 0 && (
                                                             <View>
                                                                  {locationData.map((item, index) => (
-                                                                      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
+                                                                      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => handleSelectLocation(item, onChange)}>
                                                                            <Text style={styles.resultText}>{item.address.freeformAddress}</Text>
                                                                       </TouchableOpacity>
                                                                  ))}
@@ -368,7 +389,22 @@ export default function createOffer() {
                                                   name="rentalPeriod"
                                                   control={control}
                                                   render={({ field: { onChange, value } }) => {
-                                                       return <DatePickerModal locale={locale} visible={open} mode="range" onDismiss={onDismiss} startDate={range.startDate} endDate={range.endDate} onConfirm={onConfirm} />
+                                                       return (
+                                                            <DatePickerModal
+                                                                 validRange={{
+                                                                      startDate: new Date(),
+                                                                      endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+                                                                      disabledDates: [],
+                                                                 }}
+                                                                 locale={locale}
+                                                                 visible={open}
+                                                                 mode="range"
+                                                                 onDismiss={onDismiss}
+                                                                 startDate={range.startDate}
+                                                                 endDate={range.endDate}
+                                                                 onConfirm={onConfirm}
+                                                            />
+                                                       )
                                                   }}
                                              />
 

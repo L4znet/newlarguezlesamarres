@@ -340,8 +340,8 @@
           "translation": "Réservation refusée avec succès."
      },
 
-     "booking_cancelled_success": {
-          "supabase_message": "Your booking has been cancelled successfully.",
+     "booking_canceled_success": {
+          "supabase_message": "Your booking has been canceled successfully.",
           "translation": "Réservation annulée avec succès."
      },
 
@@ -359,7 +359,7 @@
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
      "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
      "bookings_tenant_pending_empty_message": "Aucune location en attente",
-     "bookings_tenant_cancelled_empty_message": "Aucune location annulée",
+     "bookings_tenant_canceled_empty_message": "Aucune location annulée",
      "bookings_tenant_confirmed_empty_message": "Aucune location confirmée",
      "bookings_tenant_declined_empty_message": "Aucune réservation refusée",
      "bookings_tenant_rented_empty_message": "Aucune location en cours",
@@ -368,7 +368,7 @@
      "boats_empty_message": "Vous n'avez pas encore de bateau",
 
      "bookings_owner_pending_empty_message": "Aucune réservation en attente",
-     "bookings_owner_cancelled_empty_message": "Aucune réservation annulée",
+     "bookings_owner_canceled_empty_message": "Aucune réservation annulée",
      "bookings_owner_confirmed_empty_message": "Aucune réservation confirmée",
      "bookings_owner_declined_empty_message": "Aucune réservation refusée",
      "bookings_owner_rented_empty_message": "Aucune location en cours",
@@ -379,7 +379,7 @@
      "owner_offers_inactive_empty_message": "Vous n'avez pas encore d'offre inactive",
 
      "booking_all_btn": "Toutes",
-     "booking_cancelled_btn": "Annulées",
+     "booking_canceled_btn": "Annulées",
      "booking_declined_btn": "Refusées",
      "booking_pending_btn": "En attente",
      "booking_confirmed_btn": "Confirmées",
@@ -391,7 +391,7 @@
 
      "booking_pending_chip": "En attente de confirmation",
      "booking_confirmed_chip": "Confirmée",
-     "booking_cancelled_chip": "Annulée",
+     "booking_canceled_chip": "Annulée",
      "booking_declined_chip": "Refusée",
      "booking_rented_chip": "Louée",
 
@@ -514,9 +514,10 @@
      "zod_rule_description_min_length": "La description de l'annonce doit contenir au moins 20 caractères.",
      "zod_rule_description_max_length": "La description de l'annonce ne doit pas dépasser 500 caractères.",
      "zod_rule_price_min": "Le prix de l'annonce doit être supérieur à 0.",
-     "zod_rule_end_date_must_be_after_start_date": "La date de fin doit être postérieure à la date de début.",
+     "zod_rule_rental_period_start_date_before": "La date de début doit être antérieure à la date d'aujourd'hui.",
      "zod_rule_rental_period_required": "Vous devez sélectionner une période de location.",
-     "zod_rule_end_date_required": "La date de fin est requise.",
+     "zod_rule_rental_period_start_required": "La date de début est requise.",
+     "zod_rule_rental_period_end_required": "La date de fin est requise.",
      "zod_rule_period_too_short": "La période de location doit être d'au moins 3 jours.",
      "zod_rule_boat_required": "Vous devez sélectionner un bateau.",
      "zod_rule_location_required": "Vous devez sélectionner une localisation.",

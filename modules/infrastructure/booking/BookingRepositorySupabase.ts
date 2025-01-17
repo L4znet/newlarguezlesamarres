@@ -147,7 +147,7 @@ class BookingRepositorySupabase implements BookingRepository {
           }
 
           const offerReserved = bookings?.length > 0
-          const userHasReserved = bookings?.some((booking) => booking.status !== "cancelled")
+          const userHasReserved = bookings?.some((booking) => booking.status !== "canceled")
 
           return { offerReserved, userHasReserved }
      }

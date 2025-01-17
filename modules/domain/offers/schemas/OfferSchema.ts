@@ -49,32 +49,48 @@ export const OfferSchema = z
           isTeamAvailable: z.boolean(),
           rentalPeriod: z
                .object({
-                    start: z.undefined().refine((val) => val === undefined, { message: "zod_rule_start_date_required" }),
-                    end: z.undefined().refine((val) => val === undefined, { message: "zod_rule_end_date_required" }),
+                    start: z.undefined().or(z.string()),
+                    end: z.undefined().or(z.string()),
                })
                .superRefine((value, ctx) => {
-                    if (value.start === undefined || value.end === undefined) {
+                    // check if start date is before actual date
+
+                    if (value.start && new Date(value.start) < new Date()) {
+                         ctx.addIssue({
+                              code: z.ZodIssueCode.custom,
+                              message: "zod_rule_rental_period_start_date_before",
+                         })
+                    }
+
+                    if (!value.start && !value.end) {
                          ctx.addIssue({
                               code: z.ZodIssueCode.custom,
                               message: "zod_rule_rental_period_required",
+                         })
+                    } else if (!value.start) {
+                         ctx.addIssue({
+                              code: z.ZodIssueCode.custom,
+                              message: "zod_rule_rental_period_start_required",
+                         })
+                    } else if (!value.end) {
+                         ctx.addIssue({
+                              code: z.ZodIssueCode.custom,
+                              message: "zod_rule_rental_period_end_required",
                          })
                     }
                }),
           location: z
                .object({
-                    city: z.string().nonempty("zod_rule_city_required"),
-                    country: z.string().nonempty("zod_rule_country_required"),
-                    address: z.string().nonempty("zod_rule_address_required"),
-                    zipcode: z.string().nonempty("zod_rule_zipcode_required").length(5, { message: "zod_rule_zipcode_too_short" }).regex(/^\d+$/, { message: "zod_rule_zipcode_invalid" }),
+                    city: z.string(),
+                    country: z.string(),
+                    address: z.string(),
+                    zipcode: z.string(),
                })
-               .refine(
-                    (value) => {
-                         return !(value.city === "" || value.country === "" || value.address === "" || value.zipcode === "")
-                    },
-                    {
-                         message: "zod_rule_location_required",
-                    }
-               ),
+               .superRefine((value) => {
+                    console.log("Location", value)
+
+                    return value.city !== "" && value.country !== "" && value.address !== "" && value.zipcode !== ""
+               }),
           selectedBoatId: z.string().refine(
                (val) => {
                     return !(val === "")

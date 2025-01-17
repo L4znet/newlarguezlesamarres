@@ -34,7 +34,7 @@ const BookingTenantList = () => {
           })
      }
      const handleCancelBooking = (bookingId: string) => {
-          updateBookingStatus({ bookingId, status: "cancelled" })
+          updateBookingStatus({ bookingId, status: "canceled" })
      }
 
      const filterReservations = (status: string) => tenantBookings.filter((item) => item.status === status)
@@ -80,7 +80,7 @@ const BookingTenantList = () => {
                          <Button mode="contained" style={styles.button} disabled={item.status !== "confirmed"} onPress={() => handleRentBooking(item.offerId as string, item.id as string)}>
                               {t("pay_booking")}
                          </Button>
-                         <Button mode="outlined" disabled={item.status === "rented" || item.status === "cancelled"} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
+                         <Button mode="outlined" disabled={item.status === "rented" || item.status === "canceled"} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
                               {t("cancel_booking")}
                          </Button>
                     </Card.Actions>
@@ -91,12 +91,12 @@ const BookingTenantList = () => {
      const renderTabContent = (data: GetTenantsBookingsDTO[] | [], emptyMessage: string) => <FlatList data={data} keyExtractor={(item) => item.id as string} renderItem={renderCardItem} ListEmptyComponent={<Text style={[styles.emptyMessage, { color: theme.colors.primary }]}>{emptyMessage}</Text>} />
 
      return (
-          <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_rented_btn"), t("booking_confirmed_btn"), t("booking_cancelled_btn"), t("booking_declined_btn")]}>
+          <TabsComponent tabLabels={[t("booking_all_btn"), t("booking_pending_btn"), t("booking_rented_btn"), t("booking_confirmed_btn"), t("booking_canceled_btn"), t("booking_declined_btn")]}>
                {renderTabContent(tenantBookings, t("bookings_tenant_empty_message"))}
                {renderTabContent(filterReservations("pending"), t("bookings_tenant_pending_empty_message"))}
                {renderTabContent(filterReservations("rented"), t("bookings_owner_rented_empty_message"))}
                {renderTabContent(filterReservations("confirmed"), t("bookings_tenant_confirmed_empty_message"))}
-               {renderTabContent(filterReservations("cancelled"), t("bookings_tenant_cancelled_empty_message"))}
+               {renderTabContent(filterReservations("canceled"), t("bookings_tenant_canceled_empty_message"))}
                {renderTabContent(filterReservations("declined"), t("bookings_tenant_declined_empty_message"))}
           </TabsComponent>
      )
