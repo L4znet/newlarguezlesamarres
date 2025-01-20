@@ -1,7 +1,7 @@
 import { format, isValid } from "date-fns"
 import { enUS, es, fr } from "date-fns/locale"
 import { getTranslator } from "@/modules/context/TranslationContext"
-import { Locale } from "@/constants/Locales"
+import { Locale } from "@/modules/constants/Locales"
 
 export const displayRentalPeriod = (start: Date | null, end: Date | null, locale: Locale, displayFormat: string = "long") => {
      const t = getTranslator(locale)

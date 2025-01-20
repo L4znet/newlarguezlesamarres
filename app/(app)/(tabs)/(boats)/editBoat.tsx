@@ -10,8 +10,8 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useBoatStore } from "@/modules/stores/boatStore"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { PaperSelect } from "react-native-paper-select"
-import { useBoatTypeOptions, displayBoatType } from "@/constants/BoatTypes"
-import Slideshow from "@/modules/components/Slideshow"
+import { useBoatTypeOptions, displayBoatType } from "@/modules/constants/BoatTypes"
+import Slideshow from "@/app/components/Slideshow"
 import * as ImagePicker from "expo-image-picker"
 
 export default function EditBoat({ route }: { route: any }) {

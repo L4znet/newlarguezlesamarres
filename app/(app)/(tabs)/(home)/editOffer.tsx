@@ -10,11 +10,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { DatePickerModal } from "react-native-paper-dates"
 import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
-import { displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
+import { displaySpecificRentalDate } from "@/modules/constants/DisplayRentalPeriod"
 import { useLocalSearchParams } from "expo-router"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
-import SelectEquipments from "@/modules/components/SelectEquipments"
-import SelectBoat from "@/modules/components/SelectBoat"
+import SelectEquipments from "@/app/components/SelectEquipments"
+import SelectBoat from "@/app/components/SelectBoat"
 import { add } from "date-fns"
 
 export default function editOffer() {
@@ -224,12 +224,6 @@ export default function editOffer() {
      }
 
      const handleOpenCalendar = () => {
-          console.log({
-               start: offer?.rentalPeriod.start,
-               end: offer?.rentalPeriod.end,
-               isPendingLoadingOffer: isPendingLoadingOffer,
-          })
-
           if (!isPendingLoadingOffer && offer?.rentalPeriod.start !== undefined && offer?.rentalPeriod.end !== undefined) {
                setOpen(true)
           }
@@ -448,7 +442,6 @@ export default function editOffer() {
                                              name="equipments"
                                              control={control}
                                              render={({ field: { onChange, value } }) => {
-                                                  console.log("value", value)
                                                   return (
                                                        <>
                                                             <SelectEquipments equipments={value} setEquipments={onChange} errors={errors.equipments ? errors.equipments : null} />

@@ -1,10 +1,10 @@
-import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import { MessageType } from "react-native-flash-message"
 import { router } from "expo-router"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 
 export const updateBoatUseCase = async (
      boatId: string,
+     boatRepository: BoatRepository,
      updatedData: {
           boatName: string
           boatDescription: string
@@ -34,14 +34,14 @@ export const updateBoatUseCase = async (
                throw new Error("User session not found.")
           }
 
-          const updatedBoat = await BoatRepositorySupabase.updateBoat(updatedData.boatName, updatedData.boatDescription, updatedData.boatCapacity, updatedData.boatType, boatId)
+          const updatedBoat = await boatRepository.updateBoat(updatedData.boatName, updatedData.boatDescription, updatedData.boatCapacity, updatedData.boatType, boatId)
 
           if (!updatedBoat?.id) {
                throw new Error("Failed to update boat.")
           }
 
           if (imageSelected) {
-               await BoatRepositorySupabase.uploadUpdateImages(boatId, updatedData.boatImages)
+               await boatRepository.uploadUpdateImages(boatId, updatedData.boatImages)
           }
 
           router.push("/(app)/(tabs)/(boats)")

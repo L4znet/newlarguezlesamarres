@@ -3,10 +3,11 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { queryClient } from "@/queryClient"
 import { createBookingUseCase } from "@/modules/application/bookings/createBookingUseCase"
 import BookingEntity from "@/modules/domain/bookings/BookingEntity"
+import { makeCreateBookingUseCase } from "@/modules/orchestration/BookingUseCaseFactory"
+import { BookingIdResponseDTO } from "@/modules/domain/bookings/DTO/BookingIdResponseDTO"
 
 interface InsertBookingVariables {
      offerId: string
-     userId: string
      startDate: string
      endDate: string
      status: string
@@ -15,9 +16,11 @@ interface InsertBookingVariables {
 export const useCreateBooking = () => {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     return useMutation<BookingEntity | undefined, Error, InsertBookingVariables>({
+     const createBooking = makeCreateBookingUseCase()
+
+     return useMutation<BookingIdResponseDTO | undefined, Error, InsertBookingVariables>({
           mutationFn: async (variables) => {
-               return createBookingUseCase(variables)
+               return createBooking(variables)
           },
           onSuccess: () => {
                queryClient.invalidateQueries({ queryKey: ["bookings"] })

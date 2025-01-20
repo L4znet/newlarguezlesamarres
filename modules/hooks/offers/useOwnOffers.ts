@@ -5,22 +5,22 @@ import { getOwnOffersUseCase } from "@/modules/application/offers/getOwnOffersUs
 import { queryClient } from "@/queryClient"
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
+import { makeGetOwnOffersUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
 
 export function useOwnOffers() {
-     const { showTranslatedFlashMessage } = useFlashMessage()
-
-     const query = useQuery<GetOffersDTO[] | [], Error>({
+     const getOwnOffers = makeGetOwnOffersUseCase()
+     const { isSuccess, data } = useQuery<GetOffersDTO[] | [], Error>({
           queryKey: ["ownOffers"],
-          queryFn: () => getOwnOffersUseCase(showTranslatedFlashMessage),
+          queryFn: () => getOwnOffers(),
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,
           staleTime: Infinity,
      })
 
-     if (query.isSuccess) {
+     if (isSuccess) {
           queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
      }
 
-     return query
+     return data
 }

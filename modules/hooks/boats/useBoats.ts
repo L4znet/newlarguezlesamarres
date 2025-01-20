@@ -1,15 +1,29 @@
 import { useQuery } from "@tanstack/react-query"
-import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
+import { makeGetBoatsUseCase } from "@/modules/orchestration/BoatUseCaseFactory"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export function useBoats() {
      const { showTranslatedFlashMessage } = useFlashMessage()
-     return useQuery({
+     const getBoats = makeGetBoatsUseCase()
+
+     const { data, error, isFetching } = useQuery({
           queryKey: ["boats"],
-          queryFn: () => getBoatsUseCase(showTranslatedFlashMessage),
+          queryFn: async () => {
+               const boats = await getBoats()
+               return boats
+          },
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,
           staleTime: Infinity,
      })
+
+     if (error) {
+          showTranslatedFlashMessage("danger", {
+               title: "flash_title_error",
+               description: "An error occurred while fetching boats.",
+          })
+     }
+
+     return { data, isFetching }
 }

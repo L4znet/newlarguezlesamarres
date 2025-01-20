@@ -3,14 +3,17 @@ import { createOfferUseCase } from "@/modules/application/offers/createOfferUseC
 
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { router } from "expo-router"
+import { makeCreateOfferUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
+import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
 
 export const useCreateOffer = () => {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
+     const createOffer = makeCreateOfferUseCase()
 
      return useMutation({
-          mutationFn: async (offerData: any) => {
-               return await createOfferUseCase(offerData)
+          mutationFn: async (offerData: CreateOfferDTO) => {
+               return await createOffer(offerData)
           },
           onSuccess: (createdOffer) => {
                if (createdOffer) {

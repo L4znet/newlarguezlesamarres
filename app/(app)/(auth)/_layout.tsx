@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Redirect, router, Tabs } from "expo-router"
-import AuthTabBar from "@/modules/components/AuthTabBar"
+import AuthTabBar from "@/app/components/AuthTabBar"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 

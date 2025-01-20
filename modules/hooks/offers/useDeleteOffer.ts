@@ -2,14 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { deleteOfferUseCase } from "@/modules/application/offers/deleteOfferUseCase"
 import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
+import { makeDeleteOfferUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
 
 export function useDeleteOffer() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
+     const deleteOffer = makeDeleteOfferUseCase()
      return useMutation({
           mutationFn: async (offerId: string): Promise<OfferIdResponseDTO | undefined> => {
-               return await deleteOfferUseCase(offerId)
+               return await deleteOffer(offerId)
           },
           onSuccess: (deletedOfferId) => {
                if (deletedOfferId) {

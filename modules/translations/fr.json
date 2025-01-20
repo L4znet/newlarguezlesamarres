@@ -31,7 +31,8 @@
      "username_placeholder": "Nom d'utilisateur",
      "email_placeholder": "E-mail",
      "password_placeholder": "Mot de passe",
-     "password_confirm_placeholder": "Confirmez le mot de passe",
+     "confirm_password_placeholder": "Confirmez le mot de passe",
+     "confirm_password_label": "Confirmez le mot de passe",
 
      "register_already_account": "Vous avez déjà un compte ? Connectez-vous",
      "register_login_btn": "J'ai un compte !",
@@ -366,6 +367,7 @@
 
      "offers_fetch_error": "Erreur lors de la récupération des offres",
      "offers_empty_message": "Vous n'avez pas encore publié d'offre",
+     "home_empty_message": "Aucune offre disponible pour le moment",
      "bookings_renter_empty_message": "Vous n'avez pas encore de réservations",
      "bookings_tenant_pending_empty_message": "Aucune location en attente",
      "bookings_tenant_canceled_empty_message": "Aucune location annulée",

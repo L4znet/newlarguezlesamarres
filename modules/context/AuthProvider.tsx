@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
+               console.log("Erreur", error)
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
           }
      }

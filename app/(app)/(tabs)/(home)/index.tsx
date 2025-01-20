@@ -3,9 +3,8 @@ import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import OffersList from "@/modules/components/OffersList"
+import OffersList from "@/app/components/OffersList"
 import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
-import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Index() {
      const { showTranslatedFlashMessage } = useFlashMessage()

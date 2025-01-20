@@ -1,9 +1,8 @@
-import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 
-export const getSingleBoatUseCase = async (boatID: string | string[]) => {
+export const getSingleBoatUseCase = async (boatRepository: BoatRepository, boatId: string) => {
      try {
-          return await BoatRepositorySupabase.getSingleBoat(boatID)
+          return await boatRepository.getSingleBoat(boatId)
      } catch (error) {
           throw new Error((error as Error).message)
      }

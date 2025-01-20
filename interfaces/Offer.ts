@@ -9,7 +9,7 @@ export interface Offer {
      isSkipperAvailable: boolean
      isTeamAvailable: boolean
      rentalPeriod: {
-          start: Date
+          start: string
           end: string
      }
      location: Location

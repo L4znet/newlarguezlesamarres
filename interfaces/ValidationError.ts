@@ -1,4 +1,4 @@
-import { ValidationErrorCode } from "@/constants/ValidationErrorTypes"
+import { ValidationErrorCode } from "@/modules/constants/ValidationErrorTypes"
 
 export interface ValidationError {
      code: ValidationErrorCode

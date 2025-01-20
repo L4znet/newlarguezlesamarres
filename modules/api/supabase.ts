@@ -5,8 +5,6 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL as string
 export const verifyAndInsertTransaction = async ({ accessToken, paymentIntentId, offerId, userId }: { accessToken: string; paymentIntentId: string; offerId: string; userId: string }) => {
      const url = `${API_URL}/transactions`
 
-     console.log("ffffff", { accessToken, paymentIntentId, offerId, userId })
-
      const response = await fetch(url, {
           method: "POST",
           headers: {

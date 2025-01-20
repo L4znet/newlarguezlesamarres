@@ -4,21 +4,18 @@ import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { router } from "expo-router"
 import { Equipment } from "@/interfaces/Offer"
 import { updateOfferAvailabilityUseCase } from "@/modules/application/offers/updateOfferAvailabilityUseCase"
+import { makeUpdateOfferAvailabilityUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
 
 export function useUpdateOfferAvailability() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
+     const updateOfferAvailability = makeUpdateOfferAvailabilityUseCase()
+
      return useMutation({
           mutationFn: async ({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }) => {
                try {
-                    await updateOfferAvailabilityUseCase(
-                         {
-                              offerId: offerId,
-                              isAvailable: isAvailable,
-                         },
-                         showTranslatedFlashMessage
-                    )
+                    return updateOfferAvailability(offerId, isAvailable)
                } catch (error) {
                     throw new Error((error as Error).message)
                }

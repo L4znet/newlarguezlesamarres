@@ -1,6 +1,6 @@
 import { SafeAreaView, FlatList, StyleSheet, View } from "react-native"
 import React, { useEffect, useState } from "react"
-import BookingTenantList from "@/modules/components/BookingTenantList"
+import BookingTenantList from "@/app/components/BookingTenantList"
 
 export default function index() {
      return (

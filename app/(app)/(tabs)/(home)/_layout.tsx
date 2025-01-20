@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { Drawer } from "expo-router/drawer"
 import { useAuth } from "@/modules/context/AuthProvider"
 import { router, Stack, Tabs } from "expo-router"
-import TabBar from "@/modules/components/TabBar"
+import TabBar from "@/app/components/TabBar"
 import { useTranslation, getTranslator } from "@/modules/context/TranslationContext"
 import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
 

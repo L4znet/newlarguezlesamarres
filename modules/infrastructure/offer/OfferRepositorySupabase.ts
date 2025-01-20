@@ -1,6 +1,5 @@
 import supabase from "@/supabaseClient"
 import OfferRepository from "@/modules/domain/offers/OfferRepository"
-import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
 import { Equipment, Location, RentalPeriod } from "@/interfaces/Offer"
 import { GetOffersDTO, OfferRawData } from "@/modules/domain/offers/DTO/GetOffersDTO"
 import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
@@ -9,8 +8,9 @@ import { CreateOfferDTO } from "@/modules/domain/offers/DTO/CreateOfferDTO"
 import { UpdateOfferDTO } from "@/modules/domain/offers/DTO/UpdateOfferDTO"
 import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO"
 import { UpdateOfferDeletedAtDTO } from "@/modules/domain/offers/DTO/UpdateOfferDeletedAtDTO"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 
-class OfferRepositorySupabase implements OfferRepository {
+export default class OfferRepositorySupabase implements OfferRepository {
      async createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, deletedAt = null }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined> {
           const createOfferDTO = new CreateOfferDTO({
                profileId,
@@ -135,6 +135,7 @@ class OfferRepositorySupabase implements OfferRepository {
                     ascending: false,
                })
                .eq("is_available", true)
+               .is("deleted_at", null)
                .neq("profile_id", profileId)
 
           if (offerError) {
@@ -198,10 +199,6 @@ class OfferRepositorySupabase implements OfferRepository {
           throw new Error("No data returned from offer deletion.")
      }
 
-     async selectBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined> {
-          return BoatRepositorySupabase.getBoats(profileId)
-     }
-
      async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }): Promise<OfferIdResponseDTO | undefined> {
           const { data: offerIdResponse, error } = await supabase.from("offers").select("id").eq("is_available", isAvailable).eq("id", offerId).single()
           if (offerIdResponse) {
@@ -232,5 +229,3 @@ class OfferRepositorySupabase implements OfferRepository {
           }
      }
 }
-
-export default new OfferRepositorySupabase()

@@ -1,32 +1,24 @@
-import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import Boat from "@/modules/domain/boats/BoatEntity"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import { MessageType } from "react-native-flash-message"
 import { GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
 
-export const getBoatsUseCase = async (
-     showTranslatedFlashMessage: (
-          type: MessageType,
-          message: {
-               title: string
-               description: string
-          },
-          locale?: string
-     ) => void
-): Promise<GetBoatsDTO[] | undefined> => {
+export const getBoatsUseCase = async (boatRepository: BoatRepository): Promise<GetBoatsDTO[] | undefined> => {
+     console.log("aaaaaa")
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
 
-          const boats = await BoatRepositorySupabase.getBoats(profileId)
+          console.log("profileId", profileId)
 
-          if (!boats) {
-               showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: "An error occurred while loading the boats." })
+          if (!profileId) {
+               throw new Error("User session not found.")
           }
 
-          return boats
+          console.log("profileId", profileId)
+
+          return await boatRepository.getBoats(profileId)
      } catch (error) {
+          console.error(error)
           throw new Error((error as Error).message)
      }
 }

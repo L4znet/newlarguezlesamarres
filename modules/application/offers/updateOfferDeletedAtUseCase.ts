@@ -1,10 +1,11 @@
 import { MessageType } from "react-native-flash-message"
 import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
+import OfferRepository from "@/modules/domain/offers/OfferRepository"
 
-export const updateOfferOfferDeletedAt = async ({ offerId: offerId, deletedAt: deletedAt }: { offerId: string; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined> => {
+export const updateOfferOfferDeletedAtUseCase = async (offerRepository: OfferRepository, offerId: string, deletedAt: null | Date): Promise<OfferIdResponseDTO | undefined> => {
      try {
-          return await OfferRepositorySupabase.updateOfferDeletedAt({
+          return await offerRepository.updateOfferDeletedAt({
                offerId: offerId,
                deletedAt: deletedAt,
           })

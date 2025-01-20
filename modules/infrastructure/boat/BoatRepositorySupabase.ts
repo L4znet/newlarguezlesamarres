@@ -1,4 +1,4 @@
-import BoatRepository from "@/modules/domain/boats/BoatRepository"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 import BoatEntity from "@/modules/domain/boats/BoatEntity"
 import supabase from "@/supabaseClient"
 import { decode } from "base64-arraybuffer"
@@ -9,7 +9,7 @@ import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoatDTO"
 import { UpdateBoatDTO } from "@/modules/domain/boats/DTO/UpdateBoatDTO"
 import { BoatIdResponseDTO } from "@/modules/domain/boats/DTO/BoatIdResponseDTO"
 
-class BoatRepositorySupabase implements BoatRepository {
+export default class BoatRepositorySupabase implements BoatRepository {
      async createBoat(profileId: string, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatIdResponseDTO> {
           const createBoatDTO = new CreateBoatDTO({
                profile_id: profileId,
@@ -186,6 +186,8 @@ class BoatRepositorySupabase implements BoatRepository {
      }
 
      async getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined> {
+          console.log("profileId", profileId)
+
           try {
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")
@@ -285,5 +287,3 @@ class BoatRepositorySupabase implements BoatRepository {
           }
      }
 }
-
-export default new BoatRepositorySupabase()

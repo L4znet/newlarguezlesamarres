@@ -24,14 +24,14 @@
      "username_label": "Username",
      "email_label": "Email",
      "password_label": "Password",
-     "password_confirm_label": "Confirm password",
+     "confirm_password_label": "Confirm password",
 
      "lastname_placeholder": "Last name",
      "firstname_placeholder": "First name",
      "username_placeholder": "Username",
      "email_placeholder": "Email",
      "password_placeholder": "Password",
-     "password_confirm_placeholder": "Confirm password",
+     "confirm_password_placeholder": "Confirm password",
 
      "register_already_account": "Already have an account? Log in",
      "register_login_btn": "I already have an account!",
@@ -367,6 +367,7 @@
 
      "offers_fetch_error": "Error fetching offers",
      "offers_empty_message": "You haven't published any offers yet",
+     "home_empty_message": "No offers available at the moment",
      "bookings_renter_empty_message": "You don't have any bookings yet",
      "bookings_tenant_pending_empty_message": "No pending rentals",
      "bookings_tenant_canceled_empty_message": "No canceled rentals",

@@ -1,18 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
-import { updateOfferOfferDeletedAt } from "@/modules/application/offers/updateOfferDeletedAtUseCase"
+import { makeUpdateOfferDeletedAtUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
 
 export function useUpdateOfferDeletedAt() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
+     const updateOfferDeletedAt = makeUpdateOfferDeletedAtUseCase()
+
      return useMutation({
           mutationFn: async ({ deletedAt, offerId }: { deletedAt: Date | null; offerId: string }) => {
                try {
-                    await updateOfferOfferDeletedAt({
-                         offerId: offerId,
-                         deletedAt: deletedAt,
-                    })
+                    return updateOfferDeletedAt(offerId, deletedAt)
                } catch (error) {
                     throw new Error((error as Error).message)
                }

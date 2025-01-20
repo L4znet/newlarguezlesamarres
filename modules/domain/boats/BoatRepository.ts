@@ -1,11 +1,8 @@
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import { CreateBoatDTO } from "@/modules/domain/boats/DTO/CreateBoatDTO"
-import { UpdateBoatDTO } from "@/modules/domain/boats/DTO/UpdateBoatDTO"
-import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
+import { GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoatDTO"
 import { GetBoatsDTO } from "@/modules/domain/boats/DTO/GetBoatsDTO"
 import { BoatIdResponseDTO } from "@/modules/domain/boats/DTO/BoatIdResponseDTO"
 
-interface BoatRepository {
+export interface BoatRepository {
      createBoat(profileId: string | undefined, boatName: string, boatDescription: string, boatCapacity: string, boatType: number): Promise<BoatIdResponseDTO>
      updateBoat(boatName: string, boatDescription: string, boatCapacity: string, boatType: number, boatId: string | string[]): Promise<BoatIdResponseDTO | undefined>
      uploadImages(
@@ -26,6 +23,5 @@ interface BoatRepository {
      getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined>
      getBoatsCount(profileId: string | undefined): Promise<Number | null>
      deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatIdResponseDTO | undefined>
+     uploadUpdateImages(boatId: string | undefined, images: any[]): Promise<void>
 }
-
-export default BoatRepository

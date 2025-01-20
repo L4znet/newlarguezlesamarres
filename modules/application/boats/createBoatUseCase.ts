@@ -1,11 +1,23 @@
-import BoatRepositorySupabase from "@/modules/infrastructure/boat/BoatRepositorySupabase"
-import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { BoatRepository } from "@/modules/domain/boats/BoatRepository"
 import { router } from "expo-router"
-import { MessageType } from "react-native-flash-message"
-import BoatEntity from "@/modules/domain/boats/BoatEntity"
-import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
-export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacity, boatType, boatImages }: { boatName: string; boatDescription: string; boatCapacity: string; boatType: number; boatImages: any[] }) => {
+export const createBoatUseCase = async (
+     boatRepository: BoatRepository,
+     {
+          boatName,
+          boatDescription,
+          boatCapacity,
+          boatType,
+          boatImages,
+     }: {
+          boatName: string
+          boatDescription: string
+          boatCapacity: string
+          boatType: number
+          boatImages: any[]
+     }
+) => {
      try {
           const session = await getCurrentSessionUseCase()
           const profileId = session.data.session?.user.id
@@ -14,13 +26,15 @@ export const createBoatUseCase = async ({ boatName, boatDescription, boatCapacit
                throw new Error("User session not found.")
           }
 
-          const newBoat = await BoatRepositorySupabase.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
+          const newBoat = await boatRepository.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
+
+          console.log("newBoat", newBoat)
 
           if (!newBoat?.id) {
                throw new Error("Failed to create boat.")
           }
 
-          await BoatRepositorySupabase.uploadImages(newBoat.id, boatImages)
+          await boatRepository.uploadImages(newBoat.id, boatImages)
 
           router.push("/(app)/(tabs)/(boats)")
           return newBoat

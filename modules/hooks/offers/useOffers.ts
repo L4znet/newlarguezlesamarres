@@ -4,13 +4,14 @@ import { getOffersUseCase } from "@/modules/application/offers/getOffersUseCase"
 import OfferEntity from "@/modules/domain/offers/OfferEntity"
 import { getBoatsUseCase } from "@/modules/application/boats/getBoatsUseCase"
 import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
+import { makeGetOffersUseCase } from "@/modules/orchestration/OfferUseCaseFactory"
 
 export function useOffers() {
-     const { showTranslatedFlashMessage } = useFlashMessage()
+     const getOffers = makeGetOffersUseCase()
 
      return useQuery<GetOffersDTO[]>({
           queryKey: ["offers"],
-          queryFn: () => getOffersUseCase(showTranslatedFlashMessage),
+          queryFn: () => getOffers(),
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,

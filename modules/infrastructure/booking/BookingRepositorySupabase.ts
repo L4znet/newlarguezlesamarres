@@ -7,8 +7,9 @@ import { CreateBookingDTO } from "@/modules/domain/bookings/DTO/CreateBookingDTO
 import { BookingIdResponseDTO } from "@/modules/domain/bookings/DTO/BookingIdResponseDTO"
 import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
 import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBookingsDTO"
+import { GetBookingStatusDTO } from "@/modules/domain/bookings/DTO/GetBookingStatusDTO"
 
-class BookingRepositorySupabase implements BookingRepository {
+export default class BookingRepositorySupabase implements BookingRepository {
      async getTenantBookings(userId: string): Promise<GetTenantsBookingsDTO[] | []> {
           const { data: bookingData, error: bookingError } = await supabase
                .from("bookings")
@@ -132,25 +133,30 @@ class BookingRepositorySupabase implements BookingRepository {
           }
      }
 
-     async getBookingStatus(offerId: string, userId: string | null): Promise<{ offerReserved: boolean; userHasReserved: boolean }> {
-          let query = supabase.from("bookings").select("status, offer_id, user_id").eq("offer_id", offerId)
+     async getBookingStatus(offerId: string, userId: string): Promise<GetBookingStatusDTO | []> {
+          try {
+               const {
+                    data: booking,
+                    error: error,
+               }: {
+                    data: { status: string; offer_id: string; user_id: string } | null
+                    error: Error | null
+               } = await supabase.from("bookings").select("status, offer_id, user_id").eq("offer_id", offerId).single()
 
-          if (userId) {
-               query = query.eq("user_id", userId)
+               /*    const offerReserved = bookings.length > 0
+               const userHasReserved = bookings?.some((booking) => booking.status !== "canceled")*/
+
+               if (booking) {
+                    return GetBookingStatusDTO.fromRawData({
+                         status: booking.status,
+                         offer_id: booking.offer_id,
+                         user_id: booking.user_id,
+                    })
+               } else {
+                    return []
+               }
+          } catch (error) {
+               throw new Error("Failed to get booking status")
           }
-
-          const { data: bookings, error } = await query
-
-          if (error) {
-               console.error("Failed to fetch booking status:", error.message)
-               throw new Error("Error fetching booking status")
-          }
-
-          const offerReserved = bookings?.length > 0
-          const userHasReserved = bookings?.some((booking) => booking.status !== "canceled")
-
-          return { offerReserved, userHasReserved }
      }
 }
-
-export default new BookingRepositorySupabase()

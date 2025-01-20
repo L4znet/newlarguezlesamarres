@@ -1,14 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { deleteBoatUseCase } from "@/modules/application/boats/deleteBoatUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
+import { makeDeleteBoatUseCase } from "@/modules/orchestration/BoatUseCaseFactory"
 
 export function useDeleteBoat() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
 
+     const deleteBoat = makeDeleteBoatUseCase()
+
      return useMutation({
           mutationFn: async (boatId: string) => {
-               await deleteBoatUseCase(boatId, showTranslatedFlashMessage)
+               await deleteBoat(boatId)
           },
           onSuccess: () => {
                showTranslatedFlashMessage("success", {

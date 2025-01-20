@@ -2,21 +2,21 @@ import React, { useEffect } from "react"
 import { View, StyleSheet } from "react-native"
 import { ActivityIndicator, Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
-import Slideshow from "@/modules/components/Slideshow"
+import Slideshow from "@/app/components/Slideshow"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
+import { displayRentalPeriod } from "@/modules/constants/DisplayRentalPeriod"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useCreateBooking } from "@/modules/hooks/bookings/useCreateBooking"
 import { useIsOfferReserved } from "@/modules/hooks/bookings/useIsOfferReserved"
 import { useHasUserReservedOffer } from "@/modules/hooks/bookings/useHasUserReservedOffer"
-import { displayTotalPrice, getHowManyDays } from "@/constants/DisplayTotalPrice"
+import { displayTotalPrice, getHowManyDays } from "@/modules/constants/DisplayTotalPrice"
 
 export default function OfferDetail() {
-     const { offerId, userId } = useLocalSearchParams<{ offerId: string; userId: string }>()
+     const { offerId } = useLocalSearchParams<{ offerId: string }>()
      const { data: offerById, isPending, error } = useOfferById(offerId)
      const createBooking = useCreateBooking()
      const { data: isOfferReserved, isPending: isPendingIsOfferReserved, error: errorIsOfferReserved } = useIsOfferReserved(offerId)
-     const { data: hasUserReservedOffer, isPending: isPendingHasUserReservedOffer, error: errorHasUserReservedOffer } = useHasUserReservedOffer(offerId, userId)
+     const { data: hasUserReservedOffer, isPending: isPendingHasUserReservedOffer, error: errorHasUserReservedOffer } = useHasUserReservedOffer(offerId)
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -26,13 +26,8 @@ export default function OfferDetail() {
      }
 
      const handleBookOffer = async () => {
-          if (!userId) {
-               throw new Error("User session not found.")
-          }
-
           createBooking.mutate({
                offerId: offerById?.id as string,
-               userId: userId,
                startDate: offerById?.rentalPeriod.start as string,
                endDate: offerById?.rentalPeriod.end as string,
                status: "pending",

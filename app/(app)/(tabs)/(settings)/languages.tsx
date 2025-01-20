@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Text } from "react-native-paper"
-import LanguageSwitcher from "@/modules/components/LanguageSwitcher"
+import LanguageSwitcher from "@/app/components/LanguageSwitcher"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 
 export default function Index() {

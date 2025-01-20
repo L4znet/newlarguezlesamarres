@@ -13,9 +13,9 @@ import { useFocusEffect } from "@react-navigation/native"
 import { DatePickerModal } from "react-native-paper-dates"
 import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
 import { useLocationSearch } from "@/modules/hooks/useLocationSearch"
-import { displaySpecificRentalDate } from "@/constants/DisplayRentalPeriod"
-import SelectEquipments from "@/modules/components/SelectEquipments"
-import SelectBoat from "@/modules/components/SelectBoat"
+import { displaySpecificRentalDate } from "@/modules/constants/DisplayRentalPeriod"
+import SelectEquipments from "@/app/components/SelectEquipments"
+import SelectBoat from "@/app/components/SelectBoat"
 import { add } from "date-fns"
 
 export default function createOffer() {
@@ -155,13 +155,6 @@ export default function createOffer() {
                          start: startDateParsed?.toISOString().split("T")[0],
                          end: endDateParsed?.toISOString().split("T")[0],
                     })
-
-                    console.log("rentalPeriod", {
-                         startDate: startDate,
-                         endDate: endDate,
-                         start: startDateParsed?.toISOString().split("T")[0],
-                         end: endDateParsed?.toISOString().split("T")[0],
-                    })
                }
           },
           [setOpen, setRange, setValue, setRentalPeriod]
@@ -206,8 +199,6 @@ export default function createOffer() {
      }
 
      const theme = useTheme()
-
-     console.log("errors", errors)
 
      if (isPendingCreateOffer) {
           return (

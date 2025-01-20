@@ -3,13 +3,13 @@ import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
 import { Text, ActivityIndicator, Card, Button, useTheme } from "react-native-paper"
 import { useOffers } from "@/modules/hooks/offers/useOffers"
 import { useRouter } from "expo-router"
-import Slideshow from "@/modules/components/Slideshow"
+import Slideshow from "@/app/components/Slideshow"
 
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { Offer } from "@/interfaces/Offer"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
-import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
-import { displayTotalPrice, getHowManyDays } from "@/constants/DisplayTotalPrice"
+import { displayRentalPeriod } from "@/modules/constants/DisplayRentalPeriod"
+import { displayTotalPrice, getHowManyDays } from "@/modules/constants/DisplayTotalPrice"
 import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 
 const OffersList = () => {
@@ -31,18 +31,17 @@ const OffersList = () => {
      const EmptyList = () => {
           return (
                <View style={styles.container}>
-                    <Text>{t("offers_empty_message")}</Text>
+                    <Text>{t("home_empty_message")}</Text>
                </View>
           )
      }
 
      const handleMoreDetails = async (offer: Offer) => {
           const session = await getCurrentSessionUseCase()
-          const userId = session.data.session?.user.id
 
           router.navigate({
                pathname: "/(app)/(tabs)/(home)/offerDetail",
-               params: { offerId: offer.id, userId: userId },
+               params: { offerId: offer.id },
           })
      }
 

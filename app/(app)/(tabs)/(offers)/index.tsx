@@ -2,7 +2,7 @@ import { SafeAreaView, FlatList, StyleSheet, View } from "react-native"
 import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
-import OwnOffersList from "@/modules/components/OwnOffersList"
+import OwnOffersList from "@/app/components/OwnOffersList"
 import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 

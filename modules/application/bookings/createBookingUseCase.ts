@@ -1,21 +1,17 @@
-import BookingRepositorySupabase from "@/modules/infrastructure/booking/BookingRepositorySupabase"
-import OfferEntity from "@/modules/domain/offers/OfferEntity"
-import BookingEntity from "@/modules/domain/bookings/BookingEntity"
+import BookingRepository from "@/modules/domain/bookings/BookingRepository"
+import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
-export const createBookingUseCase = async ({ offerId, userId, startDate, endDate, status }: { offerId: string; userId: string; startDate: string; endDate: string; status: string }) => {
+export const createBookingUseCase = async (bookingRepository: BookingRepository, { offerId, startDate, endDate, status }: { offerId: string; startDate: string; endDate: string; status: string }) => {
+     const session = await getCurrentSessionUseCase()
+     const profileId = session.data.session?.user.id as string
      try {
-          const response = await BookingRepositorySupabase.createBooking({
+          return await bookingRepository.createBooking({
+               userId: profileId,
                offerId,
-               userId,
                startDate,
                endDate,
                status,
           })
-
-          return response
-
-          //
-          // return BookingEntity.from()
      } catch (error: any) {
           console.error("Error in create Booking Use case:", error.message)
           throw new Error(error.message)

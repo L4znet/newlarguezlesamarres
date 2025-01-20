@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from "react"
 import { translateValidationErrors } from "@/modules/utils/translateValidationErrors"
 import { ValidationError } from "@/interfaces/ValidationError"
-import { Locale } from "@/constants/Locales"
+import { Locale } from "@/modules/constants/Locales"
 
 const translationFiles = {
      en: require("../translations/en.json"),

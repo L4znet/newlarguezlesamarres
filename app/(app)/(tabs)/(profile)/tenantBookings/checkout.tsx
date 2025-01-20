@@ -4,8 +4,8 @@ import { StyleSheet, View } from "react-native"
 import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
-import { displayTotalPrice } from "@/constants/DisplayTotalPrice"
-import { displayRentalPeriod } from "@/constants/DisplayRentalPeriod"
+import { displayTotalPrice } from "@/modules/constants/DisplayTotalPrice"
+import { displayRentalPeriod } from "@/modules/constants/DisplayRentalPeriod"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { useCreateTransaction } from "@/modules/hooks/rentals/useCreateTransaction"
 import { useVerifyAndInsertTransaction } from "@/modules/hooks/rentals/useVerifyAndInsertTransaction"
@@ -90,8 +90,6 @@ export default function Checkout() {
      }
 
      const handlePayment = async () => {
-          console.log("handlePayment")
-
           const session = await getCurrentSessionUseCase()
           const accessToken = session.data.session?.access_token as string
 
@@ -109,21 +107,10 @@ export default function Checkout() {
                customer: customer,
           })
 
-          console.log({
-               paymentIntentId: paymentIntent,
-               clientSecret: clientSecret,
-               ephemeralKey: ephemeralKey,
-               customer: customer,
-          })
-
           try {
                const result = await presentPaymentSheet()
 
                if (!result.error && paymentIntent && clientSecret && ephemeralKey && customer) {
-                    console.log("Payment successful", {
-                         paymentIntent,
-                    })
-
                     await verifyAndInsertTransaction({
                          accessToken,
                          paymentIntentId: paymentIntent,
@@ -140,11 +127,6 @@ export default function Checkout() {
                          bookingId: bookingId as string,
                          status: "rented",
                     })
-                    console.log("updateBookingStatus", {
-                         bookingId: bookingId as string,
-                         status: "rented",
-                    })
-
                     showTranslatedFlashMessage("success", {
                          title: "Payment Successful",
                          description: "Your payment was successfully processed.",
