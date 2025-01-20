@@ -16,7 +16,7 @@ export function useCreateBoat() {
                     description: "Boat added successfully!",
                })
                queryClient.invalidateQueries({ queryKey: ["boats"] })
-               queryClient.invalidateQueries({ queryKey: ["count_boats"] })
+               queryClient.invalidateQueries({ queryKey: ["canCreateOffer"] })
           },
           onError: (error) => {
                showTranslatedFlashMessage("danger", {

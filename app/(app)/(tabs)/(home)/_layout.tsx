@@ -6,13 +6,12 @@ import { useAuth } from "@/modules/context/AuthProvider"
 import { router, Stack, Tabs } from "expo-router"
 import TabBar from "@/app/components/TabBar"
 import { useTranslation, getTranslator } from "@/modules/context/TranslationContext"
-import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
+import { useCanCreateOffer } from "@/modules/hooks/boats/useCanCreateOffer"
 
 export default function Layout() {
      const { session } = useAuth()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     const { data: countBoats, isPending: countBoatsIsPending, error: countBoatsError } = useCountBoats()
 
      return (
           <GestureHandlerRootView style={{ flex: 1 }}>

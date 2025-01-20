@@ -10,10 +10,10 @@ import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO
 interface OfferRepository {
      createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location }): Promise<OfferIdResponseDTO | undefined>
      updateOffer({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location }): Promise<OfferIdResponseDTO | undefined>
-     deleteOffer({ offerId, profileId }: { offerId: string; profileId: string }): Promise<OfferIdResponseDTO | undefined>
-     getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | undefined>
-     getOffers(profileId: string): Promise<GetOffersDTO[] | undefined>
-     getOwnOffers(profileId: string): Promise<GetOffersDTO[] | undefined>
+     deleteOffer({ offerId, profileId }: { offerId: string; profileId: string }): Promise<OfferIdResponseDTO | []>
+     getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | []>
+     getOffers(profileId: string): Promise<GetOffersDTO[] | []>
+     getOwnOffers(profileId: string): Promise<GetOffersDTO[] | []>
      updateOfferAvailability({ offerId, isAvailable }: { offerId: string; isAvailable: boolean }): Promise<OfferIdResponseDTO | undefined>
      updateOfferDeletedAt({ offerId, deletedAt }: { offerId: string; deletedAt: Date | null }): Promise<OfferIdResponseDTO | undefined>
 }

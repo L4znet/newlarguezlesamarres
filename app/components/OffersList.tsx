@@ -41,7 +41,7 @@ const OffersList = () => {
 
           router.navigate({
                pathname: "/(app)/(tabs)/(home)/offerDetail",
-               params: { offerId: offer.id },
+               params: { offerId: offer.id, userId: session.data.session?.user.id },
           })
      }
 

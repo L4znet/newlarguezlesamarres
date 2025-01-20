@@ -19,9 +19,10 @@ export interface BoatRepository {
                isDefault: boolean
           }[]
      ): Promise<void>
-     getSingleBoat(boatId: string | string[]): Promise<GetSingleBoatDTO>
+     getSingleBoat(boatId: string): Promise<GetSingleBoatDTO>
      getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined>
-     getBoatsCount(profileId: string | undefined): Promise<Number | null>
-     deleteBoat(profileId: string | undefined, boatId: string | string[]): Promise<BoatIdResponseDTO | undefined>
+     getBoatsCount(profileId: string | undefined): Promise<number | null>
+
+     deleteBoat(profileId: string | undefined, boatId: string): Promise<BoatIdResponseDTO>
      uploadUpdateImages(boatId: string | undefined, images: any[]): Promise<void>
 }

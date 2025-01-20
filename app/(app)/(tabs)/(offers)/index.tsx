@@ -3,12 +3,12 @@ import { FAB, Text } from "react-native-paper"
 import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import OwnOffersList from "@/app/components/OwnOffersList"
-import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
+import { useCanCreateOffer } from "@/modules/hooks/boats/useCanCreateOffer"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export default function index() {
      const { showTranslatedFlashMessage } = useFlashMessage()
-     const { data: boatsCount, isPending: boatsCountIsPending, error: boatsCountError } = useCountBoats()
+     const { data: canCreateOffer } = useCanCreateOffer()
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>
@@ -20,7 +20,7 @@ export default function index() {
                     icon="plus"
                     style={styles.fab}
                     onPress={() => {
-                         if (boatsCount === 0) {
+                         if (!canCreateOffer) {
                               showTranslatedFlashMessage("warning", {
                                    title: "flash_title_warning",
                                    description: "flash_description_no_boats",

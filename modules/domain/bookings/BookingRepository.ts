@@ -4,7 +4,7 @@ import { BookingIdResponseDTO } from "@/modules/domain/bookings/DTO/BookingIdRes
 import { GetBookingStatusDTO } from "@/modules/domain/bookings/DTO/GetBookingStatusDTO"
 
 interface BookingRepository {
-     getBookingStatus(offerId: string, userId: string | null): Promise<GetBookingStatusDTO | []>
+     getBookingStatus(offerId: string, userId: string | null): Promise<GetBookingStatusDTO[] | []>
      getTenantBookings(userId: string): Promise<GetTenantsBookingsDTO[] | []>
      getOwnerBookings(userId: string): Promise<GetOwnerBookingsDTO[] | []>
      updateBookingStatus(bookingId: string, status: string): Promise<BookingIdResponseDTO>

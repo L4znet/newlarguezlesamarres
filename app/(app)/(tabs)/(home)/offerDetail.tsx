@@ -8,22 +8,35 @@ import { displayRentalPeriod } from "@/modules/constants/DisplayRentalPeriod"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useCreateBooking } from "@/modules/hooks/bookings/useCreateBooking"
 import { useIsOfferReserved } from "@/modules/hooks/bookings/useIsOfferReserved"
-import { useHasUserReservedOffer } from "@/modules/hooks/bookings/useHasUserReservedOffer"
+import { useBookingStatus } from "@/modules/hooks/bookings/useBookingStatus"
 import { displayTotalPrice, getHowManyDays } from "@/modules/constants/DisplayTotalPrice"
+import BookingEntity from "@/modules/domain/bookings/BookingEntity"
+import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
+import { GetBookingStatusDTO } from "@/modules/domain/bookings/DTO/GetBookingStatusDTO"
 
 export default function OfferDetail() {
-     const { offerId } = useLocalSearchParams<{ offerId: string }>()
+     const { offerId, userId } = useLocalSearchParams<{ offerId: string; userId: string }>()
      const { data: offerById, isPending, error } = useOfferById(offerId)
      const createBooking = useCreateBooking()
-     const { data: isOfferReserved, isPending: isPendingIsOfferReserved, error: errorIsOfferReserved } = useIsOfferReserved(offerId)
-     const { data: hasUserReservedOffer, isPending: isPendingHasUserReservedOffer, error: errorHasUserReservedOffer } = useHasUserReservedOffer(offerId)
+     const { data: bookingsStatus, isPending: isPendingBookingStatus, error: errorIsOfferReserved } = useBookingStatus(offerId)
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
-     if (isPending) {
+     if (isPending || isPendingBookingStatus) {
           return <ActivityIndicator size="large" />
      }
+
+     const hasUserReservedOffer = bookingsStatus?.some((booking) => {
+          const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
+          return bookingStatusDTO.hasUserReserved(userId)
+     })
+
+     const isOfferReserved = bookingsStatus?.some((booking) => {
+          const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
+
+          return bookingStatusDTO.isFullyReserved()
+     })
 
      const handleBookOffer = async () => {
           createBooking.mutate({

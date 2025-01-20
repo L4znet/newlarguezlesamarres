@@ -75,7 +75,7 @@ export default class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | undefined> {
+     async getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | []> {
           const {
                data: offerIdResponse,
                error: offerError,
@@ -108,12 +108,12 @@ export default class OfferRepositorySupabase implements OfferRepository {
 
           if (offerIdResponse) {
                return GetSingleOfferDTO.fromRawData(offerIdResponse)
+          } else {
+               return []
           }
-
-          throw new Error("No data returned from offer fetch.")
      }
 
-     async getOffers(profileId: string): Promise<GetOffersDTO[] | undefined> {
+     async getOffers(profileId: string): Promise<GetOffersDTO[] | []> {
           const { data: offerData, error: offerError } = await supabase
                .from("offers")
                .select(
@@ -146,6 +146,8 @@ export default class OfferRepositorySupabase implements OfferRepository {
                return offerData.map((offer: OfferRawData) => {
                     return GetOffersDTO.fromRawData(offer)
                })
+          } else {
+               return []
           }
      }
 
@@ -175,28 +177,31 @@ export default class OfferRepositorySupabase implements OfferRepository {
           if (offerError) {
                throw new Error(`Error fetching offers: ${offerError.message}`)
           }
+          console.log("offerData", offerData)
 
           if (offerData?.length === 0) {
                return []
           } else {
                return offerData.map((offer: OfferRawData) => {
+                    console.log("offer", offer)
+
                     return GetOffersDTO.fromRawData(offer)
                })
           }
      }
 
-     async deleteOffer({ profileId, offerId }: { profileId: string; offerId: string }): Promise<OfferIdResponseDTO | undefined> {
+     async deleteOffer({ profileId, offerId }: { profileId: string; offerId: string }): Promise<OfferIdResponseDTO | []> {
           const { data: offerIdResponse, error: offerError } = await supabase.from("offers").delete().eq("id", offerId).eq("profile_id", profileId).select("id").single()
 
           if (offerError) {
                throw new Error(`Error deleting offer: ${offerError.message}`)
           }
 
-          if (offerId) {
+          if (offerIdResponse) {
                return OfferIdResponseDTO.fromRawData(offerIdResponse)
+          } else {
+               return []
           }
-
-          throw new Error("No data returned from offer deletion.")
      }
 
      async updateOfferAvailability({ isAvailable, offerId }: { isAvailable: boolean; offerId: string }): Promise<OfferIdResponseDTO | undefined> {

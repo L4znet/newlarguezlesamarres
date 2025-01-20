@@ -3,21 +3,17 @@ import { View, FlatList, StyleSheet, ListRenderItemInfo } from "react-native"
 import { Text, ActivityIndicator, Card, Button, useTheme, Portal, Modal } from "react-native-paper"
 import { useRouter } from "expo-router"
 import Slideshow from "@/app/components/Slideshow"
-
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { Offer } from "@/interfaces/Offer"
 import { useDeleteOffer } from "@/modules/hooks/offers/useDeleteOffer"
 import { useOwnOffers } from "@/modules/hooks/offers/useOwnOffers"
 import { GetOffersDTO } from "@/modules/domain/offers/DTO/GetOffersDTO"
 import TabsComponent from "@/app/components/TabsComponent"
-import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
-import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBookingsDTO"
 import { useUpdateOfferDeletedAt } from "@/modules/hooks/offers/useUpdateOfferDeletedAt"
-import { rgbaColor } from "react-native-reanimated/lib/typescript/Colors"
 
 const OwnOffersList = () => {
      const router = useRouter()
-     const { data: ownOffers, isPending, error } = useOwnOffers()
+     const { data: ownOffers, isPending, error } = useOwnOffers() as { data: GetOffersDTO[] | []; isPending: boolean; error: any }
      const { mutate: deleteOffer, isPending: isDeleting, error: deleteError } = useDeleteOffer()
      const { mutate: updateOfferDeletedAt, isPending: isUpdating, error: updateError } = useUpdateOfferDeletedAt()
      const theme = useTheme()

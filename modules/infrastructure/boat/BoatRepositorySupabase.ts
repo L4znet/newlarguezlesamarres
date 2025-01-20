@@ -171,15 +171,15 @@ export default class BoatRepositorySupabase implements BoatRepository {
           }
      }
 
-     async deleteBoat(profileId: string | undefined, boatId: string): Promise<BoatEntity | undefined> {
-          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatId).eq("profile_id", profileId).select()
+     async deleteBoat(profileId: string | undefined, boatId: string): Promise<BoatIdResponseDTO> {
+          const { data: boatData, error: boatError } = await supabase.from("boats").delete().eq("id", boatId).eq("profile_id", profileId).select("id").single()
 
           if (boatError) {
                throw new Error(`Error deleting boat: ${boatError.message}`)
           }
 
-          if (boatData?.length) {
-               return BoatEntity.fromSupabaseData(boatData[0])
+          if (boatData) {
+               return BoatIdResponseDTO.fromRawData(boatData)
           }
 
           throw new Error("No data returned from boat deletion.")
@@ -274,7 +274,7 @@ export default class BoatRepositorySupabase implements BoatRepository {
                throw new Error(`Error in getSingleBoat: ${(error as Error).message}`)
           }
      }
-     async getBoatsCount(profileId: string | undefined): Promise<Number | null> {
+     async getBoatsCount(profileId: string | undefined): Promise<number | null> {
           try {
                const { count, error } = await supabase.from("boats").select("*", { count: "exact", head: true }).eq("profile_id", profileId).limit(1)
                if (error) {

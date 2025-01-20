@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react"
 import { router } from "expo-router"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import OffersList from "@/app/components/OffersList"
-import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
+import { useCanCreateOffer } from "@/modules/hooks/boats/useCanCreateOffer"
 
 export default function Index() {
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     const { data: boatsCount } = useCountBoats()
+     const { data: canCreateOffer } = useCanCreateOffer()
 
      const createOffer = async () => {
           router.navigate("/(app)/(tabs)/(home)/createOffer")
@@ -24,7 +24,7 @@ export default function Index() {
                     icon="plus"
                     style={styles.fab}
                     onPress={async () => {
-                         if (boatsCount === 0) {
+                         if (!canCreateOffer) {
                               showTranslatedFlashMessage("warning", {
                                    title: "flash_title_warning",
                                    description: "flash_description_no_boats",

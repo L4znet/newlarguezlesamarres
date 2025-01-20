@@ -8,7 +8,7 @@ import { useCreateOffer } from "@/modules/hooks/offers/useCreateOffer"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCountBoats } from "@/modules/hooks/boats/useCountBoats"
+import { useCanCreateOffer } from "@/modules/hooks/boats/useCanCreateOffer"
 import { useFocusEffect } from "@react-navigation/native"
 import { DatePickerModal } from "react-native-paper-dates"
 import { CalendarDate } from "react-native-paper-dates/lib/typescript/Date/Calendar"
@@ -37,21 +37,21 @@ export default function createOffer() {
           zipcode: "",
      })
 
-     const { data: boatsCount } = useCountBoats()
+     const { data: canCreateOffer } = useCanCreateOffer()
 
      const { mutate: createOffer, isPending: isPendingCreateOffer } = useCreateOffer()
      const { mutate: mutateSearchLocation, data: locationData, isPending: isPendingLocationSearch, error: errorFromFetch, reset: resetSearchResults } = useLocationSearch()
 
      useFocusEffect(
           useCallback(() => {
-               if (boatsCount === 0) {
+               if (!canCreateOffer) {
                     showTranslatedFlashMessage("warning", {
                          title: "flash_title_warning",
                          description: "flash_description_no_boats",
                     })
                     router.navigate("/(app)/(tabs)/(home)")
                }
-          }, [boatsCount])
+          }, [canCreateOffer])
      )
 
      const {

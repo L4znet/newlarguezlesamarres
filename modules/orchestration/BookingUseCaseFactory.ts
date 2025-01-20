@@ -2,8 +2,7 @@ import { createBookingUseCase } from "@/modules/application/bookings/createBooki
 import BookingRepositorySupabase from "@/modules/infrastructure/booking/BookingRepositorySupabase"
 import { getTenantBookingsUseCase } from "@/modules/application/bookings/getTenantBookingsUseCase"
 import { getOwnerBookingsUseCase } from "@/modules/application/bookings/getOwnerBookingsUseCase"
-import { hasUserReservedOfferUseCase } from "@/modules/application/bookings/hasUserReservedOfferUseCase"
-import { isOfferReservedUseCase } from "@/modules/application/bookings/isOfferReservedUseCase"
+import { getBookingStatusUseCase } from "@/modules/application/bookings/getBookingStatusUseCase"
 import { updateBookingStatusUseCase } from "@/modules/application/bookings/updateBookingStatusUseCase"
 
 export const makeCreateBookingUseCase = () => {
@@ -21,14 +20,9 @@ export const makeGetOwnerBookingsUseCase = () => {
      return () => getOwnerBookingsUseCase(bookingRepository)
 }
 
-export const makeHasUserReservedOfferUseCase = () => {
+export const makeBookingStatus = () => {
      const bookingRepository = new BookingRepositorySupabase()
-     return (offerId: string) => hasUserReservedOfferUseCase(bookingRepository, offerId)
-}
-
-export const makeIsOfferReservedUseCase = () => {
-     const bookingRepository = new BookingRepositorySupabase()
-     return (offerId: string) => isOfferReservedUseCase(bookingRepository, offerId)
+     return (offerId: string) => getBookingStatusUseCase(bookingRepository, offerId)
 }
 
 export const makeUpdateBookingStatusUseCase = () => {

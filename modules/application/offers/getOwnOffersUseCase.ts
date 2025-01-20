@@ -20,6 +20,7 @@ export const getOwnOffersUseCase = async (offerRepository: OfferRepository): Pro
 
           return offers
      } catch (error) {
+          console.log("error", error)
           throw error as Error
      }
 }

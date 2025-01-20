@@ -133,25 +133,18 @@ export default class BookingRepositorySupabase implements BookingRepository {
           }
      }
 
-     async getBookingStatus(offerId: string, userId: string): Promise<GetBookingStatusDTO | []> {
+     async getBookingStatus(offerId: string): Promise<GetBookingStatusDTO[] | []> {
           try {
                const {
-                    data: booking,
+                    data: bookings,
                     error: error,
                }: {
-                    data: { status: string; offer_id: string; user_id: string } | null
+                    data: { status: string; offer_id: string; user_id: string }[] | null
                     error: Error | null
-               } = await supabase.from("bookings").select("status, offer_id, user_id").eq("offer_id", offerId).single()
+               } = await supabase.from("bookings").select("status, offer_id, user_id").eq("offer_id", offerId)
 
-               /*    const offerReserved = bookings.length > 0
-               const userHasReserved = bookings?.some((booking) => booking.status !== "canceled")*/
-
-               if (booking) {
-                    return GetBookingStatusDTO.fromRawData({
-                         status: booking.status,
-                         offer_id: booking.offer_id,
-                         user_id: booking.user_id,
-                    })
+               if (bookings) {
+                    return bookings.map((booking) => GetBookingStatusDTO.fromRawData(booking))
                } else {
                     return []
                }

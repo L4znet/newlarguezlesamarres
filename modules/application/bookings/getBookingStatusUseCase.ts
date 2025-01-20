@@ -2,7 +2,7 @@ import BookingRepository from "@/modules/domain/bookings/BookingRepository"
 import { GetBookingStatusDTO } from "@/modules/domain/bookings/DTO/GetBookingStatusDTO"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 
-export async function hasUserReservedOfferUseCase(bookingRepository: BookingRepository, offerId: string): Promise<GetBookingStatusDTO | []> {
+export async function getBookingStatusUseCase(bookingRepository: BookingRepository, offerId: string): Promise<GetBookingStatusDTO[] | []> {
      try {
           const session = await getCurrentSessionUseCase()
 

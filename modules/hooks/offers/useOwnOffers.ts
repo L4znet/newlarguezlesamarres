@@ -9,7 +9,8 @@ import { makeGetOwnOffersUseCase } from "@/modules/orchestration/OfferUseCaseFac
 
 export function useOwnOffers() {
      const getOwnOffers = makeGetOwnOffersUseCase()
-     const { isSuccess, data } = useQuery<GetOffersDTO[] | [], Error>({
+
+     const { isSuccess, data, isPending, error } = useQuery<GetOffersDTO[] | [], Error>({
           queryKey: ["ownOffers"],
           queryFn: () => getOwnOffers(),
           refetchOnMount: true,
@@ -22,5 +23,9 @@ export function useOwnOffers() {
           queryClient.invalidateQueries({ queryKey: ["ownOffers"] })
      }
 
-     return data
+     return {
+          data,
+          isPending,
+          error,
+     }
 }
