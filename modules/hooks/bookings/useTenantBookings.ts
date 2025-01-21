@@ -2,13 +2,14 @@ import { useQuery } from "@tanstack/react-query"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { getTenantBookingsUseCase } from "@/modules/application/bookings/getTenantBookingsUseCase"
 import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBookingsDTO"
+import { makeGetTenantBookingsUseCase } from "@/modules/orchestration/BookingUseCaseFactory"
 
 export function useTenantBookings() {
-     const { showTranslatedFlashMessage } = useFlashMessage()
+     const getTenantBookings = makeGetTenantBookingsUseCase()
 
      return useQuery<GetTenantsBookingsDTO[] | []>({
           queryKey: ["tenant_bookings"],
-          queryFn: () => getTenantBookingsUseCase(showTranslatedFlashMessage),
+          queryFn: () => getTenantBookings(),
           refetchOnMount: true,
           refetchOnWindowFocus: true,
           refetchOnReconnect: true,

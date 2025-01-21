@@ -186,8 +186,6 @@ export default class BoatRepositorySupabase implements BoatRepository {
      }
 
      async getBoats(profileId: string | undefined): Promise<GetBoatsDTO[] | undefined> {
-          console.log("profileId", profileId)
-
           try {
                const { data: boatData, error: boatError } = await supabase
                     .from("boats")

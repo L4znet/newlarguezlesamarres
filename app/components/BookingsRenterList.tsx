@@ -14,7 +14,7 @@ import { GetOwnerBookingsDTO } from "@/modules/domain/bookings/DTO/GetOwnerBooki
 
 const BookingTenantList = () => {
      const { data: ownerBookings, isPending, error } = useOwnerBookings()
-     const { mutate: updateBookingStatus } = useUpdateBookingStatus()
+     const { mutate: updateBookingStatus, isPending: isPendingUpdate } = useUpdateBookingStatus()
 
      const handleBookingDecline = (bookingId: string) => {
           updateBookingStatus({ bookingId, status: "declined" })
@@ -100,10 +100,10 @@ const BookingTenantList = () => {
                     </Card.Content>
 
                     <Card.Actions>
-                         <Button mode={"outlined"} disabled={item.status !== "pending"} onPress={() => handleBookingDecline(item.id as string)}>
+                         <Button mode={"outlined"} loading={isPendingUpdate} disabled={item.status !== "pending" || isPendingUpdate} onPress={() => handleBookingDecline(item.id as string)}>
                               {t("booking_decline_btn")}
                          </Button>
-                         <Button mode={"contained"} disabled={item.status !== "pending"} onPress={() => handleBookingConfirm(item.id as string)}>
+                         <Button mode={"contained"} loading={isPendingUpdate} disabled={item.status !== "pending" || isPendingUpdate} onPress={() => handleBookingConfirm(item.id as string)}>
                               {t("booking_confirm_btn")}
                          </Button>
                     </Card.Actions>

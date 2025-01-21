@@ -14,7 +14,7 @@ import { GetTenantsBookingsDTO } from "@/modules/domain/bookings/DTO/GetTenantBo
 
 const BookingTenantList = () => {
      const { data: tenantBookings, isPending, error } = useTenantBookings()
-     const { mutate: updateBookingStatus } = useUpdateBookingStatus()
+     const { mutate: updateBookingStatus, isPending: isPendingUpdate } = useUpdateBookingStatus()
      const theme = useTheme()
      const router = useRouter()
 
@@ -77,10 +77,10 @@ const BookingTenantList = () => {
                          </View>
                     </Card.Content>
                     <Card.Actions>
-                         <Button mode="contained" style={styles.button} disabled={item.status !== "confirmed"} onPress={() => handleRentBooking(item.offerId as string, item.id as string)}>
+                         <Button mode="contained" style={styles.button} loading={isPendingUpdate} disabled={item.status !== "confirmed" || isPendingUpdate} onPress={() => handleRentBooking(item.offerId as string, item.id as string)}>
                               {t("pay_booking")}
                          </Button>
-                         <Button mode="outlined" disabled={item.status === "rented" || item.status === "canceled"} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
+                         <Button mode="outlined" loading={isPendingUpdate} disabled={item.status === "rented" || item.status === "canceled" || isPendingUpdate} style={styles.button} onPress={() => handleCancelBooking(item.id as string)}>
                               {t("cancel_booking")}
                          </Button>
                     </Card.Actions>

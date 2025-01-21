@@ -28,8 +28,6 @@ export const createBoatUseCase = async (
 
           const newBoat = await boatRepository.createBoat(profileId, boatName, boatDescription, boatCapacity, boatType)
 
-          console.log("newBoat", newBoat)
-
           if (!newBoat?.id) {
                throw new Error("Failed to create boat.")
           }

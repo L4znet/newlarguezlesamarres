@@ -29,12 +29,16 @@ export default function OfferDetail() {
 
      const hasUserReservedOffer = bookingsStatus?.some((booking) => {
           const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
+
+          console.log("bookingStatusDTO hasUserReservedOffer", bookingStatusDTO)
+          console.log("userId hasUserReservedOffer", userId)
           return bookingStatusDTO.hasUserReserved(userId)
      })
 
      const isOfferReserved = bookingsStatus?.some((booking) => {
           const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
-
+          console.log("bookingStatusDTO isOfferReserved", bookingStatusDTO)
+          console.log("userId isOfferReserved", userId)
           return bookingStatusDTO.isFullyReserved()
      })
 
@@ -66,6 +70,9 @@ export default function OfferDetail() {
      }
 
      const boatImages = getBoatsImages()
+
+     console.log("hasUserReservedOffer", hasUserReservedOffer)
+     console.log("isOfferReserved", isOfferReserved)
 
      return (
           <View style={styles.container}>

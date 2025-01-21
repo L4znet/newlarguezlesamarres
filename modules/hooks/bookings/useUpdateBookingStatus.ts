@@ -2,15 +2,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { updateBookingStatusUseCase } from "@/modules/application/bookings/updateBookingStatusUseCase"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 import { updateOfferUseCase } from "@/modules/application/offers/updateOfferUseCase"
+import { makeUpdateBookingStatusUseCase } from "@/modules/orchestration/BookingUseCaseFactory"
 
 export function useUpdateBookingStatus() {
      const queryClient = useQueryClient()
      const { showTranslatedFlashMessage } = useFlashMessage()
+     const updateBookingStatus = makeUpdateBookingStatusUseCase()
 
      return useMutation({
           mutationFn: async ({ bookingId, status }: { bookingId: string; status: string }) => {
                try {
-                    await updateBookingStatusUseCase(bookingId, status)
+                    await updateBookingStatus(bookingId, status)
                } catch (error) {
                     throw new Error((error as Error).message)
                }

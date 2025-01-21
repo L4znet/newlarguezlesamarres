@@ -177,14 +177,11 @@ export default class OfferRepositorySupabase implements OfferRepository {
           if (offerError) {
                throw new Error(`Error fetching offers: ${offerError.message}`)
           }
-          console.log("offerData", offerData)
 
           if (offerData?.length === 0) {
                return []
           } else {
                return offerData.map((offer: OfferRawData) => {
-                    console.log("offer", offer)
-
                     return GetOffersDTO.fromRawData(offer)
                })
           }
