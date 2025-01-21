@@ -6,7 +6,7 @@ export function useBoats() {
      const { showTranslatedFlashMessage } = useFlashMessage()
      const getBoats = makeGetBoatsUseCase()
 
-     const { data, error, isFetching } = useQuery({
+     const { data, isPending, error } = useQuery({
           queryKey: ["boats"],
           queryFn: async () => {
                const boats = await getBoats()
@@ -25,5 +25,5 @@ export function useBoats() {
           })
      }
 
-     return { data, isFetching }
+     return { data, isPending, error }
 }

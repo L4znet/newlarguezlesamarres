@@ -109,6 +109,9 @@
      "week": "semaine",
      "month": "mois",
      "months": "mois",
+     "capacity": "Capacité",
+     "equipments": "Équipements",
+     "type": "Type",
      "year": "an",
      "and": "et",
      "years": "ans",
@@ -430,8 +433,10 @@
      "drawer_my_offers": "Mes offres",
      "drawer_my_bookings_as_renter": "Mes réservations",
      "drawer_my_bookings_as_tenants": "Mes locations",
-
+     "price_title": "Prix",
      "profile_title": "Mon profil",
+     "equipments_title": "Les équipements inclus",
+     "no_equipments": "Aucun équipement inclus",
 
      "settings_title": "Mes paramètres",
      "settings_language": "Changer la langue",

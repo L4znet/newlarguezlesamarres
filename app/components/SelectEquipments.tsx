@@ -59,9 +59,9 @@ export default function SelectEquipments({ equipments, setEquipments }: { equipm
      return (
           <View style={styles.container}>
                <View style={styles.inputContainer}>
-                    <TextInput style={styles.input} placeholder="Nom de l'équipement" value={newEquipment.equipmentName} onChangeText={(name) => setNewEquipment({ ...newEquipment, equipmentName: name })} />
+                    <TextInput style={styles.input} label={t("select_equipment_name")} placeholder={t("select_equipment_name")} value={newEquipment.equipmentName} onChangeText={(name) => setNewEquipment({ ...newEquipment, equipmentName: name })} />
 
-                    <TextInput style={styles.input} placeholder="Quantité" value={newEquipment.equipmentQuantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, equipmentQuantity: quantity })} />
+                    <TextInput style={styles.input} label={t("select_equipment_quantity")} placeholder={t("select_equipment_quantity")} value={newEquipment.equipmentQuantity} keyboardType="numeric" onChangeText={(quantity) => setNewEquipment({ ...newEquipment, equipmentQuantity: quantity })} />
                     <Button mode="contained" onPress={handleAddEquipment} style={styles.addButton}>
                          {t("add")}
                     </Button>

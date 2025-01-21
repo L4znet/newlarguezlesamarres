@@ -29,8 +29,7 @@ const BoatList = () => {
      }
 
      const handleEditBoat = async (boatId: string) => {
-          setCurrentBoatId(boatId)
-          router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat" })
+          router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId } })
      }
 
      const renderItem = ({
@@ -60,15 +59,19 @@ const BoatList = () => {
                     <Slideshow images={boatImages} />
                     <Card.Title title={item.boatName} subtitle={item.boatDescription} />
                     <Card.Content>
-                         <Text>Capacité : {item.boatCapacity}</Text>
-                         <Text>Type : {t(boatType.toLowerCase())}</Text>
+                         <Text>
+                              {t("capacity")} : {item.boatCapacity}
+                         </Text>
+                         <Text>
+                              {t("type")} : {t(boatType.toLowerCase())}
+                         </Text>
                     </Card.Content>
                     <Card.Actions>
                          <Button mode={"contained"} onPress={() => handleEditBoat(item.id)}>
-                              Modifier
+                              {t("edit")}
                          </Button>
                          <Button mode={"outlined"} loading={isDeletePending} disabled={isDeletePending} onPress={async () => deleteBoat(item.id)}>
-                              Supprimer
+                              {t("delete")}
                          </Button>
                     </Card.Actions>
                </Card>

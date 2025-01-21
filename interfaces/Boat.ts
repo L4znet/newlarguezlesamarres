@@ -12,7 +12,7 @@ export interface Boat {
           contentType: string
           base64: string
           dimensions: { width: number; height: number }
-          size: number
+          size: string
           mimeType: string
           fileName: string | null
      }[]

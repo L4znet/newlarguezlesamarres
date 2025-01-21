@@ -27,6 +27,10 @@ export class UploadBoatImageDTO {
           this.boatId = boat_id
      }
 
+     static fromRawData(data: { url: string; is_default: boolean; caption: string; content_type: string; base64: string; dimensions: { width: number; height: number }; size: string; mime_type: string; file_name: string; boat_id: string }): UploadBoatImageDTO {
+          return new UploadBoatImageDTO(data)
+     }
+
      static toRawData(data: UploadBoatImageDTO): {
           url: string
           is_default: boolean

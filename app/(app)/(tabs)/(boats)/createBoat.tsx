@@ -15,23 +15,18 @@ import { BoatSchema } from "@/modules/domain/boats/schemas/BoatSchema"
 import { useBoatStore } from "@/modules/stores/boatStore"
 import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
-export const selectValidator = (value: any) => {
-     if (!value || value.length <= 0) {
-          return "Please select a value."
-     }
-
-     return ""
-}
 export default function createBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+
      const boatTypeOptions = useBoatTypeOptions(locale)
+
      const colors = useTheme().colors
      const { data: boats, isPending, error, mutate: createBoat } = useCreateBoat()
 
      const { showTranslatedFlashMessage } = useFlashMessage()
 
-     const { boatImages, setBoatImages } = useBoatStore()
+     const [boatImages, setBoatImages] = useState([] as Boat["boatImages"])
 
      const [types] = useState({
           value: boatTypeOptions[0].value,
@@ -54,14 +49,14 @@ export default function createBoat() {
                boatDescription: "",
                boatCapacity: "",
                boatType: types.id.toString(),
-               boatImages: [],
+               boatImages: [] as Boat["boatImages"],
           },
           values: {
                boatName: "",
                boatDescription: "",
                boatCapacity: "",
                boatType: types.id.toString(),
-               boatImages: [],
+               boatImages: [] as Boat["boatImages"],
           },
      })
 
@@ -80,7 +75,7 @@ export default function createBoat() {
                     contentType: asset.type as string,
                     base64: asset.base64 as string,
                     dimensions: { width: asset.width, height: asset.height },
-                    size: asset.fileSize as number,
+                    size: asset.fileSize?.toString() as string,
                     mimeType: asset.mimeType as string,
                     fileName: asset.fileName as string,
                })
@@ -121,14 +116,14 @@ export default function createBoat() {
                               result.assets.map((asset, index) => {
                                    return {
                                         isDefault: index === 0,
-                                        url: asset.uri,
-                                        caption: asset.fileName,
-                                        contentType: asset.type,
-                                        base64: asset.base64,
+                                        url: asset.uri as string,
+                                        caption: asset.fileName as string,
+                                        contentType: asset.type as string,
+                                        base64: asset.base64 as string,
                                         dimensions: { width: asset.width, height: asset.height },
-                                        size: asset.fileSize?.toString(),
-                                        mimeType: asset.mimeType,
-                                        fileName: asset.fileName,
+                                        size: asset.fileSize?.toString() as string,
+                                        mimeType: asset.mimeType as string,
+                                        fileName: asset.fileName as string,
                                    }
                               })
                          )
@@ -168,7 +163,7 @@ export default function createBoat() {
                                    <View style={styles.selector}>
                                         <PaperSelect
                                              label={t("boat_type_placeholder")}
-                                             value={types.list.find((item) => item._id.toString() === value.toString())?.value || ""}
+                                             value={types.list.find((item) => item._id === value)?.value as string}
                                              onSelection={(selectedValue: any) => {
                                                   const selected = selectedValue.selectedList[0]
                                                   onChange(selected._id.toString())
@@ -186,7 +181,7 @@ export default function createBoat() {
                          {errors.boatType && <Text style={styles.errorText}>{t(errors.boatType.message as string)}</Text>}
 
                          <Slideshow
-                              images={boatImages.map((boatImage: { id: string; url: string; caption: string }) => {
+                              images={boatImages.map((boatImage) => {
                                    return {
                                         id: boatImage.id as string,
                                         url: boatImage.url as string,

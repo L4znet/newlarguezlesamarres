@@ -111,6 +111,9 @@
      "year": "year",
      "and": "and",
      "years": "years",
+     "capacity": "Capacity",
+     "equipments": "Equipments",
+     "type": "Type",
      "unit_price": "Unit price",
      "moreDetails": "See more details",
      "rental_date": "Rental date",
@@ -430,8 +433,10 @@
      "drawer_my_offers": "My offers",
      "drawer_my_bookings_as_renter": "My bookings",
      "drawer_my_bookings_as_tenants": "My rentals",
-
+     "price_title": "Price",
      "profile_title": "My profile",
+     "equipments_title": "Equipments included",
+     "no_equipments": "No equipment included",
 
      "settings_title": "My settings",
      "settings_language": "Change language",

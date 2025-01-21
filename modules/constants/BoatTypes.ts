@@ -23,6 +23,13 @@ const translations: Record<string, Record<BoatType, string>> = {
           [BoatType.Motorboat]: "Bateau à moteur",
           [BoatType.Trimaran]: "Trimaran",
      },
+     es: {
+          [BoatType.Sailboat]: "Velero",
+          [BoatType.Catamaran]: "Catamarán",
+          [BoatType.Yacht]: "Yate",
+          [BoatType.Motorboat]: "Lancha motora",
+          [BoatType.Trimaran]: "Trimarán",
+     },
 }
 
 export const useBoatTypeOptions = (locale: string) => {

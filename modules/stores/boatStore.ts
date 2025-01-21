@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { BoatImageRawData, GetSingleBoatDTO } from "@/modules/domain/boats/DTO/GetSingleBoat"
 
 interface Boat {
      id: string

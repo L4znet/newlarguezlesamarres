@@ -63,9 +63,10 @@ const OffersList = () => {
                <Card key={item.id} style={[styles.card]}>
                     <Slideshow images={boatImages} />
 
-                    <Card.Title title={item.title} subtitle={item.description} />
+                    <Card.Title title={item.title} />
 
                     <Card.Content>
+                         <Text style={styles.description}>{item.description.slice(0, 100)}...</Text>
                          <Text>
                               {t("published_by")} {username}
                          </Text>
@@ -102,6 +103,9 @@ const styles = StyleSheet.create({
      period: {
           marginTop: 8,
           color: "#666",
+     },
+     description: {
+          marginBottom: 8,
      },
 })
 

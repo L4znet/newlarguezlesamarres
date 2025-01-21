@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ScrollView } from "react-native"
 import { ActivityIndicator, Button, Text } from "react-native-paper"
 import { router, useLocalSearchParams } from "expo-router"
 import Slideshow from "@/app/components/Slideshow"
@@ -29,16 +29,11 @@ export default function OfferDetail() {
 
      const hasUserReservedOffer = bookingsStatus?.some((booking) => {
           const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
-
-          console.log("bookingStatusDTO hasUserReservedOffer", bookingStatusDTO)
-          console.log("userId hasUserReservedOffer", userId)
           return bookingStatusDTO.hasUserReserved(userId)
      })
 
      const isOfferReserved = bookingsStatus?.some((booking) => {
           const bookingStatusDTO = new GetBookingStatusDTO(booking.status, booking.offerId, booking.userId)
-          console.log("bookingStatusDTO isOfferReserved", bookingStatusDTO)
-          console.log("userId isOfferReserved", userId)
           return bookingStatusDTO.isFullyReserved()
      })
 
@@ -75,24 +70,37 @@ export default function OfferDetail() {
      console.log("isOfferReserved", isOfferReserved)
 
      return (
-          <View style={styles.container}>
+          <ScrollView style={styles.container}>
                <Slideshow images={boatImages} />
                <Text variant="headlineLarge" style={styles.title}>
                     {offerById?.title}
                </Text>
-               <Text variant="bodyLarge" style={styles.description}>
-                    {offerById?.description}
-               </Text>
+
+               <Text style={styles.description}>{offerById?.description}</Text>
+               <Text variant={"headlineMedium"}> {t("equipments_title")} :</Text>
+               {!offerById?.equipments ? (
+                    <View>
+                         {offerById?.equipments?.map((equipment, index) => (
+                              <Text key={index} style={styles.equipmentItem}>
+                                   {equipment.equipmentName} - {equipment.equipmentQuantity}
+                              </Text>
+                         ))}
+                    </View>
+               ) : (
+                    <Text style={styles.equipmentItem}>{t("no_equipments")}</Text>
+               )}
+
                <Text style={styles.period}>
                     {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate} ({days} {t("days")})
                </Text>
+               <Text variant={"headlineMedium"}> {t("price_title")} :</Text>
                <Text style={styles.price}>
                     {offerById?.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
                </Text>
                <Button mode="contained" style={styles.button} onPress={handleBookOffer} disabled={hasUserReservedOffer || isOfferReserved}>
                     {hasUserReservedOffer ? t("already_reserved") : t("book_offer")}
                </Button>
-          </View>
+          </ScrollView>
      )
 }
 
@@ -116,6 +124,9 @@ const styles = StyleSheet.create({
           marginBottom: 16,
           fontSize: 16,
           fontWeight: "bold",
+     },
+     equipmentItem: {
+          marginBottom: 8,
      },
      button: {
           marginTop: 16,
