@@ -41,21 +41,6 @@ export const updateBoatUseCase = async (
           }
 
           if (imageSelected) {
-               console.log("Image selected")
-               console.log(
-                    updatedData.boatImages.map((image) => {
-                         return {
-                              url: image.url,
-                              isDefault: image.isDefault,
-                              caption: image.caption,
-                              contentType: image.contentType,
-                              dimensions: image.dimensions,
-                              size: image.size,
-                              mimeType: image.mimeType,
-                              fileName: image.fileName,
-                         }
-                    })
-               )
                await boatRepository.uploadUpdateImages(updatedBoat.id, updatedData.boatImages)
           }
 

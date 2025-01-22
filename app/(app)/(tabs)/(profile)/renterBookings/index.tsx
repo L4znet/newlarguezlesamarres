@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react"
 import BookingsRenterList from "@/app/components/BookingsRenterList"
 
 export default function index() {
-     console.log("RenterBookings")
-
      return (
           <View style={styles.container}>
                <SafeAreaView style={styles.safeView}>

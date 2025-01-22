@@ -21,12 +21,6 @@ import { useLocalSearchParams } from "expo-router"
 export default function editBoat() {
      const { locale } = useTranslation()
      const t = getTranslator(locale)
-     console.log("editBoat")
-     console.log(locale)
-
-     if (locale) {
-          console.log("locale", locale)
-     }
 
      const boatTypeOptions = useBoatTypeOptions(locale)
      const colors = useTheme().colors
@@ -103,8 +97,6 @@ export default function editBoat() {
      }
 
      const onSubmit = async (data: any) => {
-          console.log(data)
-
           try {
                updateBoat({ boatId: boatId, updatedData: { ...data }, imageSelected: imageSelected })
                reset()

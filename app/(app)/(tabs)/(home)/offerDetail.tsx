@@ -1,27 +1,25 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { View, StyleSheet, ScrollView } from "react-native"
-import { ActivityIndicator, Button, Text } from "react-native-paper"
-import { router, useLocalSearchParams } from "expo-router"
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper"
+import { useLocalSearchParams } from "expo-router"
 import Slideshow from "@/app/components/Slideshow"
 import { getTranslator, useTranslation } from "@/modules/context/TranslationContext"
 import { displayRentalPeriod } from "@/modules/constants/DisplayRentalPeriod"
 import { useOfferById } from "@/modules/hooks/offers/useOfferById"
 import { useCreateBooking } from "@/modules/hooks/bookings/useCreateBooking"
-import { useIsOfferReserved } from "@/modules/hooks/bookings/useIsOfferReserved"
 import { useBookingStatus } from "@/modules/hooks/bookings/useBookingStatus"
 import { displayTotalPrice, getHowManyDays } from "@/modules/constants/DisplayTotalPrice"
-import BookingEntity from "@/modules/domain/bookings/BookingEntity"
-import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { GetBookingStatusDTO } from "@/modules/domain/bookings/DTO/GetBookingStatusDTO"
 
 export default function OfferDetail() {
      const { offerId, userId } = useLocalSearchParams<{ offerId: string; userId: string }>()
-     const { data: offerById, isPending, error } = useOfferById(offerId)
+     const { data: offerById, isPending } = useOfferById(offerId)
      const createBooking = useCreateBooking()
-     const { data: bookingsStatus, isPending: isPendingBookingStatus, error: errorIsOfferReserved } = useBookingStatus(offerId)
+     const { data: bookingsStatus, isPending: isPendingBookingStatus } = useBookingStatus(offerId)
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
+     const theme = useTheme()
 
      if (isPending || isPendingBookingStatus) {
           return <ActivityIndicator size="large" />
@@ -66,9 +64,6 @@ export default function OfferDetail() {
 
      const boatImages = getBoatsImages()
 
-     console.log("hasUserReservedOffer", hasUserReservedOffer)
-     console.log("isOfferReserved", isOfferReserved)
-
      return (
           <ScrollView style={styles.container}>
                <Slideshow images={boatImages} />
@@ -77,26 +72,35 @@ export default function OfferDetail() {
                </Text>
 
                <Text style={styles.description}>{offerById?.description}</Text>
-               <Text variant={"headlineMedium"}> {t("equipments_title")} :</Text>
-               {!offerById?.equipments ? (
-                    <View>
-                         {offerById?.equipments?.map((equipment, index) => (
-                              <Text key={index} style={styles.equipmentItem}>
-                                   {equipment.equipmentName} - {equipment.equipmentQuantity}
-                              </Text>
-                         ))}
-                    </View>
-               ) : (
-                    <Text style={styles.equipmentItem}>{t("no_equipments")}</Text>
-               )}
-
-               <Text style={styles.period}>
+               <Text style={styles.rentalPeriod}>
                     {t("from_date")} {rentalStartDate} {t("to_date").toLowerCase()} {rentalEndDate} ({days} {t("days")})
                </Text>
-               <Text variant={"headlineMedium"}> {t("price_title")} :</Text>
-               <Text style={styles.price}>
-                    {offerById?.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
-               </Text>
+               <View style={[styles.equipments, { backgroundColor: theme.colors.inverseOnSurface }]}>
+                    <Text variant={"headlineSmall"} style={[styles.headlineTitle, { color: theme.colors.primary }]}>
+                         {t("equipments_title")}
+                    </Text>
+                    {offerById?.equipments ? (
+                         <View>
+                              {offerById?.equipments?.map((equipment, index) => (
+                                   <Text key={index} style={styles.equipmentItem}>
+                                        {equipment.equipmentName} - {equipment.equipmentQuantity}
+                                   </Text>
+                              ))}
+                         </View>
+                    ) : (
+                         <Text style={styles.equipmentItem}>{t("no_equipments")}</Text>
+                    )}
+               </View>
+
+               <View style={[styles.equipments, { backgroundColor: theme.colors.inverseOnSurface }]}>
+                    <Text variant={"headlineSmall"} style={[styles.headlineTitle, { color: theme.colors.primary }]}>
+                         {t("price_title")}
+                    </Text>
+                    <Text style={styles.price}>
+                         {offerById?.price} {t("money_symbol")} / {t("days")} ({totalAmount} {t("money_symbol")})
+                    </Text>
+               </View>
+
                <Button mode="contained" style={styles.button} onPress={handleBookOffer} disabled={hasUserReservedOffer || isOfferReserved}>
                     {hasUserReservedOffer ? t("already_reserved") : t("book_offer")}
                </Button>
@@ -116,17 +120,14 @@ const styles = StyleSheet.create({
      description: {
           marginBottom: 16,
      },
-     period: {
-          marginBottom: 8,
+     rentalPeriod: {
+          marginVertical: 10,
           color: "#666",
      },
      price: {
           marginBottom: 16,
           fontSize: 16,
           fontWeight: "bold",
-     },
-     equipmentItem: {
-          marginBottom: 8,
      },
      button: {
           marginTop: 16,
@@ -135,5 +136,19 @@ const styles = StyleSheet.create({
           flex: 1,
           textAlign: "center",
           marginTop: 20,
+     },
+     equipments: {
+          marginBottom: 16,
+          paddingTop: 15,
+          paddingHorizontal: 10,
+          paddingBottom: 20,
+          borderRadius: 7,
+     },
+     equipmentItem: {
+          marginBottom: 8,
+     },
+     headlineTitle: {
+          marginBottom: 8,
+          fontWeight: "bold",
      },
 })
