@@ -10,7 +10,7 @@ import { GetSingleOfferDTO } from "@/modules/domain/offers/DTO/GetSingleOfferDTO
 interface OfferRepository {
      createOffer({ profileId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { profileId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[] | []; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location }): Promise<OfferIdResponseDTO | undefined>
      updateOffer({ offerId, boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { offerId: string; boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location }): Promise<OfferIdResponseDTO | undefined>
-     deleteOffer({ offerId, profileId }: { offerId: string; profileId: string }): Promise<OfferIdResponseDTO | []>
+     deleteOffer({ offerId, profileId }: { offerId: string; profileId: string }): Promise<OfferIdResponseDTO | undefined>
      getSingleOffer({ offerId }: { offerId: string }): Promise<GetSingleOfferDTO | []>
      getOffers(profileId: string): Promise<GetOffersDTO[] | []>
      getOwnOffers(profileId: string): Promise<GetOffersDTO[] | []>

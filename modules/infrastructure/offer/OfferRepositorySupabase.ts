@@ -57,6 +57,7 @@ export default class OfferRepositorySupabase implements OfferRepository {
                     isTeamAvailable,
                     rentalPeriod,
                     location,
+                    updatedAt: new Date(),
                })
 
                const {
@@ -187,7 +188,7 @@ export default class OfferRepositorySupabase implements OfferRepository {
           }
      }
 
-     async deleteOffer({ profileId, offerId }: { profileId: string; offerId: string }): Promise<OfferIdResponseDTO | []> {
+     async deleteOffer({ profileId, offerId }: { profileId: string; offerId: string }): Promise<OfferIdResponseDTO | undefined> {
           const { data: offerIdResponse, error: offerError } = await supabase.from("offers").delete().eq("id", offerId).eq("profile_id", profileId).select("id").single()
 
           if (offerError) {
@@ -197,7 +198,7 @@ export default class OfferRepositorySupabase implements OfferRepository {
           if (offerIdResponse) {
                return OfferIdResponseDTO.fromRawData(offerIdResponse)
           } else {
-               return []
+               return undefined
           }
      }
 

@@ -122,13 +122,6 @@ export default function Layout() {
                          tabBarIcon: ({ color }) => <FontAwesome size={28} name="anchor" color={color} />,
                     }}
                />
-               <Tabs.Screen
-                    name="(settings)"
-                    options={{
-                         title: t("bottom_bar_settings"),
-                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="cogs" color={color} />,
-                    }}
-               />
           </Tabs>
      )
 }

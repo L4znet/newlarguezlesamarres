@@ -26,8 +26,9 @@ export class UpdateOfferDTO {
      public readonly isTeamAvailable: boolean
      public readonly rentalPeriod: RentalPeriod
      public readonly location: Location
+     public readonly updatedAt: Date
 
-     constructor({ boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location }: { boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location }) {
+     constructor({ boatId, title, description, price, isAvailable, equipments, isSkipperAvailable, isTeamAvailable, rentalPeriod, location, updatedAt }: { boatId: string; title: string; description: string; price: string; isAvailable: boolean; equipments: Equipment[]; isSkipperAvailable: boolean; isTeamAvailable: boolean; rentalPeriod: RentalPeriod; location: Location; updatedAt: Date }) {
           this.boatId = boatId
           this.title = title
           this.description = description
@@ -38,6 +39,7 @@ export class UpdateOfferDTO {
           this.isTeamAvailable = isTeamAvailable
           this.rentalPeriod = rentalPeriod
           this.location = location
+          this.updatedAt = updatedAt
      }
 
      static toRawData(dto: UpdateOfferDTO): any {
@@ -52,6 +54,7 @@ export class UpdateOfferDTO {
                is_team_available: dto.isTeamAvailable,
                rental_period: dto.rentalPeriod,
                location: dto.location,
+               updated_at: dto.updatedAt,
           }
      }
 }

@@ -24,18 +24,6 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
           )
      }
 
-     const goToPrevious = () => {
-          if (currentIndex > 0) {
-               setCurrentIndex((prevIndex) => prevIndex - 1)
-          }
-     }
-
-     const goToNext = () => {
-          if (currentIndex < images.length - 1) {
-               setCurrentIndex((prevIndex) => prevIndex + 1)
-          }
-     }
-
      return (
           <View style={styles.container}>
                <FlatList

@@ -46,6 +46,7 @@ export default class BoatRepositorySupabase implements BoatRepository {
                     boatDescription,
                     boatCapacity,
                     boatType,
+                    updatedAt: new Date(),
                })
                const rawData = UpdateBoatDTO.toRawData(updateData)
                const { data: boatUpdated, error: boatError } = await supabase.from("boats").update(rawData).eq("id", boatId).select("id").single()

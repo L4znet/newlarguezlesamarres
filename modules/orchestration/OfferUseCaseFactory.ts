@@ -1,4 +1,3 @@
-import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
 import { Equipment, Location, RentalPeriod } from "@/interfaces/Offer"
 import { createOfferUseCase } from "@/modules/application/offers/createOfferUseCase"
 import { updateOfferUseCase } from "@/modules/application/offers/updateOfferUseCase"
@@ -8,6 +7,10 @@ import { getOwnOffersUseCase } from "@/modules/application/offers/getOwnOffersUs
 import { getSingleOfferUseCase } from "@/modules/application/offers/getSingleOfferUseCase"
 import { updateOfferAvailabilityUseCase } from "@/modules/application/offers/updateOfferAvailabilityUseCase"
 import { updateOfferOfferDeletedAtUseCase } from "@/modules/application/offers/updateOfferDeletedAtUseCase"
+import { updateTransactionUseCase } from "@/modules/application/transactions/updateTransactionUseCase"
+import TransactionRepository from "@/modules/domain/transactions/TransactionRepository"
+import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
+import TransactionRepositorySupabase from "@/modules/infrastructure/transaction/TransactionRepositorySupabase"
 
 export const makeCreateOfferUseCase = () => {
      const offerRepository = new OfferRepositorySupabase()
@@ -16,7 +19,11 @@ export const makeCreateOfferUseCase = () => {
 
 export const makeDeleteOfferUseCase = () => {
      const offerRepository = new OfferRepositorySupabase()
-     return (offerId: string) => deleteOfferUseCase(offerRepository, offerId)
+     const transactionRepository = new TransactionRepositorySupabase()
+     return (offerId: string) => {
+          deleteOfferUseCase(offerRepository, offerId)
+          updateTransactionUseCase(transactionRepository, offerId)
+     }
 }
 export const makeGetOffersUseCase = () => {
      const offerRepository = new OfferRepositorySupabase()

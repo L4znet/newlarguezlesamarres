@@ -29,10 +29,9 @@ export default function editBoat() {
 
      const { mutate: updateBoat, isPending: isUpdating } = useUpdateBoat()
      const [imageSelected, setImageSelected] = useState(false)
+     const [boatThumbnail, setBoatThumbnail] = useState([] as Boat["boatImages"])
 
      const { showTranslatedFlashMessage } = useFlashMessage()
-
-     const [boatImagesThumbnail, setBoatImages] = useState(boat?.boatImages || ([] as Boat["boatImages"]))
 
      const [types, setTypes] = useState({
           value: "",
@@ -76,26 +75,6 @@ export default function editBoat() {
           },
      })
 
-     const handleMultiplePicture = (result: ImagePickerSuccessResult) => {
-          let thumbnails: Boat["boatImages"] = [] as Boat["boatImages"]
-
-          result.assets.forEach((asset, index) => {
-               thumbnails.push({
-                    isDefault: index === 0,
-                    url: asset.uri,
-                    caption: asset.fileName as string,
-                    contentType: asset.type as string,
-                    base64: asset.base64 as string,
-                    dimensions: { width: asset.width, height: asset.height },
-                    size: asset.fileSize?.toString() as string,
-                    mimeType: asset.mimeType as string,
-                    fileName: asset.fileName as string,
-               })
-          })
-
-          return thumbnails
-     }
-
      const onSubmit = async (data: any) => {
           try {
                updateBoat({ boatId: boatId, updatedData: { ...data }, imageSelected: imageSelected })
@@ -138,7 +117,6 @@ export default function editBoat() {
                               fileName: asset.fileName as string,
                          }))
                          setImageSelected(true)
-                         setBoatImages(thumbnails)
                          setValue("boatImages", thumbnails)
                     }
                } else {
@@ -161,7 +139,7 @@ export default function editBoat() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.textarea} multiline={true} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
                          {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
 
                          <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />
@@ -196,19 +174,24 @@ export default function editBoat() {
                          />
                          {errors.boatType && <Text style={styles.errorText}>{t(errors.boatType.message as string)}</Text>}
 
-                         <Slideshow
-                              images={boatImagesThumbnail.map((boatImage) => {
-                                   return {
-                                        id: boatImage.id as string,
-                                        url: boatImage.url as string,
-                                        caption: boatImage.caption as string,
-                                   }
-                              })}
+                         <Controller
+                              control={control}
+                              name="boatImages"
+                              render={({ field: { value } }) => (
+                                   <Slideshow
+                                        images={value?.map((image) => ({
+                                             id: image.id as string,
+                                             url: image.url,
+                                             caption: image.caption,
+                                        }))}
+                                   />
+                              )}
                          />
 
                          <Button mode="text" onPress={handleThumbnailChange} style={styles.selectImageBtn}>
                               {t("change_thumbnail_btn")}
                          </Button>
+
                          {errors.boatImages && <Text style={styles.errorText}>{t(errors.boatImages.message as string)}</Text>}
 
                          <Button mode="contained" style={styles.button} onPress={handleSubmit(onSubmit, onError)} loading={loadingBoat || isUpdating} disabled={loadingBoat || isUpdating}>

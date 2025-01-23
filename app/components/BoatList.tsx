@@ -14,7 +14,7 @@ import { getTranslator, useTranslation } from "@/modules/context/TranslationCont
 const BoatList = () => {
      const { data: boats, isPending, error } = useBoats()
      const { mutate: deleteBoat, isPending: isDeletePending, isError: isDeleteError, isSuccess: isDeleteSuccess } = useDeleteBoat()
-     const { setCurrentBoatId } = useBoatStore()
+     const { setBoatImages } = useBoatStore()
      const { locale } = useTranslation()
      const t = getTranslator(locale)
 
@@ -28,7 +28,8 @@ const BoatList = () => {
           )
      }
 
-     const handleEditBoat = async (boatId: string) => {
+     const handleEditBoat = async (boatId: string, boatImages: any) => {
+          setBoatImages(boatImages)
           router.push({ pathname: "/(app)/(tabs)/(boats)/editBoat", params: { boatId } })
      }
 
@@ -67,7 +68,7 @@ const BoatList = () => {
                          </Text>
                     </Card.Content>
                     <Card.Actions>
-                         <Button mode={"contained"} onPress={() => handleEditBoat(item.id)}>
+                         <Button mode={"contained"} onPress={() => handleEditBoat(item.id, boatImages)}>
                               {t("edit")}
                          </Button>
                          <Button mode={"outlined"} loading={isDeletePending} disabled={isDeletePending} onPress={async () => deleteBoat(item.id)}>

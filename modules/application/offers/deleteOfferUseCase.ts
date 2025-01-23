@@ -1,5 +1,3 @@
-import OfferRepositorySupabase from "@/modules/infrastructure/offer/OfferRepositorySupabase"
-import { MessageType } from "react-native-flash-message"
 import { getCurrentSessionUseCase } from "@/modules/application/auth/getCurrentSessionUseCase"
 import { OfferIdResponseDTO } from "@/modules/domain/offers/DTO/OfferIdResponseDTO"
 import OfferRepository from "@/modules/domain/offers/OfferRepository"
