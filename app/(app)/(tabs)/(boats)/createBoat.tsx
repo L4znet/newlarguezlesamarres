@@ -85,6 +85,7 @@ export default function createBoat() {
      const onSubmit = async (data: any) => {
           try {
                createBoat({ ...data })
+               setBoatImages([])
                reset()
           } catch (error) {
                showTranslatedFlashMessage("danger", {
@@ -147,7 +148,7 @@ export default function createBoat() {
           <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
                <SafeAreaView style={styles.safeView}>
                     <ScrollView style={styles.scrollViewBoats}>
-                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.textarea} multiline={true} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
+                         <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatName} style={styles.input} placeholder={t("boat_name_placeholder")} label={t("boat_name_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatName" />
                          {errors.boatName && <Text style={styles.errorText}>{t(errors.boatName.message as string)}</Text>}
 
                          <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput error={!!errors.boatDescription} style={styles.textarea} multiline={true} placeholder={t("boat_description_placeholder")} label={t("boat_description_label")} value={value} onChangeText={onChange} onBlur={onBlur} />} name="boatDescription" />

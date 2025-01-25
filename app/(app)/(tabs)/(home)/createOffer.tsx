@@ -237,7 +237,7 @@ export default function createOffer() {
                                              control={control}
                                              render={({ field: { onChange, value } }) => (
                                                   <View>
-                                                       <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={value} onChangeText={onChange} error={!!errors.description} />
+                                                       <TextInput style={styles.textarea} placeholder={t("offer_description_placeholder")} label={t("offer_description_label")} value={value} multiline={true} onChangeText={onChange} error={!!errors.description} />
                                                        {errors.description && <Text style={styles.errorText}>{t(errors.description.message as string)}</Text>}
                                                   </View>
                                              )}
@@ -390,6 +390,8 @@ export default function createOffer() {
                                                                       endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
                                                                       disabledDates: [],
                                                                  }}
+                                                                 startLabel={t("start_date_label")}
+                                                                 endLabel={t("end_date_label")}
                                                                  locale={locale}
                                                                  visible={open}
                                                                  mode="range"
