@@ -19,10 +19,8 @@ export const makeCreateOfferUseCase = () => {
 
 export const makeDeleteOfferUseCase = () => {
      const offerRepository = new OfferRepositorySupabase()
-     const transactionRepository = new TransactionRepositorySupabase()
-     return (offerId: string) => {
-          deleteOfferUseCase(offerRepository, offerId)
-          updateTransactionUseCase(transactionRepository, offerId)
+     return async (offerId: string) => {
+           deleteOfferUseCase(offerRepository, offerId)   
      }
 }
 export const makeGetOffersUseCase = () => {
