@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { OfferSchema } from "@/modules/domain/offers/schemas/OfferSchema"
 import { UserRegistrationSchema } from "@/modules/domain/auth/schemas/UserRegistrationSchema"
+import { useFlashMessage } from "@/modules/context/FlashMessageProvider"
 
 export default function Signup() {
      const [userInfo, setUserInfo] = useState({
@@ -21,6 +22,7 @@ export default function Signup() {
      })
 
      const { mutate: signUp, isPending, error } = useSignup()
+     const { showTranslatedFlashMessage } = useFlashMessage()
 
      const { locale } = useTranslation()
      const t = getTranslator(locale)
@@ -54,16 +56,15 @@ export default function Signup() {
           )
      }
 
-     const handleError = (error: any) => {
-          console.log(error)
+     const onError = (error: any) => {
+          showTranslatedFlashMessage("danger", {
+               title: t("flash_title_danger"),
+               description: t("fix_errors_before_submitting"),
+          })
      }
 
      const handleSignup = async (data: any) => {
-          try {
-               signUp(data)
-          } catch (error: any) {
-               console.log(error)
-          }
+          signUp(data)
      }
 
      return (
@@ -91,7 +92,7 @@ export default function Signup() {
                          <Controller control={control} render={({ field: { onChange, onBlur, value } }) => <TextInput style={styles.input} placeholder={t("confirm_password_placeholder")} label={t("confirm_password_label")} value={value} onChangeText={onChange} onBlur={onBlur} secureTextEntry />} name="confirmPassword" />
                          {errors.confirmPassword && <Text>{errors.confirmPassword.message}</Text>}
 
-                         <Button icon="login" mode="contained" style={styles.login} onPress={handleSubmit(handleSignup, handleError)}>
+                         <Button icon="login" mode="contained" style={styles.login} onPress={handleSubmit(handleSignup, onError)}>
                               {t("register_submit")}
                          </Button>
                     </View>

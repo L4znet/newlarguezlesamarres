@@ -11,8 +11,6 @@ export const deleteOfferUseCase = async (offerRepository: OfferRepository, offer
                return await offerRepository.deleteOffer({ profileId, offerId })
           }
      } catch (error) {
-
-          console.log(error)
           throw new Error("Error deleting offer" + error)
      }
 }

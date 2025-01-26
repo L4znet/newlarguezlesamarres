@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                showTranslatedFlashMessage("success", { title: "flash_title_success", description: "User logged out successfully" })
           } catch (error: any) {
-               console.log("Erreur", error)
                showTranslatedFlashMessage("danger", { title: "flash_title_danger", description: error.message })
           }
      }
@@ -68,7 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                if (newSession) {
                     await AsyncStorage.setItem("supabase_session", JSON.stringify(newSession))
-                    setSession(newSession) // Avoid redundant updates
+                    setSession(newSession)
                     setUser(newSession.user.user_metadata)
                } else {
                     await AsyncStorage.removeItem("supabase_session")
